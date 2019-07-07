@@ -17,8 +17,8 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> queryFilter)
         {
-            var queryFilterString = BuildExpression(queryFilter.Body, string.Empty);
-            _queryBuilder.Append($"$filter={queryFilterString}&");
+            var odataQueryFilter = queryFilter.Body.ToODataQuery(string.Empty);
+            _queryBuilder.Append($"$filter={odataQueryFilter}&");
 
             return this;
         }
@@ -146,68 +146,5 @@ namespace OData.QueryBuilder.Parameters
         }
 
         public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd('&'));
-
-        private string BuildExpression(Expression expression, string queryString)
-        {
-            switch (expression)
-            {
-                case BinaryExpression binaryExpression:
-                    var leftQueryString = BuildExpression(binaryExpression.Left, queryString);
-                    var rightQueryString = BuildExpression(binaryExpression.Right, queryString);
-
-                    return $"{leftQueryString} {binaryExpression.NodeType.ToODataOperator()} {rightQueryString}";
-
-                case MemberExpression memberExpression:
-                    if (memberExpression.Expression is ConstantExpression)
-                    {
-                        if (memberExpression.Member is FieldInfo)
-                        {
-                            var valueConstantExpression = ((FieldInfo)memberExpression.Member).GetValue(((ConstantExpression)memberExpression.Expression).Value);
-
-                            if (valueConstantExpression is IEnumerable<int>)
-                            {
-                                return string.Join(",", (IEnumerable<int>)valueConstantExpression);
-                            }
-
-                            if (valueConstantExpression is IEnumerable<string>)
-                            {
-                                return $"'{string.Join("','", (IEnumerable<string>)valueConstantExpression)}'";
-                            }
-
-                            return valueConstantExpression.ToString();
-                        }
-                    }
-
-                    var parentMemberExpressionQuery = BuildExpression(memberExpression.Expression, queryString);
-
-                    if (string.IsNullOrEmpty(parentMemberExpressionQuery))
-                    {
-                        return memberExpression.Member.Name;
-                    }
-
-                    return $"{parentMemberExpressionQuery}/{memberExpression.Member.Name}";
-
-                case ConstantExpression constantExpression:
-                    return constantExpression.Value?.ToString() ?? "null";
-
-                case MethodCallExpression methodCallExpression:
-                    var methodName = methodCallExpression.Method.Name;
-                    var methodParameters = BuildExpression(methodCallExpression.Arguments[0], queryString);
-
-                    if (methodName == nameof(string.Contains))
-                    {
-
-                        var valueConstantExpression = BuildExpression(methodCallExpression.Object, queryString);
-
-
-                        return $"{methodParameters} in ({valueConstantExpression})";
-                    }
-
-                    return $"{methodName.ToLower()}({methodParameters})";
-
-                default:
-                    return string.Empty;
-            }
-        }
     }
 }

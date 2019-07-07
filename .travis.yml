@@ -1,0 +1,9 @@
+language: csharp  
+sudo: required  
+dist: build  
+mono: none
+dotnet: 2.1
+before_script:
+  - dotnet restore
+script:  
+  - dotnet test ./test/OData.QueryBuilder.Test -c Release -f netcoreapp2.1

@@ -9,7 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{26982440-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder", "src\OData.QueryBuilder\OData.QueryBuilder.csproj", "{E4D8F027-2B79-4794-9B75-D08C2BA066B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OData.QueryBuilder.Test", "test\OData.QueryBuilder.Test\OData.QueryBuilder.Test.csproj", "{537E849E-5291-49F9-BD2A-9F4A01DB1561}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder.Test", "test\OData.QueryBuilder.Test\OData.QueryBuilder.Test.csproj", "{537E849E-5291-49F9-BD2A-9F4A01DB1561}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{179F88B9-A06D-4505-9266-A5D66004601C}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

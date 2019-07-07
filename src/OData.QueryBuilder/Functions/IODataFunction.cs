@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OData.QueryBuilder
+namespace OData.QueryBuilder.Functions
 {
     public interface IODataFunction
     {

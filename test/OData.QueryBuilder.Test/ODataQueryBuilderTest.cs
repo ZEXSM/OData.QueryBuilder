@@ -49,7 +49,7 @@ namespace OData.QueryBuilder.Test
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/Code/IdCode ge 3 or IdType eq 5 and date(Open) eq 2019-07-06 and TypeCode in ('123','512','4755')&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/Code/IdCode ge 3 or IdType eq 5 and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and TypeCode in ('123','512','4755')&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 
-namespace OData.QueryBuilder
+namespace OData.QueryBuilder.Extensions
 {
-    internal static class ExpressionTypeExtension
+    internal static class ExpressionExtension
     {
         public static string ToODataOperator(this ExpressionType expressionType)
         {
@@ -29,6 +29,24 @@ namespace OData.QueryBuilder
                 default:
                     return string.Empty;
             }
+        }
+
+        public static string ToODataQuery(this UnaryExpression unaryExpression) =>
+            ((MemberExpression)unaryExpression.Operand).Member.Name;
+
+        public static string ToODataQuery(this MemberExpression memberExpression) =>
+            memberExpression.Member.Name;
+
+        public static string ToODataQuery(this NewExpression newExpression)
+        {
+            var names = new string[newExpression.Members.Count];
+
+            for (var i = 0; i < newExpression.Members.Count; i++)
+            {
+                names[i] = newExpression.Members[i].Name;
+            }
+
+            return string.Join(",", names);
         }
     }
 }

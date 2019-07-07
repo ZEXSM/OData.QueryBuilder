@@ -1,19 +1,21 @@
-﻿using System;
+﻿using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.Functions;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace OData.QueryBuilder
+namespace OData.QueryBuilder.Parameters
 {
-    public class ODataQueryBuilderList<TEntity> : IODataQueryBuilderList<TEntity>
+    public class ODataQueryParameterList<TEntity> : IODataQueryParameterList<TEntity>
     {
         private readonly StringBuilder _queryBuilder;
 
-        public ODataQueryBuilderList(StringBuilder queryBuilder) =>
+        public ODataQueryParameterList(StringBuilder queryBuilder) =>
             _queryBuilder = queryBuilder;
 
-        public IODataQueryBuilderList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> queryFilter)
+        public IODataQueryParameterList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> queryFilter)
         {
             var queryFilterString = BuildExpression(queryFilter.Body, string.Empty);
             _queryBuilder.Append($"$filter={queryFilterString}&");
@@ -21,147 +23,122 @@ namespace OData.QueryBuilder
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> Expand(Expression<Func<TEntity, object>> queryExpand)
+        public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> queryExpand)
         {
-            string[] expandNames = default(string[]);
+            var expandNames = default(string);
 
             switch (queryExpand.Body)
             {
                 case MemberExpression memberExpression:
-                    expandNames = new string[1];
-
-                    expandNames[0] = memberExpression.Member.Name;
-
+                    expandNames = memberExpression.ToODataQuery();
                     break;
+
                 case NewExpression newExpression:
-                    expandNames = new string[newExpression.Members.Count];
-
-                    for (var i = 0; i < newExpression.Members.Count; i++)
-                    {
-                        expandNames[i] = newExpression.Members[i].Name;
-                    }
-
+                    expandNames = newExpression.ToODataQuery();
                     break;
+
                 default:
-                    throw new NotSupportedException($"Выражение typeof {queryExpand.Body.GetType().Name} не поддерживается.");
+                    throw new NotSupportedException($"Выражение {queryExpand.Body.GetType().Name} не поддерживается.");
             }
 
-            _queryBuilder.Append($"$expand={string.Join(",", expandNames)}&");
+            _queryBuilder.Append($"$expand={expandNames}&");
 
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> Select(Expression<Func<TEntity, object>> querySelect)
+        public IODataQueryParameterList<TEntity> Expand(Expression<Func<IODataQueryNestedParameter<TEntity>, TEntity, object>> entityExpand)
         {
-            string[] selectNames = default(string[]);
+            throw new NotImplementedException();
+        }
+
+        public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> querySelect)
+        {
+            var selectNames = default(string);
 
             switch (querySelect.Body)
             {
                 case UnaryExpression unaryExpression:
-                    selectNames = new string[1];
-
-                    selectNames[0] = ((MemberExpression)unaryExpression.Operand).Member.Name;
-
+                    selectNames = unaryExpression.ToODataQuery();
                     break;
+
                 case MemberExpression memberExpression:
-                    selectNames = new string[1];
-
-                    selectNames[0] = memberExpression.Member.Name;
-
+                    selectNames = memberExpression.ToODataQuery();
                     break;
+
                 case NewExpression newExpression:
-                    selectNames = new string[newExpression.Members.Count];
-
-                    for (var i = 0; i < newExpression.Members.Count; i++)
-                    {
-                        selectNames[i] = newExpression.Members[i].Name;
-                    }
-
+                    selectNames = newExpression.ToODataQuery();
                     break;
+
                 default:
-                    throw new NotSupportedException($"Выражение typeof {querySelect.Body.GetType().Name} не поддерживается.");
+                    throw new NotSupportedException($"Выражение {querySelect.Body.GetType().Name} не поддерживается.");
             }
 
-            _queryBuilder.Append($"$select={string.Join(",", selectNames)}&");
+            _queryBuilder.Append($"$select={selectNames}&");
 
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> OrderBy(Expression<Func<TEntity, object>> queryOrderBy)
+        public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> queryOrderBy)
         {
-            string[] orderByNames = default(string[]);
+            var orderByNames = default(string);
 
             switch (queryOrderBy.Body)
             {
                 case UnaryExpression unaryExpression:
-                    orderByNames = new string[1];
-
-                    orderByNames[0] = ((MemberExpression)unaryExpression.Operand).Member.Name;
-
+                    orderByNames = unaryExpression.ToODataQuery();
                     break;
+
                 case NewExpression newExpression:
-                    orderByNames = new string[newExpression.Members.Count];
-
-                    for (var i = 0; i < newExpression.Members.Count; i++)
-                    {
-                        orderByNames[i] = newExpression.Members[i].Name;
-                    }
-
+                    orderByNames = newExpression.ToODataQuery();
                     break;
+
                 default:
-                    throw new NotSupportedException($"Выражение typeof {queryOrderBy.Body.GetType().Name} не поддерживается.");
+                    throw new NotSupportedException($"Выражение {queryOrderBy.Body.GetType().Name} не поддерживается.");
             }
 
-            _queryBuilder.Append($"$orderby={string.Join(",", orderByNames)} asc&");
+            _queryBuilder.Append($"$orderby={orderByNames} asc&");
 
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> queryOrderByDescending)
+        public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> queryOrderByDescending)
         {
-            string[] orderByDescendingNames = default(string[]);
+            var orderByDescendingNames = default(string);
 
             switch (queryOrderByDescending.Body)
             {
                 case UnaryExpression unaryExpression:
-                    orderByDescendingNames = new string[1];
-
-                    orderByDescendingNames[0] = ((MemberExpression)unaryExpression.Operand).Member.Name;
-
+                    orderByDescendingNames = unaryExpression.ToODataQuery();
                     break;
+
                 case NewExpression newExpression:
-                    orderByDescendingNames = new string[newExpression.Members.Count];
-
-                    for (var i = 0; i < newExpression.Members.Count; i++)
-                    {
-                        orderByDescendingNames[i] = newExpression.Members[i].Name;
-                    }
-
+                    orderByDescendingNames = newExpression.ToODataQuery();
                     break;
+
                 default:
-                    throw new NotSupportedException($"Выражение typeof {queryOrderByDescending.Body.GetType().Name} не поддерживается.");
+                    throw new NotSupportedException($"Выражение {queryOrderByDescending.Body.GetType().Name} не поддерживается.");
             }
 
-            _queryBuilder.Append($"$orderby={string.Join(",", orderByDescendingNames)} desc&");
+            _queryBuilder.Append($"$orderby={orderByDescendingNames} desc&");
 
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> Skip(int number)
+        public IODataQueryParameterList<TEntity> Skip(int number)
         {
             _queryBuilder.Append($"$skip={number}&");
 
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> Top(int number)
+        public IODataQueryParameterList<TEntity> Top(int number)
         {
             _queryBuilder.Append($"$top={number}&");
 
             return this;
         }
 
-        public IODataQueryBuilderList<TEntity> Count()
+        public IODataQueryParameterList<TEntity> Count()
         {
             _queryBuilder.Append("$count=true&");
 

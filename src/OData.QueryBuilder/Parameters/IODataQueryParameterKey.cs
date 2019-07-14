@@ -1,16 +1,15 @@
-﻿using System;
+﻿using OData.QueryBuilder.Builders.Nested;
+using System;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public interface IODataQueryParameterKey<TEntity>
+    public interface IODataQueryParameterKey<TEntity> : IODataQueryParameter
     {
-        IODataQueryParameterKey<TEntity> Expand(Expression<Func<IODataQueryNestedParameter<TEntity>, TEntity, object>> entityExpand);
-
         IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 
-        IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect);
+        IODataQueryParameterKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested);
 
-        Uri ToUri();
+        IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect);
     }
 }

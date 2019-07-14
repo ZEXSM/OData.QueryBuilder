@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using OData.QueryBuilder.Builders;
 using OData.QueryBuilder.Test.Fakes;
 using System;
 using System.Linq;
@@ -14,9 +15,13 @@ namespace OData.QueryBuilder.Test
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata/");
 
             var uri = odataQueryBuilder
-                .ForResource<ODataTypeEntity>(s => s.ODataType)
+                .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
-                .Expand(s => new { s.ODataKind })
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind).Select(s => s.Code);
+                    f.For<ODataKindEntity>(s => s.ODataKindNew).Select(s => s.IdKind);
+                })
                 .Select(s => new { s.IdType, s.Sum })
                 .ToUri();
 
@@ -33,7 +38,7 @@ namespace OData.QueryBuilder.Test
             var ids = new[] { "123", "512", "4755" }.ToList();
 
             var uri = odataQueryBuilder
-                .ForResource<ODataTypeEntity>(s => s.ODataType)
+                .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Expand(s => new { s.ODataKind })
                 .Filter((f, s) =>

@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Builders.Nested;
+using OData.QueryBuilder.Extensions;
 using System;
 using System.Linq.Expressions;
 using System.Text;
@@ -12,55 +13,29 @@ namespace OData.QueryBuilder.Parameters
         public ODataQueryParameterKey(StringBuilder queryBuilder) =>
             _queryBuilder = queryBuilder;
 
-        public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> queryExpand)
+        public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var expandNames = default(string);
-
-            switch (queryExpand.Body)
-            {
-                case MemberExpression memberExpression:
-                    expandNames = memberExpression.ToODataQuery();
-                    break;
-
-                case NewExpression newExpression:
-                    expandNames = newExpression.ToODataQuery();
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Выражение {queryExpand.Body.GetType().Name} не поддерживается.");
-            }
+            var expandNames = entityExpand.Body.ToODataQuery(string.Empty);
 
             _queryBuilder.Append($"$expand={expandNames}&");
 
             return this;
         }
 
-        public IODataQueryParameterKey<TEntity> Expand(Expression<Func<IODataQueryNestedParameter<TEntity>, TEntity, object>> entityExpand)
+        public IODataQueryParameterKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested)
         {
-            throw new NotImplementedException();
+            var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
+
+            entityExpandNested(odataQueryNestedBuilder);
+
+            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}&");
+
+            return this;
         }
 
-        public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> querySelect)
+        public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var selectNames = default(string);
-
-            switch (querySelect.Body)
-            {
-                case UnaryExpression unaryExpression:
-                    selectNames = unaryExpression.ToODataQuery();
-                    break;
-
-                case MemberExpression memberExpression:
-                    selectNames = memberExpression.ToODataQuery();
-                    break;
-
-                case NewExpression newExpression:
-                    selectNames = newExpression.ToODataQuery();
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Выражение {querySelect.Body.GetType().Name} не поддерживается.");
-            }
+            var selectNames = entitySelect.Body.ToODataQuery(string.Empty);
 
             _queryBuilder.Append($"$select={selectNames}&");
 

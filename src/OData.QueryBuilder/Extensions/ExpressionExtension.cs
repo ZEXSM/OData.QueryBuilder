@@ -112,6 +112,12 @@ namespace OData.QueryBuilder.Extensions
 
                     return $"{methodName.ToLower()}({methodParameters})";
 
+                case NewExpression newExpression:
+                    return newExpression.ToODataQuery();
+
+                case UnaryExpression unaryExpression:
+                    return unaryExpression.ToODataQuery();
+
                 default:
                     return string.Empty;
             }

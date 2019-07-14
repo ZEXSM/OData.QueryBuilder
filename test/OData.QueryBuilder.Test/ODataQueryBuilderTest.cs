@@ -19,13 +19,15 @@ namespace OData.QueryBuilder.Test
                 .ByKey(223123123)
                 .Expand(f =>
                 {
-                    f.For<ODataKindEntity>(s => s.ODataKind).Select(s => s.Code);
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(ff => ff.For<ODataCodeEntity>(s => s.ODataCode).Select(s => s.IdCode));
+                    f.For<ODataKindEntity>(s => s.ODataKindNew).Select(s => s.IdKind);
                     f.For<ODataKindEntity>(s => s.ODataKindNew).Select(s => s.IdKind);
                 })
                 .Select(s => new { s.IdType, s.Sum })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind&$select=IdType,Sum");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum");
         }
 
         [Fact(DisplayName = "ODataQueryBuilderList")]
@@ -42,7 +44,7 @@ namespace OData.QueryBuilder.Test
                 .ByList()
                 .Expand(s => new { s.ODataKind })
                 .Filter((f, s) =>
-                    (s.IdType < constValue && s.ODataKind.Code.IdCode >= 3)
+                    (s.IdType < constValue && s.ODataKind.ODataCode.IdCode >= 3)
                     || s.IdType == 5
                     && f.Date(s.Open) == currentDate
                     && ids.Contains(s.TypeCode))
@@ -54,7 +56,7 @@ namespace OData.QueryBuilder.Test
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/Code/IdCode ge 3 or IdType eq 5 and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and TypeCode in ('123','512','4755')&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and TypeCode in ('123','512','4755')&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
         }
     }
 }

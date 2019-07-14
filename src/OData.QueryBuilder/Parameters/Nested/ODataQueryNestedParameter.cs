@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Builders.Nested;
+using OData.QueryBuilder.Extensions;
 using System;
 using System.Linq.Expressions;
 
@@ -11,16 +12,31 @@ namespace OData.QueryBuilder.Parameters.Nested
         {
         }
 
-        public IODataQueryNestedParameter<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand)
+        public IODataQueryNestedParameter<TEntity> Expand(Expression<Func<TEntity, object>> entityExpandNested)
         {
-            throw new NotImplementedException();
+            var entityExpandNestedQuery = entityExpandNested.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$expand={entityExpandNestedQuery};");
+
+            return this;
         }
 
-        public IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect)
+        public IODataQueryNestedParameter<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested)
         {
-            var selectNames = entityNestedSelect.Body.ToODataQuery(string.Empty);
+            var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
 
-            _queryBuilder.Append($"$select={selectNames};");
+            entityExpandNested(odataQueryNestedBuilder);
+
+            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}");
+
+            return this;
+        }
+
+        public IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entitySelectNested)
+        {
+            var entitySelectNestedQuery = entitySelectNested.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$select={entitySelectNestedQuery};");
 
             return this;
         }

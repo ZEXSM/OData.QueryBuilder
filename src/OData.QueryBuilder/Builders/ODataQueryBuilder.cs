@@ -17,9 +17,9 @@ namespace OData.QueryBuilder.Builders
 
         public IODataQueryResource<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
         {
-            var queryResourceNames = entityResource.Body.ToODataQuery(string.Empty);
+            var entityResourceQuery = entityResource.Body.ToODataQuery(string.Empty);
 
-            return new ODataQueryResource<TEntity>($"{_baseUrl}{queryResourceNames}");
+            return new ODataQueryResource<TEntity>($"{_baseUrl}{entityResourceQuery}");
         }
     }
 }

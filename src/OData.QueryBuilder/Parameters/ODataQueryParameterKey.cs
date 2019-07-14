@@ -15,9 +15,9 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var expandNames = entityExpand.Body.ToODataQuery(string.Empty);
+            var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$expand={expandNames}&");
+            _queryBuilder.Append($"$expand={entityExpandQuery}&");
 
             return this;
         }
@@ -35,9 +35,9 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var selectNames = entitySelect.Body.ToODataQuery(string.Empty);
+            var entitySelectQuery = entitySelect.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$select={selectNames}&");
+            _queryBuilder.Append($"$select={entitySelectQuery}&");
 
             return this;
         }

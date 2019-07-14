@@ -15,45 +15,45 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> entityFilter)
         {
-            var odataQueryFilter = entityFilter.Body.ToODataQuery(string.Empty);
+            var entityFilterQuery = entityFilter.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$filter={odataQueryFilter}&");
+            _queryBuilder.Append($"$filter={entityFilterQuery}&");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var expandNames = entityExpand.Body.ToODataQuery(string.Empty);
+            var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$expand={expandNames}&");
+            _queryBuilder.Append($"$expand={entityExpandQuery}&");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var selectNames = entitySelect.Body.ToODataQuery(string.Empty);
+            var entitySelectQuery = entitySelect.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$select={selectNames}&");
+            _queryBuilder.Append($"$select={entitySelectQuery}&");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
         {
-            var orderByNames = entityOrderBy.Body.ToODataQuery(string.Empty);
+            var entityOrderByQuery = entityOrderBy.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$orderby={orderByNames} asc&");
+            _queryBuilder.Append($"$orderby={entityOrderByQuery} asc&");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
-            var orderByDescendingNames = entityOrderByDescending.Body.ToODataQuery(string.Empty);
+            var entityOrderByDescendingQuery = entityOrderByDescending.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$orderby={orderByDescendingNames} desc&");
+            _queryBuilder.Append($"$orderby={entityOrderByDescendingQuery} desc&");
 
             return this;
         }

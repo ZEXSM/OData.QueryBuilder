@@ -4,6 +4,6 @@
     {
         public int IdKind { get; set; }
 
-        public ODataCodeEntity Code { get; set; }
+        public ODataCodeEntity ODataCode { get; set; }
     }
 }

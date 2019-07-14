@@ -1,9 +1,8 @@
-﻿using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Builders.Nested;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Functions;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 
 namespace OData.QueryBuilder.Parameters
@@ -15,111 +14,67 @@ namespace OData.QueryBuilder.Parameters
         public ODataQueryParameterList(StringBuilder queryBuilder) =>
             _queryBuilder = queryBuilder;
 
-        public IODataQueryParameterList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> queryFilter)
+        public IODataQueryParameterList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> entityFilter)
         {
-            var odataQueryFilter = queryFilter.Body.ToODataQuery(string.Empty);
-            _queryBuilder.Append($"$filter={odataQueryFilter}&");
+            var entityFilterQuery = entityFilter.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$filter={entityFilterQuery}&");
 
             return this;
         }
 
-        public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> queryExpand)
+        public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {
-            var expandNames = default(string);
+            var entityFilterQuery = entityFilter.Body.ToODataQuery(string.Empty);
 
-            switch (queryExpand.Body)
-            {
-                case MemberExpression memberExpression:
-                    expandNames = memberExpression.ToODataQuery();
-                    break;
-
-                case NewExpression newExpression:
-                    expandNames = newExpression.ToODataQuery();
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Выражение {queryExpand.Body.GetType().Name} не поддерживается.");
-            }
-
-            _queryBuilder.Append($"$expand={expandNames}&");
+            _queryBuilder.Append($"$filter={entityFilterQuery}&");
 
             return this;
         }
 
-        public IODataQueryParameterList<TEntity> Expand(Expression<Func<IODataQueryNestedParameter<TEntity>, TEntity, object>> entityExpand)
+        public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            throw new NotImplementedException();
-        }
+            var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
 
-        public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> querySelect)
-        {
-            var selectNames = default(string);
-
-            switch (querySelect.Body)
-            {
-                case UnaryExpression unaryExpression:
-                    selectNames = unaryExpression.ToODataQuery();
-                    break;
-
-                case MemberExpression memberExpression:
-                    selectNames = memberExpression.ToODataQuery();
-                    break;
-
-                case NewExpression newExpression:
-                    selectNames = newExpression.ToODataQuery();
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Выражение {querySelect.Body.GetType().Name} не поддерживается.");
-            }
-
-            _queryBuilder.Append($"$select={selectNames}&");
+            _queryBuilder.Append($"$expand={entityExpandQuery}&");
 
             return this;
         }
 
-        public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> queryOrderBy)
+        public IODataQueryParameterList<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested)
         {
-            var orderByNames = default(string);
+            var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
 
-            switch (queryOrderBy.Body)
-            {
-                case UnaryExpression unaryExpression:
-                    orderByNames = unaryExpression.ToODataQuery();
-                    break;
+            entityExpandNested(odataQueryNestedBuilder);
 
-                case NewExpression newExpression:
-                    orderByNames = newExpression.ToODataQuery();
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Выражение {queryOrderBy.Body.GetType().Name} не поддерживается.");
-            }
-
-            _queryBuilder.Append($"$orderby={orderByNames} asc&");
+            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}&");
 
             return this;
         }
 
-        public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> queryOrderByDescending)
+        public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var orderByDescendingNames = default(string);
+            var entitySelectQuery = entitySelect.Body.ToODataQuery(string.Empty);
 
-            switch (queryOrderByDescending.Body)
-            {
-                case UnaryExpression unaryExpression:
-                    orderByDescendingNames = unaryExpression.ToODataQuery();
-                    break;
+            _queryBuilder.Append($"$select={entitySelectQuery}&");
 
-                case NewExpression newExpression:
-                    orderByDescendingNames = newExpression.ToODataQuery();
-                    break;
+            return this;
+        }
 
-                default:
-                    throw new NotSupportedException($"Выражение {queryOrderByDescending.Body.GetType().Name} не поддерживается.");
-            }
+        public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
+        {
+            var entityOrderByQuery = entityOrderBy.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"$orderby={orderByDescendingNames} desc&");
+            _queryBuilder.Append($"$orderby={entityOrderByQuery} asc&");
+
+            return this;
+        }
+
+        public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
+        {
+            var entityOrderByDescendingQuery = entityOrderByDescending.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$orderby={entityOrderByDescendingQuery} desc&");
 
             return this;
         }

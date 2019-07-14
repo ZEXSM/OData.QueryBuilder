@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Builders.Nested;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Functions;
 using System;
 using System.Linq.Expressions;
@@ -22,11 +23,31 @@ namespace OData.QueryBuilder.Parameters
             return this;
         }
 
+        public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
+        {
+            var entityFilterQuery = entityFilter.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$filter={entityFilterQuery}&");
+
+            return this;
+        }
+
         public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
             var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
 
             _queryBuilder.Append($"$expand={entityExpandQuery}&");
+
+            return this;
+        }
+
+        public IODataQueryParameterList<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested)
+        {
+            var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
+
+            entityExpandNested(odataQueryNestedBuilder);
+
+            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}&");
 
             return this;
         }

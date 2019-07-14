@@ -27,7 +27,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
             entityExpandNested(odataQueryNestedBuilder);
 
-            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}");
+            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query};");
 
             return this;
         }

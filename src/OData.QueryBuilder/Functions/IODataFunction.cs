@@ -6,8 +6,8 @@ namespace OData.QueryBuilder.Functions
     {
         string Date(DateTime date);
 
-        string All();
+        bool All();
 
-        string Any();
+        bool Any();
     }
 }

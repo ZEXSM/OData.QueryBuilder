@@ -99,7 +99,7 @@ namespace OData.QueryBuilder.Extensions
 
                 case MethodCallExpression methodCallExpression:
                     var methodName = methodCallExpression.Method.Name;
-                    var methodParameters = methodCallExpression.Arguments[0].ToODataQuery(queryString);
+                    var methodParameters = methodCallExpression.Arguments[0]?.ToODataQuery(queryString);
 
                     if (methodName == nameof(string.Contains))
                     {

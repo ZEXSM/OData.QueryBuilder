@@ -120,6 +120,21 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3 or IdType eq 5");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter All/Any => Success")]
+        public void ODataQueryBuilderList_Filter_All_Any_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s =>
+                    s.ODataKind.ODataCodes.Any(v => v.IdCode == 1)
+                    &&
+                    s.ODataKind.ODataCodes.All(v => v.IdCode == 2))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Items/all(a:a/Active)");
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderList) Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {

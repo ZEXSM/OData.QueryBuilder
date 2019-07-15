@@ -5,5 +5,7 @@
         public int IdKind { get; set; }
 
         public ODataCodeEntity ODataCode { get; set; }
+
+        public ODataCodeEntity[] ODataCodes { get; set; }
     }
 }

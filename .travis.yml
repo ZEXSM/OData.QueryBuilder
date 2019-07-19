@@ -2,13 +2,14 @@ language: csharp
 sudo: required
 dist: trusty
 mono: none
-dotnet: 2.1
+dotnet: $DOTNET_SDK_VERSION
 before_script:
     - dotnet restore
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
-    - dotnet pack -c $CONFIGURATION -p:PackageVersion=$VERSION
-before_deploy: echo $TRAVIS_BUILD_NUMBER $CONFIGURATION $VERSION $GITHUB_OAUTH_TOKEN $NUGET_API_KEY $NUGET_SOURCE
+after_success:
+    - dotnet pack -c $CONFIGURATION -p:PackageVersion=$DEFAULT_PACKAGE_VERSION
+# before_deploy: echo $TRAVIS_BUILD_NUMBER $CONFIGURATION $DEFAULT_PACKAGE_VERSION $GITHUB_OAUTH_TOKEN $NUGET_API_KEY $NUGET_SOURCE
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN

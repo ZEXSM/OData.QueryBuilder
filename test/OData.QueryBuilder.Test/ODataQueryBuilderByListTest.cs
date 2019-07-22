@@ -147,7 +147,10 @@ namespace OData.QueryBuilder.Test
                 .Expand(s => new { s.ODataKind })
                 .Filter(s =>
                     (s.IdType < constValue && s.ODataKind.ODataCode.IdCode >= 3)
-                    || s.IdType == 5)
+                    || s.IdType == 5
+                    && s.IdRule != default(int?)
+                    && s.IdRule == null
+                    )
                 .Select(s => new { s.ODataKind, s.Sum })
                 .OrderBy(s => new { s.IdType })
                 .OrderByDescending(s => s.IdType)
@@ -156,7 +159,7 @@ namespace OData.QueryBuilder.Test
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Function Date => Success")]

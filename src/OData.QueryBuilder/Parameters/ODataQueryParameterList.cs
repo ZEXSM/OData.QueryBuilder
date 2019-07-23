@@ -1,6 +1,5 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
 using OData.QueryBuilder.Extensions;
-using OData.QueryBuilder.Functions;
 using System;
 using System.Linq.Expressions;
 using System.Text;
@@ -13,15 +12,6 @@ namespace OData.QueryBuilder.Parameters
 
         public ODataQueryParameterList(StringBuilder queryBuilder) =>
             _queryBuilder = queryBuilder;
-
-        public IODataQueryParameterList<TEntity> Filter(Expression<Func<IODataFunction, TEntity, bool>> entityFilter)
-        {
-            var entityFilterQuery = entityFilter.Body.ToODataQuery(string.Empty);
-
-            _queryBuilder.Append($"$filter={entityFilterQuery}&");
-
-            return this;
-        }
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {

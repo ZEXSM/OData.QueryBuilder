@@ -120,22 +120,35 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3 or IdType eq 5");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter All/Any => Success")]
+        public void ODataQueryBuilderList_Filter_All_Any_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.ODataKind.ODataCodes.Any(v => v.IdCode == 1)
+                    && s.ODataKind.ODataCodes.All(v => v.IdActive))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdActive)");
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderList) Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {
             var constValue = 2;
             var constCurrentDate = DateTime.Today.ToString("yyyy-MM-dd");
-            var constIds = new[] { "123", "512", "4755" }.ToList();
 
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Expand(s => new { s.ODataKind })
-                .Filter((f, s) =>
+                .Filter(s =>
                     (s.IdType < constValue && s.ODataKind.ODataCode.IdCode >= 3)
                     || s.IdType == 5
-                    && f.Date(s.Open) == constCurrentDate
-                    && constIds.Contains(s.TypeCode))
+                    && s.IdRule != default(int?)
+                    && s.IdRule == null
+                    )
                 .Select(s => new { s.ODataKind, s.Sum })
                 .OrderBy(s => new { s.IdType })
                 .OrderByDescending(s => s.IdType)
@@ -144,7 +157,49 @@ namespace OData.QueryBuilder.Test
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and TypeCode in ('123','512','4755')&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Function Date => Success")]
+        public void ODataQueryBuilderList_Function_Date_Success()
+        {
+            var constCurrentDateToday = new DateTime(2019, 2, 9);
+            var constCurrentDateNow = new DateTime(2019, 2, 9, 1, 2, 4);
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { EndDate = constCurrentDateToday } };
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s =>
+                    s.ODataKind.OpenDate.Date == constCurrentDateNow
+                    && s.ODataKind.OpenDate == constCurrentDateToday
+                    && s.ODataKind.OpenDate == DateTime.Today
+                    && s.Open.Date == DateTime.Today
+                    && s.Open == DateTime.Today
+                    && s.Open == constCurrentDateToday
+                    && s.Open.Date == newObject.ODataKind.EndDate
+                    && s.ODataKind.OpenDate.Date == new DateTime(2019, 7, 9))
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq {DateTime.Today.ToString("O")} and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and Open eq {DateTime.Today.ToString("O")} and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN => Success")]
+        public void ODataQueryBuilderList_Operator_In_Success()
+        {
+            var constStrIds = new[] { "123", "512" }.ToList();
+            var constIntIds = new[] { 123, 512 }.ToList();
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntIds } };
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
+                    && constIntIds.Contains(s.IdType)
+                    && newObject.ODataKind.Sequence.Contains(s.IdType))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512)");
         }
     }
 }

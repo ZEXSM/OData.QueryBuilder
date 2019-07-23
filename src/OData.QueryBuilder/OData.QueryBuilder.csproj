@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
+    <IsPackable>true</IsPackable>
     <TargetFramework>netstandard1.3</TargetFramework>
+    <NuspecFile>bin\$(Configuration)\$(TargetFramework)\OData.QueryBuilder.nuspec</NuspecFile>
+    <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
   </PropertyGroup>
-
+  <ItemGroup>
+    <None Update="OData.QueryBuilder.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

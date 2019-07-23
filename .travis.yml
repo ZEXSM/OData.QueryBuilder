@@ -3,6 +3,9 @@ sudo: required
 dist: trusty
 mono: none
 dotnet: 2.1.502
+branches:
+  only:
+  - master
 before_script:
     - dotnet restore
 script:
@@ -10,8 +13,8 @@ script:
 before_deploy: 
 #   - git <get tag master branch> || <$DEFAULT_PACKAGE_VERSION>
 #   - git <set new tag for master branch>
-#   - export NEW_TAG = <new tag>
-    - dotnet pack -c $CONFIGURATION -p:PackageVersion=$NEW_TAG||$DEFAULT_PACKAGE_VERSION
+    - export PACKAGE_VERSION=${NEW_TAG:-$DEFAULT_PACKAGE_VERSION}
+    - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN

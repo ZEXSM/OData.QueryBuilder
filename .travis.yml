@@ -9,10 +9,10 @@ script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 # after_success:
 before_deploy: 
-    - git <получить tag master ветки> || <$DEFAULT_PACKAGE_VERSION>
-    - git <установить новый tag на master ветку>
-    - export NEW_TAG = <новый tag>
-    - dotnet pack -c $CONFIGURATION -p:PackageVersion=;NEW_TAG || $DEFAULT_PACKAGE_VERSION
+    #- git <получить tag master ветки> || <$DEFAULT_PACKAGE_VERSION>
+    #- git <установить новый tag на master ветку>
+    #- export NEW_TAG = <новый tag>
+    - dotnet pack -c $CONFIGURATION -p:PackageVersion=$NEW_TAG||$DEFAULT_PACKAGE_VERSION
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN

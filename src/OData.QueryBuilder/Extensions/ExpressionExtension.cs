@@ -83,7 +83,7 @@ namespace OData.QueryBuilder.Extensions
             return string.Join(",", names);
         }
 
-        public static string FunctionDateToODataQuery(this BinaryExpression binaryExpression)
+        public static string ToODataQueryFunctionDate(this BinaryExpression binaryExpression)
         {
             if (binaryExpression.Left.Type.Name == nameof(DateTime) || binaryExpression.Left.Type.Name == nameof(DateTimeOffset))
             {
@@ -139,7 +139,7 @@ namespace OData.QueryBuilder.Extensions
             switch (expression)
             {
                 case BinaryExpression binaryExpression:
-                    var funcDateQuery = binaryExpression.FunctionDateToODataQuery();
+                    var funcDateQuery = binaryExpression.ToODataQueryFunctionDate();
                     if (!string.IsNullOrEmpty(funcDateQuery))
                     {
                         return funcDateQuery;

@@ -7,18 +7,17 @@ before_script:
     - dotnet restore
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
-# after_success:
 before_deploy: 
-    #- git <get tag master branch> || <$DEFAULT_PACKAGE_VERSION>
-    #- git <set new tag for master branch>
-    #- export NEW_TAG = <new tag>
+#   - git <get tag master branch> || <$DEFAULT_PACKAGE_VERSION>
+#   - git <set new tag for master branch>
+#   - export NEW_TAG = <new tag>
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$NEW_TAG||$DEFAULT_PACKAGE_VERSION
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN
     skip_cleanup: true
     on:
-        tags: true
+#       tags: true
         branch: master
 #after_deploy:
     #- dotnet nuget push OData.QueryBuilder.$VERSION.nupkg -k $NUGET_API_KEY  -s $NUGET_SOURCE

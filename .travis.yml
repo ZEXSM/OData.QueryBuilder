@@ -8,8 +8,7 @@ before_script:
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 before_deploy: 
-    - echo $TRAVIS_TAG
-    - export PACKAGE_VERSION=${TRAVIS_TAG:-$DEFAULT_PACKAGE_VERSION}
+    - export PACKAGE_VERSION=${NEW_TAG:-$DEFAULT_PACKAGE_VERSION}
     - git tag -a v$PACKAGE_VERSION
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
 deploy:
@@ -19,5 +18,5 @@ deploy:
     on:
 #        tags: true
         branch: master
-#after_deploy:
-#    - dotnet nuget push OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY  -s $NUGET_SOURCE
+after_deploy:
+    - dotnet nuget push OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY  -s $NUGET_SOURCE

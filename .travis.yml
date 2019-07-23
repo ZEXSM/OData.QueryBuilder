@@ -11,13 +11,11 @@ before_deploy:
     - git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - git fetch && git checkout origin/master
     - git tag --list
-    - git remote show origin
 #    - export LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
 #    - export VERSION_ARRAY=( ${LAST_TAG//./ } )
 #    - export CURRENT_TAG=${VERSION_ARRAY[0]}.${VERSION_ARRAY[1]}.$((${VERSION_ARRAY[2]}+1))
     - export PACKAGE_VERSION=${CURRENT_TAG:-$DEFAULT_PACKAGE_VERSION}
-    - git tag v$PACKAGE_VERSION
-    - git push origin --tags
+    - git tag v$PACKAGE_VERSION && git push origin v$PACKAGE_VERSION   
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
 deploy:
     provider: releases
@@ -28,4 +26,4 @@ deploy:
 #        tags: true
         branch: master
 after_deploy:
-    - dotnet nuget push OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE
+    - dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE

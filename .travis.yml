@@ -5,7 +5,8 @@ mono: none
 dotnet: 2.1.502
 branches:
   only:
-  - master
+    - /^release-.*$/
+    - master
 before_script:
     - dotnet restore
 script:
@@ -14,12 +15,13 @@ before_deploy:
     - export PACKAGE_VERSION=${TRAVIS_TAG:-$DEFAULT_PACKAGE_VERSION}
     - git tag -a v$PACKAGE_VERSION
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
+    - echo $TRAVIS_TAG
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN
     skip_cleanup: true
     on:
-        tags: true
+#        tags: true
         branch: master
 #after_deploy:
 #    - dotnet nuget push OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY  -s $NUGET_SOURCE

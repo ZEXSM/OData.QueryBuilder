@@ -7,6 +7,23 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionExtension
     {
+        public static object GetMemberExpressionValue(this MemberExpression memberExpression)
+        {
+            if (memberExpression.Expression is ConstantExpression)
+            {
+                var constantValue = (memberExpression.Expression as ConstantExpression).Value;
+                return memberExpression.Member.GetValue(constantValue);
+            }
+
+            if (memberExpression.Expression is MemberExpression)
+            {
+                var memberValue = GetMemberExpressionValue(memberExpression.Expression as MemberExpression);
+                return memberExpression.Member.GetValue(memberValue);
+            }
+
+            return memberExpression.Member.GetValue(default(object));
+        }
+
         public static string ToODataOperator(this ExpressionType expressionType)
         {
             switch (expressionType)
@@ -85,11 +102,12 @@ namespace OData.QueryBuilder.Extensions
                                 var rightQueryNew = ((DateTime)rightNewExpression.Constructor
                                     .Invoke(rightNewExpression.Arguments.Select(s => ((ConstantExpression)s).Value).ToArray()))
                                     .ToString("yyyy-MM-dd");
+
                                 return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryNew}";
                             case MemberExpression rightMemberExpression:
-                                var rightMemberQuery = ((DateTime)rightMemberExpression.Member
-                                    .GetValue((rightMemberExpression?.Expression as ConstantExpression)?.Value))
+                                var rightMemberQuery = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("yyyy-MM-dd");
+
                                 return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightMemberQuery}";
                         }
                     }
@@ -101,13 +119,11 @@ namespace OData.QueryBuilder.Extensions
                         {
                             case UnaryExpression rightUnaryExpression:
                                 var memberExpression = rightUnaryExpression.Operand as MemberExpression;
-                                var rightQueryUnary = ((DateTime)memberExpression.Member
-                                    .GetValue((memberExpression?.Expression as ConstantExpression)?.Value))
+                                var rightQueryUnary = ((DateTime)memberExpression.GetMemberExpressionValue())
                                     .ToString("O");
                                 return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryUnary}";
                             case MemberExpression rightMemberExpression:
-                                var rightQueryMember = ((DateTime)rightMemberExpression.Member
-                                    .GetValue((rightMemberExpression?.Expression as ConstantExpression)?.Value))
+                                var rightQueryMember = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("O");
                                 return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryMember}";
                         }
@@ -137,8 +153,7 @@ namespace OData.QueryBuilder.Extensions
                 case MemberExpression memberExpression:
                     if (memberExpression.Expression is ConstantExpression)
                     {
-                        var valueConstantExpression = memberExpression.Member.GetValue(((ConstantExpression)memberExpression.Expression).Value);
-                        return valueConstantExpression.ToString();
+                        return memberExpression.GetMemberExpressionValue().ToString();
                     }
 
                     var parentMemberExpressionQuery = memberExpression.Expression.ToODataQuery(queryString);
@@ -171,8 +186,7 @@ namespace OData.QueryBuilder.Extensions
 
                         if (methodCallExpression.Object is MemberExpression)
                         {
-                            var objectMemberExpression = methodCallExpression.Object as MemberExpression;
-                            resource = objectMemberExpression.Member.GetValue(((ConstantExpression)objectMemberExpression.Expression).Value);
+                            resource = (methodCallExpression.Object as MemberExpression).GetMemberExpressionValue();
 
                             var filter = memberExpression.ToODataQuery(queryString);
 
@@ -189,11 +203,7 @@ namespace OData.QueryBuilder.Extensions
 
                         if (memberExpression.Expression is MemberExpression)
                         {
-                            var memberExpressionChild = memberExpression.Expression as MemberExpression;
-                            var c = (memberExpressionChild.Expression as ConstantExpression).Value;
-
-                            var t = memberExpressionChild.Member.GetValue(c);
-                            resource = memberExpression.Member.GetValue(t);
+                            resource = GetMemberExpressionValue(memberExpression);
 
                             var filter = methodCallExpression.Arguments[1]?.ToODataQuery(queryString);
 

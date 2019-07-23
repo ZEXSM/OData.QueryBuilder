@@ -10,6 +10,7 @@ namespace OData.QueryBuilder.Test.Fakes
         public ODataCodeEntity ODataCode { get; set; }
 
         public DateTimeOffset OpenDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public ODataCodeEntity[] ODataCodes { get; set; }
 

@@ -126,13 +126,11 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter(s =>
-                    s.ODataKind.ODataCodes.Any(v => v.IdCode == 1)
-                    &&
-                    s.ODataKind.ODataCodes.All(v => v.IdCode == 2))
+                .Filter(s => s.ODataKind.ODataCodes.Any(v => v.IdCode == 1)
+                    && s.ODataKind.ODataCodes.All(v => v.IdActive))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdCode eq 2)");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdActive)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
@@ -167,6 +165,7 @@ namespace OData.QueryBuilder.Test
         {
             var constCurrentDateToday = new DateTime(2019, 2, 9);
             var constCurrentDateNow = new DateTime(2019, 2, 9, 1, 2, 4);
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { EndDate = constCurrentDateToday } };
 
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -178,29 +177,29 @@ namespace OData.QueryBuilder.Test
                     && s.Open.Date == DateTime.Today
                     && s.Open == DateTime.Today
                     && s.Open == constCurrentDateToday
-                    && s.Open.Date == constCurrentDateNow
+                    && s.Open.Date == newObject.ODataKind.EndDate
                     && s.ODataKind.OpenDate.Date == new DateTime(2019, 7, 9))
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq {DateTime.Today.ToString("O")} and date(Open) eq 2019-07-22 and Open eq {DateTime.Today.ToString("O")} and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq {DateTime.Today.ToString("O")} and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and Open eq {DateTime.Today.ToString("O")} and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN => Success")]
-        public void ODataQueryBuilderList_Functions_Success()
+        public void ODataQueryBuilderList_Operator_In_Success()
         {
             var constStrIds = new[] { "123", "512" }.ToList();
             var constIntIds = new[] { 123, 512 }.ToList();
-            var newObject = new ODataKindEntity { Sequence = constIntIds };
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntIds } };
 
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter(s => constStrIds.Contains(s.TypeCode)
+                .Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
                     && constIntIds.Contains(s.IdType)
-                    && newObject.Sequence.Contains(s.IdType))
+                    && newObject.ODataKind.Sequence.Contains(s.IdType))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=TypeCode in ('123','512') and IdType in (123,512) and IdType in (123,512)");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512)");
         }
     }
 }

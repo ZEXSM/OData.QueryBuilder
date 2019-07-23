@@ -4,7 +4,7 @@
     <id>OData.QueryBuilder</id>
     <!--Версия переопределяется в файле проекта-->
     <version>0.0.0</version>
-    <description>Библиотека для сборки OData запроса</description>
+    <description>Библиотека позволяющая собрать OData запрос на основе модели данных</description>
     <language>ru-RU</language>
     <authors>Borisov Zakhar</authors>
     <owners>Borisov Zakhar</owners>
@@ -13,7 +13,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <repositoryType>git</repositoryType>
     <repositoryUrl>https://github.com/ZEXSM/OData.QueryBuilder</repositoryUrl>
-    <tags>odata, dotnet, charp</tags>
+    <tags>odata, uri, bilder, dotnet, charp</tags>
   </metadata>
 
   <files>

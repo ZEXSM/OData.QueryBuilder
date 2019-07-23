@@ -3,19 +3,15 @@ sudo: required
 dist: trusty
 mono: none
 dotnet: 2.1.502
-branches:
-  only:
-    - /^release-.*$/
-    - master
 before_script:
     - dotnet restore
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 before_deploy: 
+    - echo $TRAVIS_TAG
     - export PACKAGE_VERSION=${TRAVIS_TAG:-$DEFAULT_PACKAGE_VERSION}
     - git tag -a v$PACKAGE_VERSION
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
-    - echo $TRAVIS_TAG
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN

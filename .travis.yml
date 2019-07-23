@@ -20,6 +20,7 @@ deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN
     skip_cleanup: true
+    repo: ZEXSM/OData.QueryBuilder
     on:
 #        tags: true
         branch: master

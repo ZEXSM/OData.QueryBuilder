@@ -8,13 +8,13 @@ before_script:
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 before_deploy: 
-    - git checkout origin/master
-    - export LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    - export VERSION_ARRAY=(${LAST_TAG//./})
-    - export CURRENT_TAG=${VERSION_ARRAY[0]}.${VERSION_ARRAY[1]}.${VERSION_ARRAY[2]}
+    - git fetch && git checkout origin/master
+    - export LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
+    - export VERSION_ARRAY=( ${LAST_TAG//./ } )
+    - export CURRENT_TAG=${VERSION_ARRAY[0]}.${VERSION_ARRAY[1]}.$((${VERSION_ARRAY[2]}+1))
     - export PACKAGE_VERSION=${CURRENT_TAG:-$DEFAULT_PACKAGE_VERSION}
-    - git tag v$PACKAGE_VERSION -a
-    - git push origin --tags
+    - git tag -a v$PACKAGE_VERSION
+    - git push origin v$PACKAGE_VERSION
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
 deploy:
     provider: releases

@@ -8,15 +8,20 @@ before_script:
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 before_deploy: 
-    - export PACKAGE_VERSION=${NEW_TAG:-$DEFAULT_PACKAGE_VERSION}
-    - git tag -a v$PACKAGE_VERSION
+    - git checkout origin/master
+    - export LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    - export VERSION_ARRAY=(${LAST_TAG//./})
+    - echo ${a[0]}.${a[1]}.${a[2]}
+    - export PACKAGE_VERSION=${CURRENT_TAG:-$DEFAULT_PACKAGE_VERSION}
+    - git tag v$PACKAGE_VERSION -a
+    - git push origin --tags
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
 deploy:
     provider: releases
     api_key: $GITHUB_OAUTH_TOKEN
     skip_cleanup: true
     on:
-#        tags: true
+        tags: true
         branch: master
 after_deploy:
-    - dotnet nuget push OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY  -s $NUGET_SOURCE
+    - dotnet nuget push OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE

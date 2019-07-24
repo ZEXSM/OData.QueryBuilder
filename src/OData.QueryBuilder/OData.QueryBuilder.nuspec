@@ -8,7 +8,7 @@
     <language>ru-RU</language>
     <authors>Borisov Zakhar</authors>
     <owners>Borisov Zakhar</owners>
-    <projectUrl>https://github.com/ZEXSM/OData.QueryBuilde</projectUrl>
+    <projectUrl>https://github.com/ZEXSM/OData.QueryBuilder</projectUrl>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <repositoryType>git</repositoryType>

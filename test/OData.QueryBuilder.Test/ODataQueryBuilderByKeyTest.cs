@@ -71,5 +71,23 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum");
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested Filter => Success")]
+        public void ODataQueryBuilderKey_Expand_Nested_Filter_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Filter(s => s.IdKind == 1)
+                        .Select(s => s.IdKind);
+                })
+                .Select(s => new { s.IdType, s.Sum })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
+        }
     }
 }

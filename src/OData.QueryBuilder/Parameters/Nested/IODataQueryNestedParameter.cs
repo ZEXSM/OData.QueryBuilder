@@ -10,6 +10,8 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         IODataQueryNestedParameter<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand);
 
+        IODataQueryNestedParameter<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter);
+
         IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect);
     }
 }

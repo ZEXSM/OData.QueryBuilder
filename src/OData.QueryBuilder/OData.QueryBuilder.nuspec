@@ -8,14 +8,13 @@
     <language>ru-RU</language>
     <authors>Borisov Zakhar</authors>
     <owners>Borisov Zakhar</owners>
-    <projectUrl>https://www.nuget.org/packages/OData.QueryBuilder</projectUrl>
+    <projectUrl>https://github.com/ZEXSM/OData.QueryBuilde</projectUrl>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <repositoryType>git</repositoryType>
     <repositoryUrl>https://github.com/ZEXSM/OData.QueryBuilder</repositoryUrl>
     <tags>odata, uri, bilder, dotnet, charp</tags>
   </metadata>
-
   <files>
     <file src="OData.QueryBuilder.dll" target="lib\netstandard1.3" />
   </files>

@@ -10,11 +10,12 @@ before_script:
     - dotnet restore
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
+after_success:
+    - ./coverage-code.sh
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - export LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
     - export CURRENT_TAG=$(echo $LAST_TAG | cut -d. -f 1).$(echo $LAST_TAG | cut -d. -f 2).$(($(echo $LAST_TAG | cut -d. -f 3)+1))
-    - echo $VERSION_ARRAY
     - export PACKAGE_VERSION=${CURRENT_TAG:-$DEFAULT_PACKAGE_VERSION}
     - git tag v$PACKAGE_VERSION && git push origin v$PACKAGE_VERSION   
     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION

@@ -25,5 +25,5 @@ deploy:
     repo: ZEXSM/OData.QueryBuilder
     on:
         branch: master
-after_deploy:
-    - dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE
+#after_deploy:
+#    - dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE

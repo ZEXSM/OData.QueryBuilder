@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.com/ZEXSM/OData.QueryBuilder.svg?branch=master)](https://travis-ci.com/ZEXSM/OData.QueryBuilder)
 [![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)
+[![Nuget](https://img.shields.io/nuget/dt/OData.QueryBuilder.svg)](https://www.nuget.org/packages/OData.QueryBuilder)
 
 ## Установка
 Чтобы установить `OData.QueryBuilder` из `Visual Studio`, найдите `OData.QueryBuilder` в пользовательском интерфейсе диспетчера пакетов `NuGet` или выполните следующую команду в консоли диспетчера пакетов:

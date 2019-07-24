@@ -32,6 +32,15 @@ namespace OData.QueryBuilder.Parameters.Nested
             return this;
         }
 
+        public IODataQueryNestedParameter<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter)
+        {
+            var entityNestedFilterQuery = entityNestedFilter.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$filter={entityNestedFilterQuery};");
+
+            return this;
+        }
+
         public IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entitySelectNested)
         {
             var entitySelectNestedQuery = entitySelectNested.Body.ToODataQuery(string.Empty);

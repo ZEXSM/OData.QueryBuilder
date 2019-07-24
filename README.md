@@ -1,41 +1,41 @@
 # OData.QueryBuilder
-Библиотека позволяющая собрать OData запрос на основе модели данных
+Р‘РёР±Р»РёРѕС‚РµРєР° РїРѕР·РІРѕР»СЏСЋС‰Р°СЏ СЃРѕР±СЂР°С‚СЊ OData Р·Р°РїСЂРѕСЃ РЅР° РѕСЃРЅРѕРІРµ РјРѕРґРµР»Рё РґР°РЅРЅС‹С…
 
 [![Build Status](https://travis-ci.com/ZEXSM/OData.QueryBuilder.svg?branch=master)](https://travis-ci.com/ZEXSM/OData.QueryBuilder)
 [![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)
 
-## Установка
-Чтобы установить `OData.QueryBuilder` из `Visual Studio`, найдите `OData.QueryBuilder` в пользовательском интерфейсе диспетчера пакетов `NuGet` или выполните следующую команду в консоли диспетчера пакетов:
+## РЈСЃС‚Р°РЅРѕРІРєР°
+Р§С‚РѕР±С‹ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ `OData.QueryBuilder` РёР· `Visual Studio`, РЅР°Р№РґРёС‚Рµ `OData.QueryBuilder` РІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕРј РёРЅС‚РµСЂС„РµР№СЃРµ РґРёСЃРїРµС‚С‡РµСЂР° РїР°РєРµС‚РѕРІ `NuGet` РёР»Рё РІС‹РїРѕР»РЅРёС‚Рµ СЃР»РµРґСѓСЋС‰СѓСЋ РєРѕРјР°РЅРґСѓ РІ РєРѕРЅСЃРѕР»Рё РґРёСЃРїРµС‚С‡РµСЂР° РїР°РєРµС‚РѕРІ:
 ```
 Install-Package OData.QueryBuilder -Version 1.0.0
 ```
 
-Чтобы добавить ссылку на основной проект `dotnet`, выполните в командной строке следующее:
+Р§С‚РѕР±С‹ РґРѕР±Р°РІРёС‚СЊ СЃСЃС‹Р»РєСѓ РЅР° РѕСЃРЅРѕРІРЅРѕР№ РїСЂРѕРµРєС‚ `dotnet`, РІС‹РїРѕР»РЅРёС‚Рµ РІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРµ СЃР»РµРґСѓСЋС‰РµРµ:
 
 ```
 dotnet add -v 1.0.0 OData.QueryBuilder
 ```
 
-## Использование
+## РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ
 
-1. Создать экземпляр билдера
+1. РЎРѕР·РґР°С‚СЊ СЌРєР·РµРјРїР»СЏСЂ Р±РёР»РґРµСЂР°
 
-    Преждем чем начать строить `OData` запрос, необходимо создать новый экземпляр объекта `OData.QueryBuilder` с указанием модели данных и базового пути:
-
-    ```charp
-    var odataQueryBuilder = new ODataQueryBuilder<Модель данных сущностей>(<base_url>);
-    ```
-
-2. Указать ресурс для которого будет строиться запрос
+    РџСЂРµР¶РґРµРј С‡РµРј РЅР°С‡Р°С‚СЊ СЃС‚СЂРѕРёС‚СЊ `OData` Р·Р°РїСЂРѕСЃ, РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕР·РґР°С‚СЊ РЅРѕРІС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РѕР±СЉРµРєС‚Р° `OData.QueryBuilder` СЃ СѓРєР°Р·Р°РЅРёРµРј РјРѕРґРµР»Рё РґР°РЅРЅС‹С… Рё Р±Р°Р·РѕРІРѕРіРѕ РїСѓС‚Рё:
 
     ```charp
-    odataQueryBuilder.For<Модель сущности>(s => s.<ресурс>)
+    var odataQueryBuilder = new ODataQueryBuilder<РњРѕРґРµР»СЊ РґР°РЅРЅС‹С… СЃСѓС‰РЅРѕСЃС‚РµР№>(<base_url>);
     ```
 
-3. Выборать тип запроса
+2. РЈРєР°Р·Р°С‚СЊ СЂРµСЃСѓСЂСЃ РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ Р±СѓРґРµС‚ СЃС‚СЂРѕРёС‚СЊСЃСЏ Р·Р°РїСЂРѕСЃ
 
-    Билдер позволяет строить запросы по ключу и списку.
-    * ByKey(<ключ>)
+    ```charp
+    odataQueryBuilder.For<РњРѕРґРµР»СЊ СЃСѓС‰РЅРѕСЃС‚Рё>(s => s.<СЂРµСЃСѓСЂСЃ>)
+    ```
+
+3. Р’С‹Р±РѕСЂР°С‚СЊ С‚РёРї Р·Р°РїСЂРѕСЃР°
+
+    Р‘РёР»РґРµСЂ РїРѕР·РІРѕР»СЏРµС‚ СЃС‚СЂРѕРёС‚СЊ Р·Р°РїСЂРѕСЃС‹ РїРѕ РєР»СЋС‡Сѓ Рё СЃРїРёСЃРєСѓ.
+    * ByKey(<РєР»СЋС‡>)
       * Expand
       * Select
       * ToUri 
@@ -49,15 +49,15 @@ dotnet add -v 1.0.0 OData.QueryBuilder
       * Skip
       * Count
       * ToUri 
-4. Получить Uri запроса от билдера
+4. РџРѕР»СѓС‡РёС‚СЊ Uri Р·Р°РїСЂРѕСЃР° РѕС‚ Р±РёР»РґРµСЂР°
     ```charp
     odataQueryBuilder.ToUri()
     ```
 
-## Примеры
+## РџСЂРёРјРµСЂС‹
 
-#### ByKey - по ключу
-1. Запрос по ключу с простым `Expand`
+#### ByKey - РїРѕ РєР»СЋС‡Сѓ
+1. Р—Р°РїСЂРѕСЃ РїРѕ РєР»СЋС‡Сѓ СЃ РїСЂРѕСЃС‚С‹Рј `Expand`
 ```charp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
@@ -67,7 +67,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > http://mock/odata/ODataType(223123123)?$expand=ODataKind
 
-2. Запрос по ключу с вложенными `Expand` и `Select`
+2. Р—Р°РїСЂРѕСЃ РїРѕ РєР»СЋС‡Сѓ СЃ РІР»РѕР¶РµРЅРЅС‹РјРё `Expand` Рё `Select`
 ```charp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
@@ -87,8 +87,8 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum
 
-#### ByList - по списку
-1. Запрос по списку с простым `Expand`
+#### ByList - РїРѕ СЃРїРёСЃРєСѓ
+1. Р—Р°РїСЂРѕСЃ РїРѕ СЃРїРёСЃРєСѓ СЃ РїСЂРѕСЃС‚С‹Рј `Expand`
 ```charp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)

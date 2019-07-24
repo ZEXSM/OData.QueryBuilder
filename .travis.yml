@@ -24,7 +24,6 @@ deploy:
     skip_cleanup: true
     repo: ZEXSM/OData.QueryBuilder
     on:
-        tags: true
         branch: master
 after_deploy:
     - dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE

@@ -12,7 +12,17 @@ before_script:
 script:
     - dotnet build
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
-    - ./coverage-code.sh
+after_success:
+    - cd /src/OData.QueryBuilder
+    - dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/${CONFIGURATION}/**/*.dll --sources src/**/*.cs
+    - dotnet minicover reset --workdir ../../coverage
+    - cd ../../
+    - dotnet test --no-build test/**/*.csproj
+    - cd /src/OData.QueryBuilder
+    - dotnet minicover uninstrument --workdir ../../coverage
+    - dotnet minicover report --workdir ../../coverage
+    - dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID
+    - cd ../../
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - export LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)

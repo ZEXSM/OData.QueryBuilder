@@ -36,7 +36,7 @@ dotnet add -v 1.0.0 OData.QueryBuilder
 3. Select request type
 
     The builder allows you to build queries on the key and the list:
-    * ByKey(<ключ>)
+    * ByKey(<Key>)
       * Expand
       * Select
       * ToUri 

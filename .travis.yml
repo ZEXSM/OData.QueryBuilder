@@ -1,5 +1,5 @@
 language: csharp 
-sudo: false
+sudo: required
 dist: trusty
 mono: none
 dotnet: 2.1.502
@@ -11,7 +11,7 @@ before_script:
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 after_script:
-    - bash coverage-code.sh
+    - bash ./coverage-code.sh
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - export LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)

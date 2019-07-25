@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 cd src/OData.QueryBuilder \
-    && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/${CONFIGURATION}/**/*.dll --sources src/**/*.cs \
+    && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs \
     && dotnet minicover reset --workdir ../../coverage
 dotnet test --no-build ./test/OData.QueryBuilder.Test
 cd src/OData.QueryBuilder \

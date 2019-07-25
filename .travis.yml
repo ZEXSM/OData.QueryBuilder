@@ -1,6 +1,7 @@
 language: csharp 
 sudo: false
 dist: trusty
+os: linux
 mono: none
 dotnet: 2.1.502
 branches:
@@ -9,8 +10,8 @@ branches:
 before_script:
     - dotnet restore
 script:
+    - dotnet build
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
-after_script:
     - ./coverage-code.sh
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git

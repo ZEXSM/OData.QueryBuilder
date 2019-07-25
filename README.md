@@ -5,6 +5,12 @@ Library provides linq syntax and allows you to build OData queries based on the 
 [![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)
 [![Nuget Status](https://img.shields.io/nuget/dt/OData.QueryBuilder.svg)](https://www.nuget.org/packages/OData.QueryBuilder)
 
+## Benefits
+* Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
+* Support for nested `OData` extenders with a choice of filtering
+* Support `OData` functions `Date`, `Any`, `All`
+* Support `OData` operator `IN`
+
 ## Installation
 To install `OData.QueryBuilder` from` Visual Studio`, find `OData.QueryBuilder` in the` NuGet` package manager user interface or enter the following command in the package manager console:
 ```
@@ -12,7 +18,6 @@ Install-Package OData.QueryBuilder -Version 1.0.0
 ```
 
 To add a link to the main dotnet project, run the following command line:
-
 ```
 dotnet add -v 1.0.0 OData.QueryBuilder
 ```

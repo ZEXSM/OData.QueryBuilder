@@ -1,9 +1,9 @@
-cd ./src/OData.QueryBuilder
+cd src/OData.QueryBuilder
 dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/${CONFIGURATION}/**/*.dll --sources src/**/*.cs
 dotnet minicover reset --workdir ../../coverage
 cd ../../
 dotnet test --no-build test/**/*.csproj
-cd ./src/OData.QueryBuilder
+cd src/OData.QueryBuilder
 dotnet minicover uninstrument --workdir ../../coverage
 dotnet minicover report --workdir ../../coverage
 cd ../../

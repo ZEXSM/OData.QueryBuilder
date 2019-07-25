@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>OData.QueryBuilder</id>
-    <!--Версия переопределяется в файле проекта-->
+    <!--The version is redefined in the project file-->
     <version>0.0.0</version>
-    <description>Библиотека позволяющая собрать OData запрос на основе модели данных</description>
-    <language>ru-RU</language>
+    <description>Library provides linq syntax and allows you to build OData queries based on the data model</description>
+    <language>en-US</language>
     <authors>Borisov Zakhar</authors>
     <owners>Borisov Zakhar</owners>
     <projectUrl>https://github.com/ZEXSM/OData.QueryBuilder</projectUrl>
@@ -13,7 +13,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <repositoryType>git</repositoryType>
     <repositoryUrl>https://github.com/ZEXSM/OData.QueryBuilder</repositoryUrl>
-    <tags>odata, uri, bilder, dotnet, charp</tags>
+    <tags>odata, querybuilder, dotnet, charp</tags>
   </metadata>
   <files>
     <file src="OData.QueryBuilder.dll" target="lib\netstandard1.3" />

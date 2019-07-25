@@ -13,6 +13,7 @@ script:
     - dotnet build
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
 after_success:
+    - cd src/OData.QueryBuilder && ls
     - cd src/OData.QueryBuilder
     - dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/${CONFIGURATION}/**/*.dll --sources src/**/*.cs
     - dotnet minicover reset --workdir ../../coverage

@@ -10,7 +10,7 @@ before_script:
     - dotnet restore
 script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
-after_success:
+after_script:
     - ls -l
     - cd src/OData.QueryBuilder && ls -l
     - sh ./coverage-code.sh

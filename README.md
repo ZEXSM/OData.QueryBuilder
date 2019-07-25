@@ -28,13 +28,13 @@ dotnet add -v 1.0.0 OData.QueryBuilder
 
     As soon as possible, create a new instance of the OData.QueryBuilder object indicating the data models and the base path:
 
-    ```charp
+    ```csharp
     var odataQueryBuilder = new ODataQueryBuilder<Your entity model>(<base_url>);
     ```
 
 2. Specify the resource for which the request will be built
 
-    ```charp
+    ```csharp
     odataQueryBuilder.For<Your data model>(s => s.<Your resource model>)
     ```
 
@@ -56,7 +56,7 @@ dotnet add -v 1.0.0 OData.QueryBuilder
       * Count
       * ToUri 
 4. Get a Uri request from the builder
-    ```charp
+    ```csharp
     odataQueryBuilder.ToUri()
     ```
 

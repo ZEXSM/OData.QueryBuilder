@@ -1,42 +1,47 @@
 # OData.QueryBuilder
-Библиотека позволяющая собрать OData запрос на основе модели данных
+Library provides linq syntax and allows you to build OData queries based on the data model
 
 [![Build Status](https://travis-ci.com/ZEXSM/OData.QueryBuilder.svg?branch=master)](https://travis-ci.com/ZEXSM/OData.QueryBuilder)
 [![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)
 [![Nuget Status](https://img.shields.io/nuget/dt/OData.QueryBuilder.svg)](https://www.nuget.org/packages/OData.QueryBuilder)
 
-## Установка
-Чтобы установить `OData.QueryBuilder` из `Visual Studio`, найдите `OData.QueryBuilder` в пользовательском интерфейсе диспетчера пакетов `NuGet` или выполните следующую команду в консоли диспетчера пакетов:
+## Benefits
+* Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
+* Support for nested `OData` extenders with a choice of filtering
+* Support `OData` functions `Date`, `Any`, `All`
+* Support `OData` operator `IN`
+
+## Installation
+To install `OData.QueryBuilder` from` Visual Studio`, find `OData.QueryBuilder` in the` NuGet` package manager user interface or enter the following command in the package manager console:
 ```
 Install-Package OData.QueryBuilder -Version 1.0.0
 ```
 
-Чтобы добавить ссылку на основной проект `dotnet`, выполните в командной строке следующее:
-
+To add a link to the main dotnet project, run the following command line:
 ```
 dotnet add -v 1.0.0 OData.QueryBuilder
 ```
 
-## Использование
+## Usage
 
-1. Создать экземпляр билдера
+1. Build instance
 
-    Преждем чем начать строить `OData` запрос, необходимо создать новый экземпляр объекта `OData.QueryBuilder` с указанием модели данных и базового пути:
+    As soon as possible, create a new instance of the OData.QueryBuilder object indicating the data models and the base path:
 
-    ```charp
-    var odataQueryBuilder = new ODataQueryBuilder<Модель данных сущностей>(<base_url>);
+    ```csharp
+    var odataQueryBuilder = new ODataQueryBuilder<Your entity model>(<base_url>);
     ```
 
-2. Указать ресурс для которого будет строиться запрос
+2. Specify the resource for which the request will be built
 
-    ```charp
-    odataQueryBuilder.For<Модель сущности>(s => s.<ресурс>)
+    ```csharp
+    odataQueryBuilder.For<Your data model>(s => s.<Your resource model>)
     ```
 
-3. Выборать тип запроса
+3. Select request type
 
-    Билдер позволяет строить запросы по ключу и списку.
-    * ByKey(<ключ>)
+    The builder allows you to build queries on the key and the list:
+    * ByKey(<Key>)
       * Expand
       * Select
       * ToUri 
@@ -50,16 +55,16 @@ dotnet add -v 1.0.0 OData.QueryBuilder
       * Skip
       * Count
       * ToUri 
-4. Получить Uri запроса от билдера
-    ```charp
+4. Get a Uri request from the builder
+    ```csharp
     odataQueryBuilder.ToUri()
     ```
 
-## Примеры
+## Examples
 
-#### ByKey - по ключу
-1. Запрос по ключу с простым `Expand`
-```charp
+#### By key
+1. Key request with a simple `Expand`
+```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
     .ByKey(223123123)
@@ -68,8 +73,8 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > http://mock/odata/ODataType(223123123)?$expand=ODataKind
 
-2. Запрос по ключу с вложенными `Expand` и `Select`
-```charp
+2. Key request with nested `Expand` и `Select`
+```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
     .ByKey(223123123)
@@ -88,9 +93,9 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum
 
-#### ByList - по списку
-1. Запрос по списку с простым `Expand`
-```charp
+#### By list
+1. Query list with a simple `Expand`
+```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
     .ByList()

@@ -6,6 +6,9 @@
     <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
   </PropertyGroup>
   <ItemGroup>
+    <DotNetCliToolReference Include="MiniCover" Version="2.0.0-ci-20181108093139" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="OData.QueryBuilder.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

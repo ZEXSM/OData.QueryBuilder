@@ -12,6 +12,10 @@ namespace OData.QueryBuilder.Test.Fakes
 
         public decimal Sum { get; set; }
 
+        public bool IsActive { get; set; }
+
+        public bool IsOpen { get; set; }
+
         public DateTime Open { get; set; }
 
         public DateTimeOffset OpenDate { get; set; }

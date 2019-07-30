@@ -51,11 +51,23 @@ namespace OData.QueryBuilder.Extensions
             }
         }
 
-        public static string ToODataQuery(this ConstantExpression constantExpression) =>
-            constantExpression.Value?.ToString() ?? "null";
+        public static string ToODataQuery(this ConstantExpression constantExpression)
+        {
+            switch (constantExpression.Value)
+            {
+                case true:
+                    return "true";
+                case false:
+                    return "false";
+                case null:
+                    return "null";
+                default:
+                    return constantExpression.Value.ToString();
+            }
+        }
 
         public static string ToODataQuery(this UnaryExpression unaryExpression) =>
-            ((MemberExpression)unaryExpression.Operand).Member.Name;
+            (unaryExpression.Operand as MemberExpression)?.Member.Name;
 
         public static string ToODataQuery(this MemberExpression memberExpression) =>
             memberExpression.Member.Name;
@@ -182,44 +194,36 @@ namespace OData.QueryBuilder.Extensions
                     if (methodName == nameof(Enumerable.Contains))
                     {
                         var resource = default(object);
-                        var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
+                        var filter = default(string);
 
-                        if (methodCallExpression.Object is MemberExpression)
+                        if (methodCallExpression.Object == default(Expression))
+                        {
+                            resource = (methodCallExpression.Arguments[0] as MemberExpression).GetMemberExpressionValue();
+                            filter = methodCallExpression.Arguments[1].ToODataQuery(queryString);
+                        }
+                        else if (methodCallExpression.Object is MemberExpression)
                         {
                             resource = (methodCallExpression.Object as MemberExpression).GetMemberExpressionValue();
-
-                            var filter = memberExpression.ToODataQuery(queryString);
-
-                            if (resource is IEnumerable<int>)
-                            {
-                                return $"{filter} in ({string.Join(",", (IEnumerable<int>)resource)})";
-                            }
-
-                            if (resource is IEnumerable<string>)
-                            {
-                                return $"{filter} in ('{string.Join("','", (IEnumerable<string>)resource)}')";
-                            }
+                            filter = methodCallExpression.Arguments[0].ToODataQuery(queryString);
+                        }
+                        else if ((methodCallExpression.Arguments[0] as MemberExpression)?.Expression is MemberExpression)
+                        {
+                            resource = (methodCallExpression.Arguments[0] as MemberExpression).GetMemberExpressionValue();
+                            filter = methodCallExpression.Arguments[1]?.ToODataQuery(queryString);
                         }
 
-                        if (memberExpression.Expression is MemberExpression)
+                        if (resource is IEnumerable<int>)
                         {
-                            resource = GetMemberExpressionValue(memberExpression);
+                            return $"{filter} in ({string.Join(",", (IEnumerable<int>)resource)})";
+                        }
 
-                            var filter = methodCallExpression.Arguments[1]?.ToODataQuery(queryString);
-
-                            if (resource is IEnumerable<int>)
-                            {
-                                return $"{filter} in ({string.Join(",", (IEnumerable<int>)resource)})";
-                            }
-
-                            if (resource is IEnumerable<string>)
-                            {
-                                return $"{filter} in ('{string.Join("','", (IEnumerable<string>)resource)}')";
-                            }
+                        if (resource is IEnumerable<string>)
+                        {
+                            return $"{filter} in ('{string.Join("','", (IEnumerable<string>)resource)}')";
                         }
                     }
 
-                    return $"{methodName.ToLower()}()";
+                    return methodName.ToLower();
 
                 case NewExpression newExpression:
                     return newExpression.ToODataQuery();

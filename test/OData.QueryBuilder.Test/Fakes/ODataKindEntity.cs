@@ -15,5 +15,7 @@ namespace OData.QueryBuilder.Test.Fakes
         public ODataCodeEntity[] ODataCodes { get; set; }
 
         public IEnumerable<int> Sequence { get; set; }
+
+        public int[] SequenceArray { get; set; }
     }
 }

@@ -18,6 +18,8 @@ namespace OData.QueryBuilder.Test.Fakes
 
         public DateTime Open { get; set; }
 
+        public DateTime? BeginDate { get; set; }
+
         public DateTimeOffset OpenDate { get; set; }
 
         public ODataKindEntity ODataKind { get; set; }

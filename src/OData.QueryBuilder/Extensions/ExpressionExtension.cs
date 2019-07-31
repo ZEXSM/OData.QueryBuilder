@@ -206,11 +206,6 @@ namespace OData.QueryBuilder.Extensions
                             resource = (methodCallExpression.Object as MemberExpression).GetMemberExpressionValue();
                             filter = methodCallExpression.Arguments[0].ToODataQuery(queryString);
                         }
-                        else if ((methodCallExpression.Arguments[0] as MemberExpression)?.Expression is MemberExpression)
-                        {
-                            resource = (methodCallExpression.Arguments[0] as MemberExpression).GetMemberExpressionValue();
-                            filter = methodCallExpression.Arguments[1]?.ToODataQuery(queryString);
-                        }
 
                         if (resource is IEnumerable<int>)
                         {

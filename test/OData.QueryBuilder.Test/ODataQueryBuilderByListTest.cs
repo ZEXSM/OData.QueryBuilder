@@ -178,28 +178,49 @@ namespace OData.QueryBuilder.Test
                     && s.Open == DateTime.Today
                     && s.Open == constCurrentDateToday
                     && s.Open.Date == newObject.ODataKind.EndDate
-                    && s.ODataKind.OpenDate.Date == new DateTime(2019, 7, 9))
+                    && s.ODataKind.OpenDate.Date == new DateTime(2019, 7, 9)
+                    && ((DateTime)s.BeginDate).Date == DateTime.Today)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq {DateTime.Today.ToString("O")} and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and Open eq {DateTime.Today.ToString("O")} and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq {DateTime.Today.ToString("O")} and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and Open eq {DateTime.Today.ToString("O")} and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09 and date(BeginDate) eq {DateTime.Today.ToString("yyyy-MM-dd")}");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN => Success")]
         public void ODataQueryBuilderList_Operator_In_Success()
         {
-            var constStrIds = new[] { "123", "512" }.ToList();
-            var constIntIds = new[] { 123, 512 }.ToList();
-            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntIds } };
+            var constStrIds = new[] { "123", "512" };
+            var constStrListIds = new[] { "123", "512" }.ToList();
+            var constIntIds = new[] { 123, 512 };
+            var constIntListIds = new[] { 123, 512 }.ToList();
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
+            var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
 
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
+                    && constStrListIds.Contains(s.ODataKind.ODataCode.Code)
                     && constIntIds.Contains(s.IdType)
-                    && newObject.ODataKind.Sequence.Contains(s.IdType))
+                    && constIntListIds.Contains(s.IdType)
+                    && constIntIds.Contains((int)s.IdRule)
+                    && constIntListIds.Contains((int)s.IdRule)
+                    && newObject.ODataKind.Sequence.Contains(s.ODataKind.IdKind)
+                    && newObjectSequenceArray.ODataKind.SequenceArray.Contains(s.ODataKind.ODataCode.IdCode))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512)");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter boolean values => Success")]
+        public void ODataQueryBuilderList_Filter_Boolean_Values_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IsActive && s.IsOpen == true && s.ODataKind.ODataCode.IdActive == false)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and IsOpen eq true and ODataKind/ODataCode/IdActive eq false");
         }
     }
 }

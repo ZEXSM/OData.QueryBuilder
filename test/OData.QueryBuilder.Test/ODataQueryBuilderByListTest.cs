@@ -222,5 +222,24 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and IsOpen eq true and ODataKind/ODataCode/IdActive eq false");
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter brackets => Success")]
+        public void ODataQueryBuilderList_Filter_Brackets_Success()
+        {
+            var constStrIds = new[] { "123", "512" };
+            var constValue = 3;
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IdType == constValue
+                    && s.IsActive
+                    && (((DateTimeOffset)s.EndDate).Date == default(DateTimeOffset?) || ((DateTimeOffset)s.EndDate).Date > DateTime.Today)
+                    && (((DateTime)s.BeginDate).Date != default(DateTime?) || ((DateTime)s.BeginDate).Date <= DateTime.Today)
+                    && constStrIds.Contains(s.ODataKind.ODataCode.Code))
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdType eq 3 and IsActive and date(EndDate) eq null or date(EndDate) gt {DateTime.Today.ToString("yyyy-MM-dd")} and date(BeginDate) ne null or date(BeginDate) le {DateTime.Today.ToString("yyyy-MM-dd")} and ODataKind/ODataCode/Code in ('123','512')");
+        }
     }
 }

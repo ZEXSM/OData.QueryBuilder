@@ -66,9 +66,6 @@ namespace OData.QueryBuilder.Extensions
             }
         }
 
-        public static string ToODataQuery(this UnaryExpression unaryExpression) =>
-            ((MemberExpression)unaryExpression.Operand).Member.Name;
-
         public static string ToODataQuery(this MemberExpression memberExpression) =>
             memberExpression.Member.Name;
 
@@ -136,18 +133,22 @@ namespace OData.QueryBuilder.Extensions
                         switch (binaryExpression.Right)
                         {
                             case UnaryExpression rightUnaryExpression:
-                                var memberExpression = rightUnaryExpression.Operand as MemberExpression;
+                                var memberExpression = rightUnaryExpression.Operand as MemberExpression ??
+                                    (rightUnaryExpression.Operand as UnaryExpression).Operand as MemberExpression;
+
                                 var rightQueryUnary = ((DateTime)memberExpression.GetMemberExpressionValue())
                                     .ToString("O");
+
                                 return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryUnary}";
                             case MemberExpression rightMemberExpression:
                                 var rightQueryMember = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("O");
+
                                 return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryMember}";
                             case ConstantExpression rightConstantExpression:
                                 var rightQueryConstant = rightConstantExpression.ToODataQuery();
 
-                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryConstant}";
+                                return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryConstant}";
                         }
                     }
                 }
@@ -234,7 +235,7 @@ namespace OData.QueryBuilder.Extensions
                     return newExpression.ToODataQuery();
 
                 case UnaryExpression unaryExpression:
-                    return unaryExpression.ToODataQuery();
+                    return unaryExpression.Operand.ToODataQuery(queryString);
 
                 case LambdaExpression lambdaExpression:
                     return lambdaExpression.ToODataQuery();

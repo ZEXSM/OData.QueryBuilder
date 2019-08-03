@@ -232,14 +232,14 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter(s => s.IdType == constValue
+                .Filter(s => s.IdRule == constValue
                     && s.IsActive
-                    && (((DateTimeOffset)s.EndDate).Date == default(DateTimeOffset?) || ((DateTimeOffset)s.EndDate).Date > DateTime.Today)
+                    && (((DateTimeOffset)s.EndDate).Date == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
                     && (((DateTime)s.BeginDate).Date != default(DateTime?) || ((DateTime)s.BeginDate).Date <= DateTime.Today)
                     && constStrIds.Contains(s.ODataKind.ODataCode.Code))
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdType eq 3 and IsActive and date(EndDate) eq null or date(EndDate) gt {DateTime.Today.ToString("yyyy-MM-dd")} and date(BeginDate) ne null or date(BeginDate) le {DateTime.Today.ToString("yyyy-MM-dd")} and ODataKind/ODataCode/Code in ('123','512')");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt {DateTime.Today.ToString("O")} and date(BeginDate) ne null or date(BeginDate) le {DateTime.Today.ToString("yyyy-MM-dd")} and ODataKind/ODataCode/Code in ('123','512')");
         }
     }
 }

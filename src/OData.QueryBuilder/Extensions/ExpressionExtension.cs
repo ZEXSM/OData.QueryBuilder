@@ -36,6 +36,8 @@ namespace OData.QueryBuilder.Extensions
                     return "or";
                 case ExpressionType.Equal:
                     return "eq";
+                case ExpressionType.Not:
+                    return "not";
                 case ExpressionType.NotEqual:
                     return "ne";
                 case ExpressionType.LessThan:
@@ -235,7 +237,10 @@ namespace OData.QueryBuilder.Extensions
                     return newExpression.ToODataQuery();
 
                 case UnaryExpression unaryExpression:
-                    return unaryExpression.Operand.ToODataQuery(queryString);
+                    var odataOperator = unaryExpression.NodeType.ToODataOperator();
+                    odataOperator = !string.IsNullOrEmpty(odataOperator) ? $"{odataOperator} " : string.Empty;
+
+                    return $"{odataOperator}{unaryExpression.Operand.ToODataQuery(queryString)}";
 
                 case LambdaExpression lambdaExpression:
                     return lambdaExpression.ToODataQuery();

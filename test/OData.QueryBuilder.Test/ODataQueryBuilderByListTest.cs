@@ -255,5 +255,17 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$count={value.ToString().ToLower()}");
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter not bool => Success")]
+        public void ODataQueryBuilderList_Filter_Not__Bool_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IsActive && !(bool)s.IsOpen)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and not IsOpen");
+        }
     }
 }

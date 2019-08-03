@@ -83,9 +83,9 @@ namespace OData.QueryBuilder.Parameters
             return this;
         }
 
-        public IODataQueryParameterList<TEntity> Count()
+        public IODataQueryParameterList<TEntity> Count(bool value = true)
         {
-            _queryBuilder.Append("$count=true&");
+            _queryBuilder.Append($"$count={value.ToString().ToLower()}&");
 
             return this;
         }

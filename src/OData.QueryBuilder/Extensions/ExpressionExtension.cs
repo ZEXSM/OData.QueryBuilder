@@ -36,6 +36,8 @@ namespace OData.QueryBuilder.Extensions
                     return "or";
                 case ExpressionType.Equal:
                     return "eq";
+                case ExpressionType.Not:
+                    return "not";
                 case ExpressionType.NotEqual:
                     return "ne";
                 case ExpressionType.LessThan:
@@ -66,9 +68,6 @@ namespace OData.QueryBuilder.Extensions
             }
         }
 
-        public static string ToODataQuery(this UnaryExpression unaryExpression) =>
-            (unaryExpression.Operand as MemberExpression)?.Member.Name;
-
         public static string ToODataQuery(this MemberExpression memberExpression) =>
             memberExpression.Member.Name;
 
@@ -97,14 +96,16 @@ namespace OData.QueryBuilder.Extensions
 
         public static string ToODataQueryFunctionDate(this BinaryExpression binaryExpression)
         {
-            if (binaryExpression.Left.Type.Name == nameof(DateTime) || binaryExpression.Left.Type.Name == nameof(DateTimeOffset))
+            if (binaryExpression.Left.Type == typeof(DateTime) || binaryExpression.Left.Type == typeof(DateTimeOffset)
+                || binaryExpression.Left.Type == typeof(DateTime?) || binaryExpression.Left.Type == typeof(DateTimeOffset?))
             {
-                var leftExpression = binaryExpression.Left as MemberExpression;
+                var leftExpression = binaryExpression.Left as MemberExpression ??
+                    (binaryExpression.Left as UnaryExpression).Operand as MemberExpression ??
+                    ((binaryExpression.Left as UnaryExpression).Operand as UnaryExpression).Operand as MemberExpression;
 
                 if (leftExpression != default(MemberExpression))
                 {
-                    if (leftExpression.ToODataQuery() == nameof(DateTime.Date)
-                        && (leftExpression.Expression.Type.Name == nameof(DateTime) || leftExpression.Expression.Type.Name == nameof(DateTimeOffset)))
+                    if (leftExpression.ToODataQuery() == nameof(DateTime.Date))
                     {
                         var leftQuery = leftExpression.Expression.ToODataQuery(string.Empty);
 
@@ -117,10 +118,14 @@ namespace OData.QueryBuilder.Extensions
 
                                 return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryNew}";
                             case MemberExpression rightMemberExpression:
-                                var rightMemberQuery = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
+                                var rightQueryMember = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("yyyy-MM-dd");
 
-                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightMemberQuery}";
+                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryMember}";
+                            case ConstantExpression rightConstantExpression:
+                                var rightQueryConstant = rightConstantExpression.ToODataQuery();
+
+                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryConstant}";
                         }
                     }
                     else
@@ -130,14 +135,22 @@ namespace OData.QueryBuilder.Extensions
                         switch (binaryExpression.Right)
                         {
                             case UnaryExpression rightUnaryExpression:
-                                var memberExpression = rightUnaryExpression.Operand as MemberExpression;
+                                var memberExpression = rightUnaryExpression.Operand as MemberExpression ??
+                                    (rightUnaryExpression.Operand as UnaryExpression).Operand as MemberExpression;
+
                                 var rightQueryUnary = ((DateTime)memberExpression.GetMemberExpressionValue())
                                     .ToString("O");
+
                                 return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryUnary}";
                             case MemberExpression rightMemberExpression:
                                 var rightQueryMember = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("O");
+
                                 return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryMember}";
+                            case ConstantExpression rightConstantExpression:
+                                var rightQueryConstant = rightConstantExpression.ToODataQuery();
+
+                                return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryConstant}";
                         }
                     }
                 }
@@ -224,7 +237,10 @@ namespace OData.QueryBuilder.Extensions
                     return newExpression.ToODataQuery();
 
                 case UnaryExpression unaryExpression:
-                    return unaryExpression.ToODataQuery();
+                    var odataOperator = unaryExpression.NodeType.ToODataOperator();
+                    odataOperator = !string.IsNullOrEmpty(odataOperator) ? $"{odataOperator} " : string.Empty;
+
+                    return $"{odataOperator}{unaryExpression.Operand.ToODataQuery(queryString)}";
 
                 case LambdaExpression lambdaExpression:
                     return lambdaExpression.ToODataQuery();

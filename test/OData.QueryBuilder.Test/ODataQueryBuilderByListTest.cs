@@ -222,5 +222,50 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and IsOpen eq true and ODataKind/ODataCode/IdActive eq false");
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter brackets => Success")]
+        public void ODataQueryBuilderList_Filter_Brackets_Success()
+        {
+            var constStrIds = new[] { "123", "512" };
+            var constValue = 3;
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IdRule == constValue
+                    && s.IsActive
+                    && (((DateTimeOffset)s.EndDate).Date == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
+                    && (((DateTime)s.BeginDate).Date != default(DateTime?) || ((DateTime)s.BeginDate).Date <= DateTime.Today)
+                    && constStrIds.Contains(s.ODataKind.ODataCode.Code))
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt {DateTime.Today.ToString("O")} and date(BeginDate) ne null or date(BeginDate) le {DateTime.Today.ToString("yyyy-MM-dd")} and ODataKind/ODataCode/Code in ('123','512')");
+        }
+
+        [Theory(DisplayName = "(ODataQueryBuilderList) Count value => Success")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ODataQueryBuilderList_Count_Value_Success(bool value)
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Count(value)
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$count={value.ToString().ToLower()}");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter not bool => Success")]
+        public void ODataQueryBuilderList_Filter_Not__Bool_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IsActive && !(bool)s.IsOpen)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and not IsOpen");
+        }
     }
 }

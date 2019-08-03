@@ -14,11 +14,13 @@ namespace OData.QueryBuilder.Test.Fakes
 
         public bool IsActive { get; set; }
 
-        public bool IsOpen { get; set; }
+        public bool? IsOpen { get; set; }
 
         public DateTime Open { get; set; }
 
         public DateTime? BeginDate { get; set; }
+
+        public DateTimeOffset? EndDate { get; set; }
 
         public DateTimeOffset OpenDate { get; set; }
 

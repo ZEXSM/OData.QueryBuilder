@@ -22,6 +22,6 @@ namespace OData.QueryBuilder.Parameters
 
         IODataQueryParameterList<TEntity> Skip(int number);
 
-        IODataQueryParameterList<TEntity> Count();
+        IODataQueryParameterList<TEntity> Count(bool value = true);
     }
 }

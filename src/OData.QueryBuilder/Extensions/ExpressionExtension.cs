@@ -24,6 +24,29 @@ namespace OData.QueryBuilder.Extensions
             return memberExpression.Member.GetValue(default);
         }
 
+        public static string GetInSequence(this object arrayObj)
+        {
+            if (arrayObj is IEnumerable<int>)
+            {
+                var inSequenceInt = string.Join(",", arrayObj as IEnumerable<int>);
+                if (!string.IsNullOrEmpty(inSequenceInt))
+                {
+                    return $"in ({inSequenceInt})";
+                }
+            }
+
+            if (arrayObj is IEnumerable<string>)
+            {
+                var inSequenceInt = string.Join("','", arrayObj as IEnumerable<string>);
+                if (!string.IsNullOrEmpty(inSequenceInt))
+                {
+                    return $"in ('{inSequenceInt}')";
+                }
+            }
+
+            return string.Empty;
+        }
+
         public static string ToODataOperator(this ExpressionType expressionType)
         {
             switch (expressionType)
@@ -230,14 +253,11 @@ namespace OData.QueryBuilder.Extensions
                             filter = methodCallExpression.Arguments[0].ToODataQuery(queryString);
                         }
 
-                        if (resource is IEnumerable<int>)
-                        {
-                            return $"{filter} in ({string.Join(",", (IEnumerable<int>)resource)})";
-                        }
+                        var inSequence = resource.GetInSequence();
 
-                        if (resource is IEnumerable<string>)
+                        if (!string.IsNullOrEmpty(inSequence))
                         {
-                            return $"{filter} in ('{string.Join("','", (IEnumerable<string>)resource)}')";
+                            return $"{filter} {inSequence}";
                         }
                     }
 

@@ -216,7 +216,7 @@ namespace OData.QueryBuilder.Test
         public void ODataQueryBuilderList_Operator_In_Empty_Success()
         {
             var constStrIds = default(IEnumerable<string>);
-            var constStrListIds = new[] { "123", "512" }.ToList();
+            var constStrListIds = new string[] { }.ToList();
             var constIntIds = default(int[]);
             var constIntListIds = new[] { 123, 512 }.ToList();
             var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
@@ -235,7 +235,7 @@ namespace OData.QueryBuilder.Test
                     && newObjectSequenceArray.ODataKind.SequenceArray.Contains(s.ODataKind.ODataCode.IdCode))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter boolean values => Success")]

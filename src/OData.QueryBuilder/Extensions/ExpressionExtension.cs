@@ -21,7 +21,7 @@ namespace OData.QueryBuilder.Extensions
                 return memberExpression.Member.GetValue(memberValue);
             }
 
-            return memberExpression.Member.GetValue(default(object));
+            return memberExpression.Member.GetValue(default);
         }
 
         public static string ToODataOperator(this ExpressionType expressionType)
@@ -173,6 +173,16 @@ namespace OData.QueryBuilder.Extensions
                     var leftQueryString = binaryExpression.Left.ToODataQuery(queryString);
                     var rightQueryString = binaryExpression.Right.ToODataQuery(queryString);
 
+                    if (string.IsNullOrEmpty(leftQueryString))
+                    {
+                        return rightQueryString;
+                    }
+
+                    if (string.IsNullOrEmpty(rightQueryString))
+                    {
+                        return leftQueryString;
+                    }
+
                     return $"{leftQueryString} {binaryExpression.NodeType.ToODataOperator()} {rightQueryString}";
 
                 case MemberExpression memberExpression:
@@ -231,7 +241,7 @@ namespace OData.QueryBuilder.Extensions
                         }
                     }
 
-                    return methodName.ToLower();
+                    return string.Empty;
 
                 case NewExpression newExpression:
                     return newExpression.ToODataQuery();

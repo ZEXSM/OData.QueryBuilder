@@ -21,7 +21,7 @@ namespace OData.QueryBuilder.Extensions
                 return memberExpression.Member.GetValue(memberValue);
             }
 
-            return memberExpression.Member.GetValue(default);
+            return memberExpression.Member.GetValue(default(object));
         }
 
         public static string GetInSequence(this object arrayObj)

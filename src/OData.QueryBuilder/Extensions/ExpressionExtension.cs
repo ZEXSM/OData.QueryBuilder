@@ -57,10 +57,12 @@ namespace OData.QueryBuilder.Extensions
         {
             switch (constantExpression.Value)
             {
-                case true:
-                    return "true";
-                case false:
-                    return "false";
+                case bool boolVal:
+                    return boolVal.ToString().ToLower();
+                case string stringVal:
+                    return $"'{stringVal}'";
+                case int intVal:
+                    return intVal.ToString();
                 case null:
                     return "null";
                 default:
@@ -176,9 +178,16 @@ namespace OData.QueryBuilder.Extensions
                     return $"{leftQueryString} {binaryExpression.NodeType.ToODataOperator()} {rightQueryString}";
 
                 case MemberExpression memberExpression:
-                    if (memberExpression.Expression is ConstantExpression)
+                    var memberExpressionValue = memberExpression.GetMemberExpressionValue();
+
+                    if (memberExpressionValue != default(object))
                     {
-                        return memberExpression.GetMemberExpressionValue().ToString();
+                        if (memberExpressionValue is string)
+                        {
+                            return $"'{memberExpressionValue}'";
+                        }
+
+                        return memberExpressionValue.ToString();
                     }
 
                     var parentMemberExpressionQuery = memberExpression.Expression.ToODataQuery(queryString);

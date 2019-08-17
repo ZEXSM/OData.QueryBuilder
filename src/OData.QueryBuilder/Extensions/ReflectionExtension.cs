@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace OData.QueryBuilder.Extensions
 {
@@ -6,14 +7,21 @@ namespace OData.QueryBuilder.Extensions
     {
         public static object GetValue(this MemberInfo memberInfo, object obj = default(object))
         {
-            switch (memberInfo)
+            try
             {
-                case FieldInfo fieldInfo:
-                    return fieldInfo.GetValue(obj);
-                case PropertyInfo propertyInfo:
-                    return propertyInfo.GetValue(obj, default(object[]));
-                default:
-                    return default(object);
+                switch (memberInfo)
+                {
+                    case FieldInfo fieldInfo:
+                        return fieldInfo.GetValue(obj);
+                    case PropertyInfo propertyInfo:
+                        return propertyInfo.GetValue(obj, default(object[]));
+                    default:
+                        return default(object);
+                }
+            }
+            catch (Exception)
+            {
+                return default(object);
             }
         }
     }

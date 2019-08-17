@@ -2,6 +2,7 @@
 using OData.QueryBuilder.Builders;
 using OData.QueryBuilder.Test.Fakes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -226,6 +227,32 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]
+        public void ODataQueryBuilderList_Operator_In_Empty_Success()
+        {
+            var constStrIds = default(IEnumerable<string>);
+            var constStrListIds = new string[] { }.ToList();
+            var constIntIds = default(int[]);
+            var constIntListIds = new[] { 123, 512 }.ToList();
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
+            var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
+                    && constStrListIds.Contains(s.ODataKind.ODataCode.Code)
+                    && constIntIds.Contains(s.IdType)
+                    && constIntListIds.Contains(s.IdType)
+                    && constIntIds.Contains((int)s.IdRule)
+                    && constIntListIds.Contains((int)s.IdRule)
+                    && newObject.ODataKind.Sequence.Contains(s.ODataKind.IdKind)
+                    && newObjectSequenceArray.ODataKind.SequenceArray.Contains(s.ODataKind.ODataCode.IdCode))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter boolean values => Success")]

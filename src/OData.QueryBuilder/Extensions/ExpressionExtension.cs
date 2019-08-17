@@ -24,6 +24,29 @@ namespace OData.QueryBuilder.Extensions
             return memberExpression.Member.GetValue(default(object));
         }
 
+        public static string GetInSequence(this object arrayObj)
+        {
+            if (arrayObj is IEnumerable<int>)
+            {
+                var inSequenceInt = string.Join(",", arrayObj as IEnumerable<int>);
+                if (!string.IsNullOrEmpty(inSequenceInt))
+                {
+                    return $"in ({inSequenceInt})";
+                }
+            }
+
+            if (arrayObj is IEnumerable<string>)
+            {
+                var inSequenceInt = string.Join("','", arrayObj as IEnumerable<string>);
+                if (!string.IsNullOrEmpty(inSequenceInt))
+                {
+                    return $"in ('{inSequenceInt}')";
+                }
+            }
+
+            return string.Empty;
+        }
+
         public static string ToODataOperator(this ExpressionType expressionType)
         {
             switch (expressionType)
@@ -175,6 +198,16 @@ namespace OData.QueryBuilder.Extensions
                     var leftQueryString = binaryExpression.Left.ToODataQuery(queryString);
                     var rightQueryString = binaryExpression.Right.ToODataQuery(queryString);
 
+                    if (string.IsNullOrEmpty(leftQueryString))
+                    {
+                        return rightQueryString;
+                    }
+
+                    if (string.IsNullOrEmpty(rightQueryString))
+                    {
+                        return leftQueryString;
+                    }
+
                     return $"{leftQueryString} {binaryExpression.NodeType.ToODataOperator()} {rightQueryString}";
 
                 case MemberExpression memberExpression:
@@ -229,18 +262,15 @@ namespace OData.QueryBuilder.Extensions
                             filter = methodCallExpression.Arguments[0].ToODataQuery(queryString);
                         }
 
-                        if (resource is IEnumerable<int>)
-                        {
-                            return $"{filter} in ({string.Join(",", (IEnumerable<int>)resource)})";
-                        }
+                        var inSequence = resource.GetInSequence();
 
-                        if (resource is IEnumerable<string>)
+                        if (!string.IsNullOrEmpty(inSequence))
                         {
-                            return $"{filter} in ('{string.Join("','", (IEnumerable<string>)resource)}')";
+                            return $"{filter} {inSequence}";
                         }
                     }
 
-                    return methodName.ToLower();
+                    return string.Empty;
 
                 case NewExpression newExpression:
                     return newExpression.ToODataQuery();

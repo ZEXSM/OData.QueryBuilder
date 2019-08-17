@@ -86,10 +86,8 @@ namespace OData.QueryBuilder.Extensions
                     return $"'{stringVal}'";
                 case int intVal:
                     return intVal.ToString();
-                case null:
-                    return "null";
                 default:
-                    return constantExpression.Value.ToString();
+                    return "null";
             }
         }
 
@@ -103,9 +101,6 @@ namespace OData.QueryBuilder.Extensions
 
             return $"{tag}:{tag}/{filter}";
         }
-
-        public static string ToODataQuery(this ParameterExpression parameterExpression) =>
-            parameterExpression.Name;
 
         public static string ToODataQuery(this NewExpression newExpression)
         {

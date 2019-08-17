@@ -8,15 +8,6 @@ branches:
     only:
         - master
 before_script:
-    - dotnet restore
-script:
-    - dotnet build
-    - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
-# after_success:
-#     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../
-#     - dotnet test --no-build ./test/OData.QueryBuilder.Test
-#     - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
-before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE=$(git log -1 --pretty='%f')
     - FEATURE=$([[ $PR_TITLE == 'feature' ]] && echo 1 || echo 0)
@@ -25,15 +16,32 @@ before_deploy:
     - export CURRENT_TAG=$(($(echo $LAST_TAG | cut -d. -f 1)+$RELEASE)).$(($(echo $LAST_TAG | cut -d. -f 2)+$FEATURE)).$(($(echo $LAST_TAG | cut -d. -f 3)+1))
     - PACKAGE_VERSION=${CURRENT_TAG:-$DEFAULT_PACKAGE_VERSION}
     - echo $PACKAGE_VERSION
-    # - git tag v$PACKAGE_VERSION && git push origin v$PACKAGE_VERSION
-    # - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
-deploy:
-    provider: releases
-    name: $CURRENT_TAG
-    api_key: $GITHUB_OAUTH_TOKEN
-    skip_cleanup: true
-    repo: ZEXSM/OData.QueryBuilder
-    on:
-        branch: master
+#   - dotnet restore
+# script:
+#     - dotnet build
+#     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp2.1
+# after_success:
+#     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../
+#     - dotnet test --no-build ./test/OData.QueryBuilder.Test
+#     - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
+# before_deploy: 
+#     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
+#     - PR_TITLE=$(git log -1 --pretty='%f')
+#     - FEATURE=$([[ $PR_TITLE == 'feature' ]] && echo 1 || echo 0)
+#     - RELEASE=$([[ $PR_TITLE == 'release' ]] && echo 1 || echo 0)
+#     - LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
+#     - export CURRENT_TAG=$(($(echo $LAST_TAG | cut -d. -f 1)+$RELEASE)).$(($(echo $LAST_TAG | cut -d. -f 2)+$FEATURE)).$(($(echo $LAST_TAG | cut -d. -f 3)+1))
+#     - PACKAGE_VERSION=${CURRENT_TAG:-$DEFAULT_PACKAGE_VERSION}
+#     - echo $PACKAGE_VERSION
+#     - git tag v$PACKAGE_VERSION && git push origin v$PACKAGE_VERSION
+#     - dotnet pack -c $CONFIGURATION -p:PackageVersion=$PACKAGE_VERSION
+# deploy:
+#     provider: releases
+#     name: $CURRENT_TAG
+#     api_key: $GITHUB_OAUTH_TOKEN
+#     skip_cleanup: true
+#     repo: ZEXSM/OData.QueryBuilder
+#     on:
+#         branch: master
 # after_deploy:
 #     - dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE

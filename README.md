@@ -43,10 +43,14 @@ dotnet add -v 1.0.0 OData.QueryBuilder
     The builder allows you to build queries on the key and the list:
     * ByKey(<Key>)
       * Expand
+        * Filter
+        * Select
       * Select
       * ToUri 
     * ByList()
       * Expand
+        * Filter
+        * Select
       * Filter
       * Select
       * OrderBy
@@ -63,17 +67,6 @@ dotnet add -v 1.0.0 OData.QueryBuilder
 ## Examples
 
 #### By key
-1. Key request with a simple `Expand`
-```csharp
-var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
-    .For<ODataTypeEntity>(s => s.ODataType)
-    .ByKey(223123123)
-    .Expand(s => s.ODataKind)
-    .ToUri();
-```
-> http://mock/odata/ODataType(223123123)?$expand=ODataKind
-
-2. Key request with nested `Expand` и `Select`
 ```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
@@ -82,30 +75,21 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     {
         f.For<ODataKindEntity>(s => s.ODataKind)
             .Expand(ff => ff.For<ODataCodeEntity>(s => s.ODataCode)
+            .Filter(s => !s.IdActive)
             .Select(s => s.IdCode));
         f.For<ODataKindEntity>(s => s.ODataKindNew)
             .Select(s => s.IdKind);
         f.For<ODataKindEntity>(s => s.ODataKindNew)
-            .Select(s => s.IdKind);
+            .Select(s => s.EndDate);
     })
     .Select(s => new { s.IdType, s.Sum })
     .ToUri();
 ```
-> http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum
+> http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($filter=not IdActive;$select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=EndDate)&$select=IdType,Sum
 
 #### By list
-1. Query list with a simple `Expand`
 ```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
-    .For<ODataTypeEntity>(s => s.ODataType)
-    .ByList()
-    .Expand(s => new { s.ODataKind })
-    .ToUri();
-```
-> http://mock/odata/ODataType?$expand=ODataKind
-2.
-```csharp
-var uri = _odataQueryBuilder
     .For<ODataTypeEntity>(s => s.ODataType)
     .ByList()
     .Expand(f =>

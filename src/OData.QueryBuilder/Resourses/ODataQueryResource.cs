@@ -17,6 +17,13 @@ namespace OData.QueryBuilder.Resourses
             return new ODataQueryParameterKey<TEntity>(_queryBuilder);
         }
 
+        public IODataQueryParameterKey<TEntity> ByKey(string key)
+        {
+            _queryBuilder.Append($"('{key}')?");
+
+            return new ODataQueryParameterKey<TEntity>(_queryBuilder);
+        }
+
         public IODataQueryParameterList<TEntity> ByList()
         {
             _queryBuilder.Append("?");

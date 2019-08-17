@@ -12,6 +12,8 @@ namespace OData.QueryBuilder.Test
     {
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
+        public static string IdCodeStatic => "testCode";
+
         public ODataQueryBuilderByListTest(CommonFixture commonFixture) =>
             _odataQueryBuilder = commonFixture.ODataQueryBuilder;
 
@@ -109,8 +111,8 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderList) Filter simple => Success")]
-        public void ODataQueryBuilderList_Filter_Simple_Success()
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter simple const int=> Success")]
+        public void ODataQueryBuilderList_Filter_Simple_Const_Int_Success()
         {
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -119,6 +121,21 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3 or IdType eq 5");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter simple const string => Success")]
+        public void ODataQueryBuilderList_Filter_Simple_Const_String_Success()
+        {
+            var constValue = "3";
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s =>
+                     s.ODataKind.ODataCode.Code == constValue || s.ODataKind.ODataCode.Code == "5"
+                     && s.ODataKind.ODataCode.Code == IdCodeStatic)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3' or ODataKind/ODataCode/Code eq '5' and ODataKind/ODataCode/Code eq 'testCode'");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter All/Any => Success")]

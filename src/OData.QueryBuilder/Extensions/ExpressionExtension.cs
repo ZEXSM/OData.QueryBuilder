@@ -80,14 +80,14 @@ namespace OData.QueryBuilder.Extensions
         {
             switch (constantExpression.Value)
             {
-                case true:
-                    return "true";
-                case false:
-                    return "false";
-                case null:
-                    return "null";
+                case bool boolVal:
+                    return boolVal.ToString().ToLower();
+                case string stringVal:
+                    return $"'{stringVal}'";
+                case int intVal:
+                    return intVal.ToString();
                 default:
-                    return constantExpression.Value.ToString();
+                    return "null";
             }
         }
 
@@ -101,9 +101,6 @@ namespace OData.QueryBuilder.Extensions
 
             return $"{tag}:{tag}/{filter}";
         }
-
-        public static string ToODataQuery(this ParameterExpression parameterExpression) =>
-            parameterExpression.Name;
 
         public static string ToODataQuery(this NewExpression newExpression)
         {
@@ -209,9 +206,16 @@ namespace OData.QueryBuilder.Extensions
                     return $"{leftQueryString} {binaryExpression.NodeType.ToODataOperator()} {rightQueryString}";
 
                 case MemberExpression memberExpression:
-                    if (memberExpression.Expression is ConstantExpression)
+                    var memberExpressionValue = memberExpression.GetMemberExpressionValue();
+
+                    if (memberExpressionValue != default(object))
                     {
-                        return memberExpression.GetMemberExpressionValue().ToString();
+                        if (memberExpressionValue is string)
+                        {
+                            return $"'{memberExpressionValue}'";
+                        }
+
+                        return memberExpressionValue.ToString();
                     }
 
                     var parentMemberExpressionQuery = memberExpression.Expression.ToODataQuery(queryString);

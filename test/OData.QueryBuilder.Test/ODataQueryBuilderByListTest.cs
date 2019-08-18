@@ -15,7 +15,7 @@ namespace OData.QueryBuilder.Test
         public static string IdCodeStatic => "testCode";
 
         public ODataQueryBuilderByListTest(CommonFixture commonFixture) =>
-            _odataQueryBuilder = commonFixture.ODataQueryBuilder;
+            _odataQueryBuilder = commonFixture.ODataQueryBuilder2;
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Expand simple => Success")]
         public void ODataQueryBuilderList_Expand_Simple_Success()

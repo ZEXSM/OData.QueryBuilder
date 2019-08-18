@@ -11,7 +11,7 @@ namespace OData.QueryBuilder.Test
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
         public ODataQueryBuilderByKeyTest(CommonFixture commonFixture) =>
-            _odataQueryBuilder = commonFixture.ODataQueryBuilder;
+            _odataQueryBuilder = commonFixture.ODataQueryBuilder1;
 
         [Fact(DisplayName = "(ODataQueryBuilderKey) Expand simple => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_Success()
@@ -23,6 +23,18 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand simple with key string => Success")]
+        public void ODataQueryBuilderKey_Expand_Simple_With_Key_String_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey("223123123")
+                .Expand(s => s.ODataKind)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType('223123123')?$expand=ODataKind");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderKey) Select simple => Success")]

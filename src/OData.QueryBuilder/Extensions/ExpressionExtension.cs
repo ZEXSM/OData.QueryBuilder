@@ -215,7 +215,12 @@ namespace OData.QueryBuilder.Extensions
                             return $"'{memberExpressionValue}'";
                         }
 
-                        return memberExpressionValue.ToString();
+                        if (memberExpressionValue is bool)
+                        {
+                            return $"{memberExpressionValue}".ToLower();
+                        }
+
+                        return $"{memberExpressionValue}";
                     }
 
                     var parentMemberExpressionQuery = memberExpression.Expression.ToODataQuery(queryString);

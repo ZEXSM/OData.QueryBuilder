@@ -6,6 +6,8 @@ namespace OData.QueryBuilder.Resourses
     {
         IODataQueryParameterKey<TEntity> ByKey(int key);
 
+        IODataQueryParameterKey<TEntity> ByKey(string key);
+
         IODataQueryParameterList<TEntity> ByList();
     }
 }

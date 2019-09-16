@@ -317,5 +317,23 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and not IsOpen");
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) ToDicionaryTest")]
+        public void ToDicionaryTest()
+        {
+            var constValue = false;
+            var newObject = new ODataTypeEntity { IsOpen = false };
+
+            var uri = _odataQueryBuilder
+            .For<ODataTypeEntity>(s => s.ODataType)
+            .ByList()
+            .Filter(s => s.IsActive
+                && s.IsOpen == constValue
+                && s.IsOpen == true
+                && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
+            .Skip(1)
+            .Top(10)
+            .ToDicionary();
+        }
     }
 }

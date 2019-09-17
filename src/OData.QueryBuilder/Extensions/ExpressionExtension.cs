@@ -44,6 +44,16 @@ namespace OData.QueryBuilder.Extensions
                 }
             }
 
+            if (arrayObj is string)
+            {
+                var obj = arrayObj as string;
+
+                if (obj.StartsWith("/"))
+                    arrayObj = obj.TrimStart(obj[0]);
+
+                return $"{arrayObj}";
+            }
+
             return string.Empty;
         }
 
@@ -250,6 +260,7 @@ namespace OData.QueryBuilder.Extensions
                     {
                         var resource = default(object);
                         var filter = default(string);
+                        var containsSimple = false;
 
                         if (methodCallExpression.Object == default(Expression))
                         {
@@ -259,6 +270,14 @@ namespace OData.QueryBuilder.Extensions
                         else if (methodCallExpression.Object is MemberExpression)
                         {
                             resource = (methodCallExpression.Object as MemberExpression).GetMemberExpressionValue();
+
+                            if (resource == null)
+                            {
+                                var member = ((methodCallExpression.Object as MemberExpression)?.Expression.ToString() + "/" + (methodCallExpression.Object as MemberExpression)?.Member?.Name).Replace(".", "/");
+                                resource = member.Replace(member.Split('/').FirstOrDefault(), "");
+                                containsSimple = true;
+                            }
+
                             filter = methodCallExpression.Arguments[0].ToODataQuery(queryString);
                         }
 
@@ -266,7 +285,7 @@ namespace OData.QueryBuilder.Extensions
 
                         if (!string.IsNullOrEmpty(inSequence))
                         {
-                            return $"{filter} {inSequence}";
+                            return !containsSimple ? $"{filter} {inSequence}" : $"substringof({filter.ToUpper()},toupper({inSequence}))";
                         }
                     }
 

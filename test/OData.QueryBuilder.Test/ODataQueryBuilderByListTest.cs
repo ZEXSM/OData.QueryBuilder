@@ -228,6 +228,16 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Contains Simple Test => Success")]
+        public void ODataQueryBuilderList_Test_ContainsSimple()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.ODataKind.ODataCode.Code.Contains("0") || s.ODataKindNew.ODataCode.Code.Contains("55"))
+                .ToUri();
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]
         public void ODataQueryBuilderList_Operator_In_Empty_Success()
         {

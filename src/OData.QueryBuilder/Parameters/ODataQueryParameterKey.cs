@@ -55,6 +55,6 @@ namespace OData.QueryBuilder.Parameters
 
         public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd('&'));
 
-        public Dictionary<string, string> ToDicionary() => _dicionaryBuilder;
+        public Dictionary<string, string> ToDictionary() => _dicionaryBuilder;
     }
 }

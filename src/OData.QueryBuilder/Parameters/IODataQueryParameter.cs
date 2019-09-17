@@ -7,6 +7,6 @@ namespace OData.QueryBuilder.Parameters
     {
         Uri ToUri();
 
-        Dictionary<string, string> ToDicionary();
+        Dictionary<string, string> ToDictionary();
     }
 }

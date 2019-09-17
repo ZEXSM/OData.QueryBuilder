@@ -342,7 +342,7 @@ namespace OData.QueryBuilder.Test
                 && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
             .Skip(1)
             .Top(10)
-            .ToDicionary();
+            .ToDictionary();
         }
     }
 }

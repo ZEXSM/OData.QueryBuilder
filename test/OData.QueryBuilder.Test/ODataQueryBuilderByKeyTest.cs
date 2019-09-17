@@ -109,7 +109,7 @@ namespace OData.QueryBuilder.Test
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey("223123123")
                 .Expand(s => s.ODataKind)
-                .ToDicionary();
+                .ToDictionary();
         }
     }
 }

@@ -344,5 +344,17 @@ namespace OData.QueryBuilder.Test
             .Top(10)
             .ToDictionary();
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) FilterEnum")]
+        public void FilterEnumTest()
+        {
+            var uri = _odataQueryBuilder
+            .For<ODataTypeEntity>(s => s.ODataType)
+            .ByList()
+            .Filter(s => s.Color.ToString() == Color.Blue.ToString())
+            .Skip(1)
+            .Top(10)
+            .ToUri();
+        }
     }
 }

@@ -289,6 +289,14 @@ namespace OData.QueryBuilder.Extensions
                         }
                     }
 
+                    if (methodName == "ToString")
+                    {
+                        var member = (methodCallExpression.Object as MemberExpression);
+
+                        return member == null ? string.Concat("'", methodCallExpression.Object.ToString().Replace("{", "").Replace("}", ""), "'") :
+                            !string.IsNullOrEmpty(member?.Member?.Name) ? member.Member.Name.Replace(".", "/") : "";
+                    }
+
                     return string.Empty;
 
                 case NewExpression newExpression:

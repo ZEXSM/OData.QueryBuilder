@@ -27,17 +27,6 @@ namespace OData.QueryBuilder.Test.Fakes
         public ODataKindEntity ODataKind { get; set; }
 
         public ODataKindEntity ODataKindNew { get; set; }
-
-        public Color Color { get; set; }
-    }
-
-    public enum Color
-    {
-        Green,
-        Red,
-        Blue,
-        Yellow,
-        Black
     }
 }
 

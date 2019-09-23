@@ -250,8 +250,9 @@ namespace OData.QueryBuilder.Test
         public void ODataQueryBuilderList_Operator_In_Empty_Success()
         {
             var constStrIds = default(IEnumerable<string>);
-            var constStrListIds = new string[] { }.ToList();
+            var constEmprtyStrListIds = new string[] { }.ToList();
             var constIntIds = default(int[]);
+            var constEmptyIntIds = new int[0];
             var constIntListIds = new[] { 123, 512 }.ToList();
             var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
             var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
@@ -260,8 +261,9 @@ namespace OData.QueryBuilder.Test
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
-                    && constStrListIds.Contains(s.ODataKind.ODataCode.Code)
+                    && constEmprtyStrListIds.Contains(s.ODataKind.ODataCode.Code)
                     && constIntIds.Contains(s.IdType)
+                    && constEmptyIntIds.Contains(s.IdType)
                     && constIntListIds.Contains(s.IdType)
                     && constIntIds.Contains((int)s.IdRule)
                     && constIntListIds.Contains((int)s.IdRule)

@@ -7,9 +7,12 @@ Library provides linq syntax and allows you to build OData queries based on the 
 
 ## Benefits
 * Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
-* Support for nested `OData` extenders with a choice of filtering
-* Support `OData` functions `Date`, `Any`, `All`
-* Support `OData` operator `IN`
+* Support:
+  * nested `OData` extenders with a choice of filtering
+  * `all`, `any`
+  * date functions `date`
+  * string functions `substringof`, `toupper`
+  * operator `in`
 
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:
@@ -57,9 +60,10 @@ dotnet add -v 1.0.0 OData.QueryBuilder
       * [Top](#Top)
       * [Skip](#Skip)
       * [Count](#Count)
-4. Get a Uri request from the builder
+4. Get Uri request or collection of operators from the builder
     ```csharp
     odataQueryBuilder.ToUri()
+    odataQueryBuilder.ToDictionary()
     ```
 ## <a name="ByKey"/> ByKey
 ```csharp
@@ -212,6 +216,21 @@ var constValue = 3;
      && constStrIds.Contains(s.ODataKind.ODataCode.Code))
 ```
 > $filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt 2019-08-18T00:00:00.0000000+03:00 and date(BeginDate) ne null or date(BeginDate) le 2019-08-18 and ODataKind/ODataCode/Code in ('123','512')
+```csharp
+.Filter(s => s.ODataKind.Color.ToString() == ColorEnum.Blue.ToString()
+    && s.ODataKind.Color == ColorEnum.Blue)
+```
+> $filter=ODataKind/Color eq 'Blue' and ODataKind/Color eq 2
+```csharp
+var constValue = "p".ToUpper();
+var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToUpper() };
+
+.Filter(s => s.ODataKind.ODataCode.Code.ToUpper().Contains("W")
+    || s.ODataKind.ODataCode.Code.Contains(constValue)
+    || s.ODataKindNew.ODataCode.Code.Contains(newObject.TypeCode)
+    || s.ODataKindNew.ODataCode.Code.Contains("55"))
+```
+> $filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)
 ## <a name="OrderBy"/> OrderBy
 ```csharp
 .OrderBy(s => s.IdType)

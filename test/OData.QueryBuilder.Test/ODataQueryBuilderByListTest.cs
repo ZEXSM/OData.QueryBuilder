@@ -169,13 +169,12 @@ namespace OData.QueryBuilder.Test
                     )
                 .Select(s => new { s.ODataKind, s.Sum })
                 .OrderBy(s => new { s.IdType })
-                .OrderByDescending(s => s.IdType)
                 .Skip(1)
                 .Top(1)
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$orderby=IdType desc&$skip=1&$top=1&$count=true");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$skip=1&$top=1&$count=true");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Function Date => Success")]
@@ -229,12 +228,31 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Contains with ToUpper Simple Test => Success")]
+        public void ODataQueryBuilderList_Test_ContainsSimple()
+        {
+            var constValue = "p".ToUpper();
+            var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToUpper() };
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s =>
+                    s.ODataKind.ODataCode.Code.ToUpper().Contains("W")
+                    || s.ODataKind.ODataCode.Code.Contains(constValue)
+                    || s.ODataKindNew.ODataCode.Code.Contains(newObject.TypeCode)
+                    || s.ODataKindNew.ODataCode.Code.Contains("55"))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)");
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]
         public void ODataQueryBuilderList_Operator_In_Empty_Success()
         {
             var constStrIds = default(IEnumerable<string>);
-            var constStrListIds = new string[] { }.ToList();
+            var constEmprtyStrListIds = new string[] { }.ToList();
             var constIntIds = default(int[]);
+            var constEmptyIntIds = new int[0];
             var constIntListIds = new[] { 123, 512 }.ToList();
             var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
             var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
@@ -243,8 +261,9 @@ namespace OData.QueryBuilder.Test
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
-                    && constStrListIds.Contains(s.ODataKind.ODataCode.Code)
+                    && constEmprtyStrListIds.Contains(s.ODataKind.ODataCode.Code)
                     && constIntIds.Contains(s.IdType)
+                    && constEmptyIntIds.Contains(s.IdType)
                     && constIntListIds.Contains(s.IdType)
                     && constIntIds.Contains((int)s.IdRule)
                     && constIntListIds.Contains((int)s.IdRule)
@@ -316,6 +335,48 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and not IsOpen");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) ToDictionary")]
+        public void ToDicionaryTest()
+        {
+            var constValue = false;
+            var newObject = new ODataTypeEntity { IsOpen = false };
+
+            var dictionary = _odataQueryBuilder
+            .For<ODataTypeEntity>(s => s.ODataType)
+            .ByList()
+            .Filter(s => s.IsActive
+                && s.IsOpen == constValue
+                && s.IsOpen == true
+                && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
+            .Skip(1)
+            .Top(10)
+            .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                { "$filter", "IsActive and IsOpen eq false and IsOpen eq true and ODataKind/ODataCode/IdActive eq false" },
+                { "$skip", "1" },
+                { "$top", "10" }
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Enum")]
+        public void FilterEnumTest()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.ODataKind.Color.ToString() == ColorEnum.Blue.ToString()
+                    && s.ODataKind.Color == ColorEnum.Blue)
+                .Skip(1)
+                .Top(10)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/Color eq 'Blue' and ODataKind/Color eq 2&$skip=1&$top=10");
         }
     }
 }

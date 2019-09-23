@@ -101,5 +101,15 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
         }
+
+        [Fact(DisplayName = "(ODataQueryBuilderKey) ToDicionary => Success")]
+        public void ToDicionaryTest()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey("223123123")
+                .Expand(s => s.ODataKind)
+                .ToDictionary();
+        }
     }
 }

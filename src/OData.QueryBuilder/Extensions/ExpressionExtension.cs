@@ -26,12 +26,20 @@ namespace OData.QueryBuilder.Extensions
 
         public static string GetInSequence(this object arrayObj)
         {
+            if (arrayObj == default(object))
+            {
+                return default(string);
+            }
             if (arrayObj is IEnumerable<int>)
             {
                 var inSequenceInt = string.Join(",", arrayObj as IEnumerable<int>);
                 if (!string.IsNullOrEmpty(inSequenceInt))
                 {
                     return $"in ({inSequenceInt})";
+                }
+                else
+                {
+                    return default(string);
                 }
             }
 
@@ -41,6 +49,10 @@ namespace OData.QueryBuilder.Extensions
                 if (!string.IsNullOrEmpty(inSequenceInt))
                 {
                     return $"in ('{inSequenceInt}')";
+                }
+                else
+                {
+                    return default(string);
                 }
             }
 
@@ -86,6 +98,8 @@ namespace OData.QueryBuilder.Extensions
                     return $"'{stringVal}'";
                 case int intVal:
                     return intVal.ToString();
+                case object objectVal:
+                    return $"'{objectVal.ToString()}'";
                 default:
                     return "null";
             }
@@ -258,16 +272,40 @@ namespace OData.QueryBuilder.Extensions
                         }
                         else if (methodCallExpression.Object is MemberExpression)
                         {
-                            resource = (methodCallExpression.Object as MemberExpression).GetMemberExpressionValue();
+                            resource = (methodCallExpression.Object as MemberExpression).GetMemberExpressionValue() ??
+                                methodCallExpression.Object.ToODataQuery(string.Empty);
+
                             filter = methodCallExpression.Arguments[0].ToODataQuery(queryString);
+                        }
+                        else if (methodCallExpression.Object is MethodCallExpression)
+                        {
+                            resource = methodCallExpression.Object.ToODataQuery(string.Empty);
+                            filter = methodCallExpression.Arguments[0].ToODataQuery(string.Empty);
                         }
 
                         var inSequence = resource.GetInSequence();
 
-                        if (!string.IsNullOrEmpty(inSequence))
+                        if (inSequence != default(string))
                         {
-                            return $"{filter} {inSequence}";
+                            if (!string.IsNullOrEmpty(inSequence))
+                            {
+                                return $"{filter} {inSequence}";
+                            }
+                            else
+                            {
+                                return $"substringof({filter},{resource})";
+                            }
                         }
+                    }
+
+                    if (methodName == nameof(string.ToUpper))
+                    {
+                        return $"toupper({methodCallExpression.Object.ToODataQuery(string.Empty)})";
+                    }
+
+                    if (methodName == nameof(ToString))
+                    {
+                        return methodCallExpression.Object.ToODataQuery(string.Empty);
                     }
 
                     return string.Empty;

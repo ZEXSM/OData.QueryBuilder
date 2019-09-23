@@ -17,5 +17,7 @@ namespace OData.QueryBuilder.Test.Fakes
         public IEnumerable<int> Sequence { get; set; }
 
         public int[] SequenceArray { get; set; }
+
+        public ColorEnum Color { get; set; }
     }
 }

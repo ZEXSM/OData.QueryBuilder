@@ -11,22 +11,14 @@ namespace OData.QueryBuilder.Parameters
     {
         private readonly StringBuilder _queryBuilder;
 
-        private readonly Dictionary<string, string> _dicionaryBuilder;
-
-        //public ODataQueryParameterKey(StringBuilder queryBuilder) => _queryBuilder = queryBuilder;
-
-        public ODataQueryParameterKey(StringBuilder queryBuilder)
-        {
+        public ODataQueryParameterKey(StringBuilder queryBuilder) =>
             _queryBuilder = queryBuilder;
-            _dicionaryBuilder = new Dictionary<string, string>();
-        }
 
         public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
             var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
 
             _queryBuilder.Append($"$expand={entityExpandQuery}&");
-            _dicionaryBuilder.Add("$expand", entityExpandQuery);
 
             return this;
         }
@@ -38,7 +30,6 @@ namespace OData.QueryBuilder.Parameters
             entityExpandNested(odataQueryNestedBuilder);
 
             _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}&");
-            _dicionaryBuilder.Add("$expand", odataQueryNestedBuilder.Query);
 
             return this;
         }
@@ -48,13 +39,27 @@ namespace OData.QueryBuilder.Parameters
             var entitySelectQuery = entitySelect.Body.ToODataQuery(string.Empty);
 
             _queryBuilder.Append($"$select={entitySelectQuery}&");
-            _dicionaryBuilder.Add("$select", entitySelectQuery);
 
             return this;
         }
 
         public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd('&'));
 
-        public Dictionary<string, string> ToDictionary() => _dicionaryBuilder;
+        public Dictionary<string, string> ToDictionary()
+        {
+            var odataOperators = _queryBuilder.ToString()
+                .Split(new char[2] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
+
+            for (var step = 1; step < odataOperators.Length; step++)
+            {
+                var odataOperator = odataOperators[step].Split('=');
+
+                dictionary.Add(odataOperator[0], odataOperator[1]);
+            }
+
+            return dictionary;
+        }
     }
 }

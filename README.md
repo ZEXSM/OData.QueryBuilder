@@ -7,8 +7,8 @@ Library provides linq syntax and allows you to build OData queries based on the 
 
 ## Benefits
 * Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
-* Support for nested `OData` extenders with a choice of filtering
 * Support:
+  * nested `OData` extenders with a choice of filtering
   * `all`, `any`
   * date functions `date`
   * string functions `substringof`, `toupper`

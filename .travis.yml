@@ -17,10 +17,8 @@ after_success:
     - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE="Merge-pull-request-17-from-ZEXSM/feature/setting-version-package"
-    - echo $PR_TITLE
     - FEATURE=$([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 1 || echo 0)
-    - echo $FEATURE
-    - RELEASE=$([[ $PR_TITLE == 'release' ]] && echo 1 || echo 0)
+    - RELEASE=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 1 || echo 0)
     - LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
     - export CURRENT_TAG=$(($(echo $LAST_TAG | cut -d. -f 1)+$RELEASE)).$(($(echo $LAST_TAG | cut -d. -f 2)+$FEATURE)).$(($(echo $LAST_TAG | cut -d. -f 3)+1))
     - echo $CURRENT_TAG

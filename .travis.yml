@@ -16,7 +16,7 @@ after_success:
     - dotnet test --no-build ./test/OData.QueryBuilder.Test
     - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
-    - PR_TITLE="Merge-pull-request-17-from-ZEXSM/feature/setting-version-package"
+    - PR_TITLE="Merge-pull-request-17-from-ZEXSM/release/setting-version-package"
     - LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
     - CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
     - CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)

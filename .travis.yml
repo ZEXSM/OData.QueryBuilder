@@ -24,7 +24,7 @@ after_success:
     - MAJOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1)) || echo $CURRENT_MAJOR)
     - MINOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0 || [ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1)) || echo $CURRENT_MINOR)
     - PATCH=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0 || [ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0 || echo $(($CURRENT_PATCH+1)))
-    - NEW_TAG=$($MAJOR.$MINOR.$PATCH)
+    - NEW_TAG=$(echo $($MAJOR.$MINOR.$PATCH))
     - echo $NEW_TAG
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git

@@ -17,11 +17,15 @@ after_success:
     - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE="Merge-pull-request-17-from-ZEXSM/feature/setting-version-package"
-    - FEATURE=$([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 1 || echo 0)
-    - RELEASE=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 1 || echo 0)
     - LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
-    - export CURRENT_TAG=$(($(echo $LAST_TAG | cut -d. -f 1)+$RELEASE)).$(($(echo $LAST_TAG | cut -d. -f 2)+$FEATURE)).$(($(echo $LAST_TAG | cut -d. -f 3)+1))
-    - echo $CURRENT_TAG
+    - CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
+    - CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)
+    - CURRENT_PATCH=$(echo $LAST_TAG | cut -d. -f 3)
+    - MAJOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && $(($CURRENT_MAJOR+1)) || $CURRENT_MAJOR)
+    - MINOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0 || [ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && $(($CURRENT_MINOR+1)) || $CURRENT_MINOR)
+    - PATCH=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0 || [ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0 || $(($CURRENT_PATCH+1)))
+    - NEW_TAG=$($MAJOR.$MINOR.$PATCH)
+    - echo NEW_TAG
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE=$(git log -1 --pretty='%f')

@@ -13,5 +13,9 @@ namespace OData.QueryBuilder.Parameters.Nested
         IODataQueryNestedParameter<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter);
 
         IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect);
+
+        IODataQueryNestedParameter<TEntity> OrderBy(Expression<Func<TEntity, object>> entityNestedOrderBy);
+
+        IODataQueryNestedParameter<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityNestedOrderByDescending);
     }
 }

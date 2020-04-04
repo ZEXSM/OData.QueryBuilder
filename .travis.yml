@@ -1,5 +1,4 @@
-language: csharp 
-sudo: false
+language: csharp
 dist: trusty
 os: linux
 mono: none
@@ -29,8 +28,8 @@ before_deploy:
 deploy:
     provider: releases
     name: v$CURRENT_TAG
-    api_key: $GITHUB_OAUTH_TOKEN
-    skip_cleanup: true
+    token: $GITHUB_OAUTH_TOKEN
+    cleanup: true
     repo: ZEXSM/OData.QueryBuilder
     on:
         branch: master

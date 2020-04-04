@@ -41,6 +41,24 @@ namespace OData.QueryBuilder.Parameters.Nested
             return this;
         }
 
+        public IODataQueryNestedParameter<TEntity> OrderBy(Expression<Func<TEntity, object>> entityNestedOrderBy)
+        {
+            var entityNestedOrderByQuery = entityNestedOrderBy.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$orderby={entityNestedOrderByQuery} asc;");
+
+            return this;
+        }
+
+        public IODataQueryNestedParameter<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityNestedOrderByDescending)
+        {
+            var entityNestedOrderByDescendingQuery = entityNestedOrderByDescending.Body.ToODataQuery(string.Empty);
+
+            _queryBuilder.Append($"$orderby={entityNestedOrderByDescendingQuery} desc;");
+
+            return this;
+        }
+
         public IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entitySelectNested)
         {
             var entitySelectNestedQuery = entitySelectNested.Body.ToODataQuery(string.Empty);

@@ -84,6 +84,41 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum");
         }
 
+
+        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested orderby => Success")]
+        public void ODataQueryBuilderList_ExpandNested_OrderBy_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind)
+                        .OrderBy(s => s.EndDate);
+                })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate asc)");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested orderby desc => Success")]
+        public void ODataQueryBuilderList_ExpandNested_OrderByDescending_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind)
+                        .OrderByDescending(s => s.EndDate);
+                })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested Filter => Success")]
         public void ODataQueryBuilderKey_Expand_Nested_Filter_Success()
         {

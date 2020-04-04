@@ -50,6 +50,40 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKind($expand=ODataCode($select=IdCode);$select=IdKind),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Expand nested orderby => Success")]
+        public void ODataQueryBuilderList_ExpandNested_OrderBy_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind)
+                        .OrderBy(s => s.EndDate);
+                })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=EndDate asc)");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Expand nested orderby desc => Success")]
+        public void ODataQueryBuilderList_ExpandNested_OrderByDescending_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind)
+                        .OrderByDescending(s => s.EndDate);
+                })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderList) Select simple => Success")]
         public void ODataQueryBuilderList_Select_Simple_Success()
         {

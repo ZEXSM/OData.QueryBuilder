@@ -17,6 +17,7 @@ after_success:
     - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE=$(git log -1 --pretty='%f')
+    - echo $PR_TITLE
     - FEATURE=$([[ $PR_TITLE == 'feature' ]] && echo 1 || echo 0)
     - RELEASE=$([[ $PR_TITLE == 'release' ]] && echo 1 || echo 0)
     - LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)

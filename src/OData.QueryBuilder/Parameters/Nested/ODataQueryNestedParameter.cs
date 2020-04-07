@@ -67,5 +67,12 @@ namespace OData.QueryBuilder.Parameters.Nested
 
             return this;
         }
+
+        public IODataQueryNestedParameter<TEntity> Top(int number)
+        {
+            _queryBuilder.Append($"$top={number};");
+
+            return this;
+        }
     }
 }

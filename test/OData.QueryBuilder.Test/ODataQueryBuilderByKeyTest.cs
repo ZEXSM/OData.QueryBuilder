@@ -119,6 +119,24 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested top => Success")]
+        public void ODataQueryBuilderList_ExpandNested_Top_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind)
+                        .OrderByDescending(s => s.EndDate)
+                        .Top(1);
+                })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc;$top=1)");
+        }
+
         [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested Filter => Success")]
         public void ODataQueryBuilderKey_Expand_Nested_Filter_Success()
         {

@@ -17,5 +17,7 @@ namespace OData.QueryBuilder.Parameters.Nested
         IODataQueryNestedParameter<TEntity> OrderBy(Expression<Func<TEntity, object>> entityNestedOrderBy);
 
         IODataQueryNestedParameter<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityNestedOrderByDescending);
+
+        IODataQueryNestedParameter<TEntity> Top(int number);
     }
 }

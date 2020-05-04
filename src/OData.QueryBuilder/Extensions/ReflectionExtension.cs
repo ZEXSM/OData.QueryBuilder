@@ -5,7 +5,7 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ReflectionExtension
     {
-        public static object GetValue(this MemberInfo memberInfo, object obj = default(object))
+        public static object GetValue(this MemberInfo memberInfo, object obj = default)
         {
             try
             {
@@ -14,14 +14,14 @@ namespace OData.QueryBuilder.Extensions
                     case FieldInfo fieldInfo:
                         return fieldInfo.GetValue(obj);
                     case PropertyInfo propertyInfo:
-                        return propertyInfo.GetValue(obj, default(object[]));
+                        return propertyInfo.GetValue(obj, default);
                     default:
-                        return default(object);
+                        return default;
                 }
             }
             catch (Exception)
             {
-                return default(object);
+                return default;
             }
         }
     }

@@ -1,5 +1,5 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
-using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -16,18 +16,26 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {
-            var entityFilterQuery = entityFilter.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$filter={entityFilterQuery}&");
+            odataQueryExpressionVisitor.Visit(entityFilter.Body);
+
+            var odataFilterQuery = odataQueryExpressionVisitor.GetODataQuery();
+
+            _queryBuilder.Append($"{Contants.QueryParameterFilter}{Contants.QueryStringEqualSign}{odataFilterQuery}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$expand={entityExpandQuery}&");
+            odataQueryExpressionVisitor.Visit(entityExpand.Body);
+
+            var odataExpandQuery = odataQueryExpressionVisitor.GetODataQuery();
+
+            _queryBuilder.Append($"{Contants.QueryParameterExpand}{Contants.QueryStringEqualSign}{odataExpandQuery}{Contants.QueryStringSeparator}");
 
             return this;
         }
@@ -38,71 +46,83 @@ namespace OData.QueryBuilder.Parameters
 
             entityExpandNested(odataQueryNestedBuilder);
 
-            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}&");
+            _queryBuilder.Append($"{Contants.QueryParameterExpand}{Contants.QueryStringEqualSign}{odataQueryNestedBuilder.Query}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var entitySelectQuery = entitySelect.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$select={entitySelectQuery}&");
+            odataQueryExpressionVisitor.Visit(entitySelect.Body);
+
+            var odataSelectQuery = odataQueryExpressionVisitor.GetODataQuery();
+
+            _queryBuilder.Append($"{Contants.QueryParameterSelect}{Contants.QueryStringEqualSign}{odataSelectQuery}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
         {
-            var entityOrderByQuery = entityOrderBy.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$orderby={entityOrderByQuery} asc&");
+            odataQueryExpressionVisitor.Visit(entityOrderBy.Body);
+
+            var odataOrderByQuery = odataQueryExpressionVisitor.GetODataQuery();
+
+            _queryBuilder.Append($"{Contants.QueryParameterOrderBy}{Contants.QueryStringEqualSign}{odataOrderByQuery} {Contants.QuerySortAsc}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
-            var entityOrderByDescendingQuery = entityOrderByDescending.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$orderby={entityOrderByDescendingQuery} desc&");
+            odataQueryExpressionVisitor.Visit(entityOrderByDescending.Body);
 
-            return this;
-        }
+            var odataOrderByDescendingQuery = odataQueryExpressionVisitor.GetODataQuery();
 
-        public IODataQueryParameterList<TEntity> Skip(int number)
-        {
-            _queryBuilder.Append($"$skip={number}&");
+            _queryBuilder.Append($"{Contants.QueryParameterOrderBy}{Contants.QueryStringEqualSign}{odataOrderByDescendingQuery} {Contants.QuerySortDesc}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
-        public IODataQueryParameterList<TEntity> Top(int number)
+        public IODataQueryParameterList<TEntity> Skip(int value)
         {
-            _queryBuilder.Append($"$top={number}&");
+            _queryBuilder.Append($"{Contants.QueryParameterSkip}{Contants.QueryStringEqualSign}{value}{Contants.QueryStringSeparator}");
+
+            return this;
+        }
+
+        public IODataQueryParameterList<TEntity> Top(int value)
+        {
+            _queryBuilder.Append($"{Contants.QueryParameterTop}{Contants.QueryStringEqualSign}{value}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> Count(bool value = true)
         {
-            _queryBuilder.Append($"$count={value.ToString().ToLower()}&");
+            _queryBuilder.Append($"{Contants.QueryParameterCount}{Contants.QueryStringEqualSign}{value.ToString().ToLower()}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
-        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd('&'));
+        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd(Contants.QueryCharSeparator));
 
         public Dictionary<string, string> ToDictionary()
         {
             var odataOperators = _queryBuilder.ToString()
-                .Split(new char[2] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new char[2] { Contants.QueryCharBegin, Contants.QueryCharSeparator }, StringSplitOptions.RemoveEmptyEntries);
 
             var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
 
             for (var step = 1; step < odataOperators.Length; step++)
             {
-                var odataOperator = odataOperators[step].Split('=');
+                var odataOperator = odataOperators[step].Split(Contants.QueryCharEqualSign);
 
                 dictionary.Add(odataOperator[0], odataOperator[1]);
             }

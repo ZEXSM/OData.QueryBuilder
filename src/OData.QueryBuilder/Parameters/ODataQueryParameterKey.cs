@@ -1,5 +1,5 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
-using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -16,45 +16,53 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var entityExpandQuery = entityExpand.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$expand={entityExpandQuery}&");
+            odataQueryExpressionVisitor.Visit(entityExpand.Body);
+
+            var odataExpandQuery = odataQueryExpressionVisitor.GetODataQuery();
+
+            _queryBuilder.Append($"{Contants.QueryParameterExpand}{Contants.QueryStringEqualSign}{odataExpandQuery}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
-        public IODataQueryParameterKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested)
+        public IODataQueryParameterKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> actionEntityExpandNested)
         {
             var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
 
-            entityExpandNested(odataQueryNestedBuilder);
+            actionEntityExpandNested(odataQueryNestedBuilder);
 
-            _queryBuilder.Append($"$expand={odataQueryNestedBuilder.Query}&");
+            _queryBuilder.Append($"{Contants.QueryParameterExpand}{Contants.QueryStringEqualSign}{odataQueryNestedBuilder.Query}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var entitySelectQuery = entitySelect.Body.ToODataQuery(string.Empty);
+            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
 
-            _queryBuilder.Append($"$select={entitySelectQuery}&");
+            odataQueryExpressionVisitor.Visit(entitySelect.Body);
+
+            var odataSelectQuery = odataQueryExpressionVisitor.GetODataQuery();
+
+            _queryBuilder.Append($"{Contants.QueryParameterSelect}{Contants.QueryStringEqualSign}{odataSelectQuery}{Contants.QueryStringSeparator}");
 
             return this;
         }
 
-        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd('&'));
+        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd(Contants.QueryCharSeparator));
 
         public Dictionary<string, string> ToDictionary()
         {
             var odataOperators = _queryBuilder.ToString()
-                .Split(new char[2] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new char[2] { Contants.QueryCharBegin, Contants.QueryCharSeparator }, StringSplitOptions.RemoveEmptyEntries);
 
             var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
 
             for (var step = 1; step < odataOperators.Length; step++)
             {
-                var odataOperator = odataOperators[step].Split('=');
+                var odataOperator = odataOperators[step].Split(Contants.QueryCharEqualSign);
 
                 dictionary.Add(odataOperator[0], odataOperator[1]);
             }

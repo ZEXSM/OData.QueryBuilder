@@ -7,6 +7,37 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionExtension
     {
+        public static string GetODataLogicalOperator(this Expression expression, bool isSpaceToEnd = true)
+        {
+            var spaceEnd = isSpaceToEnd ? " " : string.Empty;
+
+            switch (expression.NodeType)
+            {
+                case ExpressionType.And:
+                case ExpressionType.AndAlso:
+                    return $"and{spaceEnd}";
+                case ExpressionType.Or:
+                case ExpressionType.OrElse:
+                    return $"or{spaceEnd}";
+                case ExpressionType.Equal:
+                    return $"eq{spaceEnd}";
+                case ExpressionType.Not:
+                    return $"not{spaceEnd}";
+                case ExpressionType.NotEqual:
+                    return $"ne{spaceEnd}";
+                case ExpressionType.LessThan:
+                    return $"lt{spaceEnd}";
+                case ExpressionType.LessThanOrEqual:
+                    return $"le{spaceEnd}";
+                case ExpressionType.GreaterThan:
+                    return $"gt{spaceEnd}";
+                case ExpressionType.GreaterThanOrEqual:
+                    return $"ge{spaceEnd}";
+                default:
+                    return string.Empty;
+            }
+        }
+
         public static object GetMemberExpressionValue(this MemberExpression memberExpression)
         {
             if (memberExpression.Expression is ConstantExpression)
@@ -57,35 +88,6 @@ namespace OData.QueryBuilder.Extensions
             }
 
             return string.Empty;
-        }
-
-        public static string ToODataOperator(this ExpressionType expressionType)
-        {
-            switch (expressionType)
-            {
-                case ExpressionType.And:
-                case ExpressionType.AndAlso:
-                    return "and";
-                case ExpressionType.Or:
-                case ExpressionType.OrElse:
-                    return "or";
-                case ExpressionType.Equal:
-                    return "eq";
-                case ExpressionType.Not:
-                    return "not";
-                case ExpressionType.NotEqual:
-                    return "ne";
-                case ExpressionType.LessThan:
-                    return "lt";
-                case ExpressionType.LessThanOrEqual:
-                    return "le";
-                case ExpressionType.GreaterThan:
-                    return "gt";
-                case ExpressionType.GreaterThanOrEqual:
-                    return "ge";
-                default:
-                    return string.Empty;
-            }
         }
 
         public static string ToODataQuery(this ConstantExpression constantExpression)
@@ -150,16 +152,16 @@ namespace OData.QueryBuilder.Extensions
                                     .Invoke(rightNewExpression.Arguments.Select(s => ((ConstantExpression)s).Value).ToArray()))
                                     .ToString("yyyy-MM-dd");
 
-                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryNew}";
+                                return $"date({leftQuery}) {binaryExpression.GetODataLogicalOperator()} {rightQueryNew}";
                             case MemberExpression rightMemberExpression:
                                 var rightQueryMember = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("yyyy-MM-dd");
 
-                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryMember}";
+                                return $"date({leftQuery}) {binaryExpression.GetODataLogicalOperator()} {rightQueryMember}";
                             case ConstantExpression rightConstantExpression:
                                 var rightQueryConstant = rightConstantExpression.ToODataQuery();
 
-                                return $"date({leftQuery}) {binaryExpression.NodeType.ToODataOperator()} {rightQueryConstant}";
+                                return $"date({leftQuery}) {binaryExpression.GetODataLogicalOperator()} {rightQueryConstant}";
                         }
                     }
                     else
@@ -175,16 +177,16 @@ namespace OData.QueryBuilder.Extensions
                                 var rightQueryUnary = ((DateTime)memberExpression.GetMemberExpressionValue())
                                     .ToString("O");
 
-                                return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryUnary}";
+                                return $"{leftQuery} {binaryExpression.GetODataLogicalOperator()} {rightQueryUnary}";
                             case MemberExpression rightMemberExpression:
                                 var rightQueryMember = ((DateTime)rightMemberExpression.GetMemberExpressionValue())
                                     .ToString("O");
 
-                                return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryMember}";
+                                return $"{leftQuery} {binaryExpression.GetODataLogicalOperator()} {rightQueryMember}";
                             case ConstantExpression rightConstantExpression:
                                 var rightQueryConstant = rightConstantExpression.ToODataQuery();
 
-                                return $"{leftQuery} {binaryExpression.NodeType.ToODataOperator()} {rightQueryConstant}";
+                                return $"{leftQuery} {binaryExpression.GetODataLogicalOperator()} {rightQueryConstant}";
                         }
                     }
                 }
@@ -217,7 +219,7 @@ namespace OData.QueryBuilder.Extensions
                         return leftQueryString;
                     }
 
-                    return $"{leftQueryString} {binaryExpression.NodeType.ToODataOperator()} {rightQueryString}";
+                    return $"{leftQueryString} {binaryExpression.GetODataLogicalOperator()} {rightQueryString}";
 
                 case MemberExpression memberExpression:
                     var memberExpressionValue = memberExpression.GetMemberExpressionValue();
@@ -314,8 +316,7 @@ namespace OData.QueryBuilder.Extensions
                     return newExpression.ToODataQuery();
 
                 case UnaryExpression unaryExpression:
-                    var odataOperator = unaryExpression.NodeType.ToODataOperator();
-                    odataOperator = !string.IsNullOrEmpty(odataOperator) ? $"{odataOperator} " : string.Empty;
+                    var odataOperator = unaryExpression.GetODataLogicalOperator();
 
                     return $"{odataOperator}{unaryExpression.Operand.ToODataQuery(queryString)}";
 

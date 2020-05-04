@@ -14,7 +14,7 @@ namespace OData.QueryBuilder.Builders.Nested
         public ODataQueryNestedBuilder() =>
             _queryBuilder = new StringBuilder();
 
-        public string Query => $"{_queryBuilder.ToString()}({_odataQueryNestedParameter.Query})";
+        public string Query => $"{_queryBuilder}({_odataQueryNestedParameter.Query})";
 
         public IODataQueryNestedParameter<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
         {

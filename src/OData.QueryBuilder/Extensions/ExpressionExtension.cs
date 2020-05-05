@@ -7,32 +7,30 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionExtension
     {
-        public static string GetODataLogicalOperator(this Expression expression, bool isSpaceToEnd = true)
+        public static string GetODataLogicalOperator(this Expression expression)
         {
-            var spaceEnd = isSpaceToEnd ? " " : string.Empty;
-
             switch (expression.NodeType)
             {
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
-                    return $"and{spaceEnd}";
+                    return $"and";
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
-                    return $"or{spaceEnd}";
+                    return $"or";
                 case ExpressionType.Equal:
-                    return $"eq{spaceEnd}";
+                    return $"eq";
                 case ExpressionType.Not:
-                    return $"not{spaceEnd}";
+                    return $"not";
                 case ExpressionType.NotEqual:
-                    return $"ne{spaceEnd}";
+                    return $"ne";
                 case ExpressionType.LessThan:
-                    return $"lt{spaceEnd}";
+                    return $"lt";
                 case ExpressionType.LessThanOrEqual:
-                    return $"le{spaceEnd}";
+                    return $"le";
                 case ExpressionType.GreaterThan:
-                    return $"gt{spaceEnd}";
+                    return $"gt";
                 case ExpressionType.GreaterThanOrEqual:
-                    return $"ge{spaceEnd}";
+                    return $"ge";
                 default:
                     return string.Empty;
             }

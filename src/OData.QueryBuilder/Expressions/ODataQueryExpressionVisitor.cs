@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.Parameters;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -21,7 +22,13 @@ namespace OData.QueryBuilder.Expressions
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            return base.VisitBinary(node);
+            Visit(node.Left);
+
+            _queryBuilder.Append($" {node.GetODataLogicalOperator()} ");
+
+            Visit(node.Right);
+
+            return default;
         }
 
         protected override Expression VisitBlock(BlockExpression node)
@@ -41,6 +48,25 @@ namespace OData.QueryBuilder.Expressions
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
+            switch (node.Value)
+            {
+                case bool b:
+                    _queryBuilder.Append(b.ToString().ToLower());
+                    break;
+                case int i:
+                    _queryBuilder.Append(i);
+                    break;
+                case string s:
+                    _queryBuilder.Append($"'{s}'");
+                    break;
+                case object o:
+                    _queryBuilder.Append($"'{o}'");
+                    break;
+                default:
+                    _queryBuilder.Append("null");
+                    break;
+            }
+
             return base.VisitConstant(node);
         }
 
@@ -101,7 +127,7 @@ namespace OData.QueryBuilder.Expressions
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            _queryBuilder.Append(node.Member.Name);
+            _queryBuilder.Append($"{node.Member.Name}");
 
             return base.VisitMember(node);
         }
@@ -144,7 +170,7 @@ namespace OData.QueryBuilder.Expressions
 
                 if (i != node.Arguments.Count - 1)
                 {
-                    _queryBuilder.Append(",");
+                    _queryBuilder.Append(Constants.CommaStringSeparator);
                 }
             }
 
@@ -183,9 +209,9 @@ namespace OData.QueryBuilder.Expressions
 
         protected override Expression VisitUnary(UnaryExpression node)
         {
-            var odataLogicalOperator = node.GetODataLogicalOperator();
+            //var odataLogicalOperator = node.GetODataLogicalOperator();
 
-            _queryBuilder.Append(odataLogicalOperator);
+            //_queryBuilder.Append(odataLogicalOperator);
 
             return base.VisitUnary(node);
         }

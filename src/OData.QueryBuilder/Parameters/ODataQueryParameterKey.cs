@@ -22,7 +22,7 @@ namespace OData.QueryBuilder.Parameters
 
             var odataExpandQuery = odataQueryExpressionVisitor.GetODataQuery();
 
-            _queryBuilder.Append($"{Contants.QueryParameterExpand}{Contants.QueryStringEqualSign}{odataExpandQuery}{Contants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{odataExpandQuery}{Constants.QueryStringSeparator}");
 
             return this;
         }
@@ -33,7 +33,7 @@ namespace OData.QueryBuilder.Parameters
 
             actionEntityExpandNested(odataQueryNestedBuilder);
 
-            _queryBuilder.Append($"{Contants.QueryParameterExpand}{Contants.QueryStringEqualSign}{odataQueryNestedBuilder.Query}{Contants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{odataQueryNestedBuilder.Query}{Constants.QueryStringSeparator}");
 
             return this;
         }
@@ -46,23 +46,23 @@ namespace OData.QueryBuilder.Parameters
 
             var odataSelectQuery = odataQueryExpressionVisitor.GetODataQuery();
 
-            _queryBuilder.Append($"{Contants.QueryParameterSelect}{Contants.QueryStringEqualSign}{odataSelectQuery}{Contants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{odataSelectQuery}{Constants.QueryStringSeparator}");
 
             return this;
         }
 
-        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd(Contants.QueryCharSeparator));
+        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd(Constants.QueryCharSeparator));
 
         public Dictionary<string, string> ToDictionary()
         {
             var odataOperators = _queryBuilder.ToString()
-                .Split(new char[2] { Contants.QueryCharBegin, Contants.QueryCharSeparator }, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new char[2] { Constants.QueryCharBegin, Constants.QueryCharSeparator }, StringSplitOptions.RemoveEmptyEntries);
 
             var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
 
             for (var step = 1; step < odataOperators.Length; step++)
             {
-                var odataOperator = odataOperators[step].Split(Contants.QueryCharEqualSign);
+                var odataOperator = odataOperators[step].Split(Constants.QueryCharEqualSign);
 
                 dictionary.Add(odataOperator[0], odataOperator[1]);
             }

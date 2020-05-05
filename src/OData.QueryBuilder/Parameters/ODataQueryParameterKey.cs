@@ -1,5 +1,5 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
-using OData.QueryBuilder.Expressions;
+using OData.QueryBuilder.ExpressionVisitors;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -16,37 +16,33 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new ExpandODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entityExpand.Body);
+            visitor.Visit(entityExpand.Body);
 
-            var odataExpandQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{odataExpandQuery}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> actionEntityExpandNested)
         {
-            var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
+            var builder = new ODataQueryNestedBuilder<TEntity>();
 
-            actionEntityExpandNested(odataQueryNestedBuilder);
+            actionEntityExpandNested(builder);
 
-            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{odataQueryNestedBuilder.Query}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{builder.Query}{Constants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new SelectODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entitySelect.Body);
+            visitor.Visit(entitySelect.Body);
 
-            var odataSelectQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{odataSelectQuery}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringSeparator}");
 
             return this;
         }

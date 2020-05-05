@@ -12,21 +12,21 @@ namespace OData.QueryBuilder.Resourses
 
         public IODataQueryParameterKey<TEntity> ByKey(int key)
         {
-            _queryBuilder.Append($"({key})?");
+            _queryBuilder.Append($"({key}){Constants.QueryStringBegin}");
 
             return new ODataQueryParameterKey<TEntity>(_queryBuilder);
         }
 
         public IODataQueryParameterKey<TEntity> ByKey(string key)
         {
-            _queryBuilder.Append($"('{key}')?");
+            _queryBuilder.Append($"('{key}'){Constants.QueryStringBegin}");
 
             return new ODataQueryParameterKey<TEntity>(_queryBuilder);
         }
 
         public IODataQueryParameterList<TEntity> ByList()
         {
-            _queryBuilder.Append("?");
+            _queryBuilder.Append(Constants.QueryStringBegin);
 
             return new ODataQueryParameterList<TEntity>(_queryBuilder);
         }

@@ -11,6 +11,7 @@
         public const string QueryStringEqualSign = "=";
         public const char QueryCharEqualSign = '=';
         public const string SlashStringSeparator = "/";
+        public const char SlashCharSeparator = '/';
         public const string CommaStringSeparator = ",";
         public const char DotCharSeparator = '.';
 

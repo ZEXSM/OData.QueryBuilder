@@ -1,6 +1,5 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
-using OData.QueryBuilder.Expressions;
-using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.ExpressionVisitors;
 using System;
 using System.Linq.Expressions;
 
@@ -15,76 +14,66 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         public IODataQueryNestedParameter<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new ExpandODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entityNestedExpand.Body);
+            visitor.Visit(entityNestedExpand.Body);
 
-            var odataNestedExpandQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{odataNestedExpandQuery}{Constants.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringNestedSeparator}");
 
             return this;
         }
 
         public IODataQueryNestedParameter<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> actionEntityExpandNested)
         {
-            var odataQueryNestedBuilder = new ODataQueryNestedBuilder<TEntity>();
+            var builder = new ODataQueryNestedBuilder<TEntity>();
 
-            actionEntityExpandNested(odataQueryNestedBuilder);
+            actionEntityExpandNested(builder);
 
-            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{odataQueryNestedBuilder.Query}{Constants.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{builder.Query}{Constants.QueryStringNestedSeparator}");
 
             return this;
         }
 
         public IODataQueryNestedParameter<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new FilterODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entityNestedFilter.Body);
+            visitor.Visit(entityNestedFilter.Body);
 
-            var odataNestedFilterQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterFilter}{Constants.QueryStringEqualSign}{odataNestedFilterQuery}{Constants.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterFilter}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringNestedSeparator}");
 
             return this;
         }
 
         public IODataQueryNestedParameter<TEntity> OrderBy(Expression<Func<TEntity, object>> entityNestedOrderBy)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new OrderByODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entityNestedOrderBy.Body);
+            visitor.Visit(entityNestedOrderBy.Body);
 
-            var odataNestedOrderByQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{odataNestedOrderByQuery} {Constants.QuerySortAsc}{Constants.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{visitor.Query} {Constants.QuerySortAsc}{Constants.QueryStringNestedSeparator}");
 
             return this;
         }
 
         public IODataQueryNestedParameter<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityNestedOrderByDescending)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new OrderByODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entityNestedOrderByDescending.Body);
+            visitor.Visit(entityNestedOrderByDescending.Body);
 
-            var odataNestedOrderByDescendingQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{odataNestedOrderByDescendingQuery} {Constants.QuerySortDesc}{Constants.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{visitor.Query} {Constants.QuerySortDesc}{Constants.QueryStringNestedSeparator}");
 
             return this;
         }
 
         public IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect)
         {
-            var odataQueryExpressionVisitor = new ODataQueryExpressionVisitor();
+            var visitor = new SelectODataExpressionVisitor();
 
-            odataQueryExpressionVisitor.Visit(entityNestedSelect.Body);
+            visitor.Visit(entityNestedSelect.Body);
 
-            var odataNestedSelectQuery = odataQueryExpressionVisitor.GetODataQuery();
-
-            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{odataNestedSelectQuery}{Constants.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringNestedSeparator}");
 
             return this;
         }

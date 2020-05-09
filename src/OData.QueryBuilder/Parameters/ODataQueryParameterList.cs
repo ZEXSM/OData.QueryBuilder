@@ -1,5 +1,5 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
-using OData.QueryBuilder.ExpressionVisitors;
+using OData.QueryBuilder.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -16,22 +16,18 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {
-            var visitor = new FilterODataExpressionVisitor();
+            var query = entityFilter.Body.ToODataQuery(string.Empty);
 
-            visitor.Visit(entityFilter.Body);
-
-            _queryBuilder.Append($"{Constants.QueryParameterFilter}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterFilter}{Constants.QueryStringEqualSign}{query}{Constants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var visitor = new ExpandODataExpressionVisitor();
+            var query = entityExpand.Body.ToODataQuery(string.Empty);
 
-            visitor.Visit(entityExpand.Body);
-
-            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterExpand}{Constants.QueryStringEqualSign}{query}{Constants.QueryStringSeparator}");
 
             return this;
         }
@@ -49,33 +45,27 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var visitor = new SelectODataExpressionVisitor();
+            var query = entitySelect.Body.ToODataQuery(string.Empty);
 
-            visitor.Visit(entitySelect.Body);
-
-            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{visitor.Query}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterSelect}{Constants.QueryStringEqualSign}{query}{Constants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
         {
-            var visitor = new OrderByODataExpressionVisitor();
+            var query = entityOrderBy.Body.ToODataQuery(string.Empty);
 
-            visitor.Visit(entityOrderBy.Body);
-
-            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{visitor.Query} {Constants.QuerySortAsc}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{query} {Constants.QuerySortAsc}{Constants.QueryStringSeparator}");
 
             return this;
         }
 
         public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
-            var visitor = new OrderByODataExpressionVisitor();
+            var query = entityOrderByDescending.Body.ToODataQuery(string.Empty);
 
-            visitor.Visit(entityOrderByDescending.Body);
-
-            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{visitor.Query} {Constants.QuerySortDesc}{Constants.QueryStringSeparator}");
+            _queryBuilder.Append($"{Constants.QueryParameterOrderBy}{Constants.QueryStringEqualSign}{query} {Constants.QuerySortDesc}{Constants.QueryStringSeparator}");
 
             return this;
         }

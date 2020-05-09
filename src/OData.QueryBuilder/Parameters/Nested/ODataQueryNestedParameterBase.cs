@@ -6,7 +6,8 @@ namespace OData.QueryBuilder.Parameters.Nested
     {
         protected readonly StringBuilder _queryBuilder;
 
-        public ODataQueryNestedParameterBase() => _queryBuilder = new StringBuilder();
+        public ODataQueryNestedParameterBase(StringBuilder queryBuilder) =>
+            _queryBuilder = queryBuilder;
 
         public string Query => _queryBuilder.ToString().Trim(Constants.QueryCharNestedSeparator);
     }

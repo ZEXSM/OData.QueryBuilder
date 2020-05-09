@@ -2,13 +2,14 @@
 using OData.QueryBuilder.Extensions;
 using System;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace OData.QueryBuilder.Parameters.Nested
 {
     public class ODataQueryNestedParameter<TEntity> : ODataQueryNestedParameterBase, IODataQueryNestedParameter<TEntity>
     {
         public ODataQueryNestedParameter()
-            : base()
+            : base(new StringBuilder())
         {
         }
 

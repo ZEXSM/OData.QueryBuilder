@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Parameters;
+﻿using OData.QueryBuilder.Constants;
+using OData.QueryBuilder.Parameters;
 using System.Text;
 
 namespace OData.QueryBuilder.Resourses
@@ -12,21 +13,21 @@ namespace OData.QueryBuilder.Resourses
 
         public IODataQueryParameterKey<TEntity> ByKey(int key)
         {
-            _queryBuilder.Append($"({key}){Constants.QueryStringBegin}");
+            _queryBuilder.Append($"({key}){ODataQuerySeparators.QueryStringBegin}");
 
             return new ODataQueryParameterKey<TEntity>(_queryBuilder);
         }
 
         public IODataQueryParameterKey<TEntity> ByKey(string key)
         {
-            _queryBuilder.Append($"('{key}'){Constants.QueryStringBegin}");
+            _queryBuilder.Append($"('{key}'){ODataQuerySeparators.QueryStringBegin}");
 
             return new ODataQueryParameterKey<TEntity>(_queryBuilder);
         }
 
         public IODataQueryParameterList<TEntity> ByList()
         {
-            _queryBuilder.Append(Constants.QueryStringBegin);
+            _queryBuilder.Append(ODataQuerySeparators.QueryStringBegin);
 
             return new ODataQueryParameterList<TEntity>(_queryBuilder);
         }

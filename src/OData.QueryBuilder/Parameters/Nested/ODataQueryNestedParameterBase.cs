@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using OData.QueryBuilder.Constants;
+using System.Text;
 
 namespace OData.QueryBuilder.Parameters.Nested
 {
@@ -9,6 +10,6 @@ namespace OData.QueryBuilder.Parameters.Nested
         public ODataQueryNestedParameterBase(StringBuilder queryBuilder) =>
             _queryBuilder = queryBuilder;
 
-        public string Query => _queryBuilder.ToString().Trim(Constants.QueryCharNestedSeparator);
+        public string Query => _queryBuilder.ToString().Trim(ODataQuerySeparators.QueryCharNestedSeparator);
     }
 }

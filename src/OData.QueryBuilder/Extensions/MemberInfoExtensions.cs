@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace OData.QueryBuilder.Extensions
 {
-    internal static class ReflectionExtension
+    internal static class MemberInfoExtensions
     {
         public static object GetValue(this MemberInfo memberInfo, object obj = default)
         {

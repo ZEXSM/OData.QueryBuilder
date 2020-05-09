@@ -1,6 +1,6 @@
-﻿namespace OData.QueryBuilder.Parameters
+﻿namespace OData.QueryBuilder.Constants
 {
-    internal struct Constants
+    internal struct ODataQuerySeparators
     {
         public const string QueryStringSeparator = "&";
         public const char QueryCharSeparator = '&';
@@ -14,16 +14,5 @@
         public const char SlashCharSeparator = '/';
         public const string CommaStringSeparator = ",";
         public const char DotCharSeparator = '.';
-
-        public const string QueryParameterSelect = "$select";
-        public const string QueryParameterExpand = "$expand";
-        public const string QueryParameterFilter = "$filter";
-        public const string QueryParameterOrderBy = "$orderby";
-        public const string QueryParameterTop = "$top";
-        public const string QueryParameterSkip = "$skip";
-        public const string QueryParameterCount = "$count";
-
-        public const string QuerySortAsc = "asc";
-        public const string QuerySortDesc = "desc";
     }
 }

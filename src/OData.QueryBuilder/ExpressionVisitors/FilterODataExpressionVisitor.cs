@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.Parameters;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.ExpressionVisitors
@@ -45,13 +46,9 @@ namespace OData.QueryBuilder.ExpressionVisitors
             return base.VisitConstant(node);
         }
 
-        protected override Expression VisitLambda<T>(Expression<T> node)
-        {
-            return base.VisitLambda(node);
-        }
-
         protected override Expression VisitMember(MemberExpression node)
         {
+            _queryBuilder.Append(Constants.SlashStringSeparator);
             return base.VisitMember(node);
         }
 

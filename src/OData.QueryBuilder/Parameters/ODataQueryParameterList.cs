@@ -1,18 +1,17 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
 using OData.QueryBuilder.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public class ODataQueryParameterList<TEntity> : IODataQueryParameterList<TEntity>
+    public class ODataQueryParameterList<TEntity> : ODataQueryParameter, IODataQueryParameterList<TEntity>
     {
-        private readonly StringBuilder _queryBuilder;
-
-        public ODataQueryParameterList(StringBuilder queryBuilder) =>
-            _queryBuilder = queryBuilder;
+        public ODataQueryParameterList(StringBuilder queryBuilder) :
+            base(queryBuilder)
+        {
+        }
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {
@@ -89,25 +88,6 @@ namespace OData.QueryBuilder.Parameters
             _queryBuilder.Append($"{Constants.QueryParameterCount}{Constants.QueryStringEqualSign}{value.ToString().ToLower()}{Constants.QueryStringSeparator}");
 
             return this;
-        }
-
-        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd(Constants.QueryCharSeparator));
-
-        public Dictionary<string, string> ToDictionary()
-        {
-            var odataOperators = _queryBuilder.ToString()
-                .Split(new char[2] { Constants.QueryCharBegin, Constants.QueryCharSeparator }, StringSplitOptions.RemoveEmptyEntries);
-
-            var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
-
-            for (var step = 1; step < odataOperators.Length; step++)
-            {
-                var odataOperator = odataOperators[step].Split(Constants.QueryCharEqualSign);
-
-                dictionary.Add(odataOperator[0], odataOperator[1]);
-            }
-
-            return dictionary;
         }
     }
 }

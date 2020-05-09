@@ -92,14 +92,14 @@ namespace OData.QueryBuilder.Extensions
         {
             switch (constantExpression.Value)
             {
-                case bool boolVal:
-                    return boolVal.ToString().ToLower();
-                case string stringVal:
-                    return $"'{stringVal}'";
-                case int intVal:
-                    return intVal.ToString();
-                case object objectVal:
-                    return $"'{objectVal.ToString()}'";
+                case bool b:
+                    return b.ToString().ToLower();
+                case int i:
+                    return i.ToString();
+                case string s:
+                    return $"'{s}'";
+                case object o:
+                    return $"'{o}'";
                 default:
                     return "null";
             }

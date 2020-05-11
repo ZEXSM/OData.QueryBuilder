@@ -2,7 +2,7 @@
 {
     internal struct ODataQuerySorts
     {
-        public const string QuerySortAsc = "asc";
-        public const string QuerySortDesc = "desc";
+        public const string Asc = "asc";
+        public const string Desc = "desc";
     }
 }

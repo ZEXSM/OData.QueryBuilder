@@ -33,5 +33,20 @@ namespace OData.QueryBuilder.Extensions
                     return string.Empty;
             }
         }
+
+        public static object GetValue(this Expression expression)
+        {
+            switch (expression)
+            {
+                case MemberExpression memberExpression:
+                    return memberExpression.GetValue();
+
+                case ConstantExpression constantExpression:
+                    return constantExpression.GetValue();
+
+                default:
+                    return default;
+            }
+        }
     }
 }

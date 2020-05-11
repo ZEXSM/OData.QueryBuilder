@@ -2,17 +2,17 @@
 {
     internal struct ODataQuerySeparators
     {
-        public const string QueryStringSeparator = "&";
-        public const char QueryCharSeparator = '&';
-        public const string QueryStringNestedSeparator = ";";
-        public const char QueryCharNestedSeparator = ';';
-        public const string QueryStringBegin = "?";
-        public const char QueryCharBegin = '?';
-        public const string QueryStringEqualSign = "=";
-        public const char QueryCharEqualSign = '=';
-        public const string SlashStringSeparator = "/";
-        public const char SlashCharSeparator = '/';
-        public const string CommaStringSeparator = ",";
-        public const char DotCharSeparator = '.';
+        public const string MainString = "&";
+        public const char MainChar = '&';
+        public const string NestedString = ";";
+        public const char NestedChar = ';';
+        public const string BeginString = "?";
+        public const char BeginChar = '?';
+        public const string EqualSignString = "=";
+        public const char EqualSignChar = '=';
+        public const string SlashString = "/";
+        public const char SlashChar = '/';
+        public const string CommaString = ",";
+        public const char DotChar = '.';
     }
 }

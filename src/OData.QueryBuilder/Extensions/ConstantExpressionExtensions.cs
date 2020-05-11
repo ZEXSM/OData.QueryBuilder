@@ -20,5 +20,8 @@ namespace OData.QueryBuilder.Extensions
                     return "null";
             }
         }
+
+        public static object GetValue(this ConstantExpression constantExpression) =>
+            constantExpression.Value;
     }
 }

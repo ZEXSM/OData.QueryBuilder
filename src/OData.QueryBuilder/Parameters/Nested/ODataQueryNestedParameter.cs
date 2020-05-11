@@ -18,7 +18,7 @@ namespace OData.QueryBuilder.Parameters.Nested
         {
             var query = entityNestedExpand.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterExpand}{ODataQuerySeparators.QueryStringEqualSign}{query}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.NestedString}");
 
             return this;
         }
@@ -29,7 +29,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
             actionEntityExpandNested(builder);
 
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterExpand}{ODataQuerySeparators.QueryStringEqualSign}{builder.Query}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{builder.Query}{ODataQuerySeparators.NestedString}");
 
             return this;
         }
@@ -38,7 +38,7 @@ namespace OData.QueryBuilder.Parameters.Nested
         {
             var query = entityNestedFilter.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterFilter}{ODataQuerySeparators.QueryStringEqualSign}{query}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.Filter}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.NestedString}");
 
             return this;
         }
@@ -47,7 +47,7 @@ namespace OData.QueryBuilder.Parameters.Nested
         {
             var query = entityNestedOrderBy.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterOrderBy}{ODataQuerySeparators.QueryStringEqualSign}{query} {ODataQuerySorts.QuerySortAsc}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.OrderBy}{ODataQuerySeparators.EqualSignString}{query} {ODataQuerySorts.Asc}{ODataQuerySeparators.NestedString}");
 
             return this;
         }
@@ -56,7 +56,7 @@ namespace OData.QueryBuilder.Parameters.Nested
         {
             var query = entityNestedOrderByDescending.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterOrderBy}{ODataQuerySeparators.QueryStringEqualSign}{query} {ODataQuerySorts.QuerySortDesc}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.OrderBy}{ODataQuerySeparators.EqualSignString}{query} {ODataQuerySorts.Desc}{ODataQuerySeparators.NestedString}");
 
             return this;
         }
@@ -65,14 +65,14 @@ namespace OData.QueryBuilder.Parameters.Nested
         {
             var query = entityNestedSelect.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterSelect}{ODataQuerySeparators.QueryStringEqualSign}{query}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.NestedString}");
 
             return this;
         }
 
         public IODataQueryNestedParameter<TEntity> Top(int value)
         {
-            _queryBuilder.Append($"{ODataQueryParameters.QueryParameterTop}{ODataQuerySeparators.QueryStringEqualSign}{value}{ODataQuerySeparators.QueryStringNestedSeparator}");
+            _queryBuilder.Append($"{ODataQueryParameters.Top}{ODataQuerySeparators.EqualSignString}{value}{ODataQuerySeparators.NestedString}");
 
             return this;
         }

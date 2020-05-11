@@ -232,26 +232,39 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "(ODataQueryBuilderList) Function Date => Success")]
         public void ODataQueryBuilderList_Function_Date_Success()
         {
-            var constCurrentDateToday = new DateTime(2019, 2, 9);
-            var constCurrentDateNow = new DateTime(2019, 2, 9, 1, 2, 4);
-            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { EndDate = constCurrentDateToday } };
+            var currentDateToday = new DateTime(2019, 2, 9);
+            var currentDateNow = new DateTime(2019, 2, 9, 1, 2, 4);
+            var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { EndDate = currentDateToday } };
 
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter(s =>
-                    s.ODataKind.OpenDate.Date == constCurrentDateNow
-                    && s.ODataKind.OpenDate == constCurrentDateToday
+                .Filter((s, f) =>
+                    f.Date(s.ODataKind.OpenDate) == currentDateNow
+                    && s.ODataKind.OpenDate == currentDateToday
                     && s.ODataKind.OpenDate == DateTime.Today
-                    && s.Open.Date == DateTime.Today
+                    && f.Date(s.Open) == DateTime.Today
+                    && f.Date(s.Open) == DateTimeOffset.Now
                     && s.Open == DateTime.Today
-                    && s.Open == constCurrentDateToday
-                    && s.Open.Date == newObject.ODataKind.EndDate
-                    && s.ODataKind.OpenDate.Date == new DateTime(2019, 7, 9)
-                    && ((DateTime)s.BeginDate).Date == DateTime.Today)
+                    && s.Open == currentDateToday
+                    && f.Date(s.Open) == newObject.ODataKind.EndDate
+                    && f.Date(s.ODataKind.OpenDate) == new DateTime(2019, 7, 9)
+                    && f.Date(s.ODataKind.OpenDate) == new DateTimeOffset(currentDateToday)
+                    && f.Date((DateTimeOffset)s.BeginDate) == DateTime.Today)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq {DateTime.Today.ToString("O")} and date(Open) eq {DateTime.Today.ToString("yyyy-MM-dd")} and Open eq {DateTime.Today.ToString("O")} and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09 and date(BeginDate) eq {DateTime.Today.ToString("yyyy-MM-dd")}");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=" +
+                $"date(ODataKind/OpenDate) eq 2019-02-09T01:02:04Z " +
+                $"and ODataKind/OpenDate eq 2019-02-09T00:00:00Z " +
+                $"and ODataKind/OpenDate eq {DateTime.Today:s}Z " +
+                $"and date(Open) eq {DateTime.Today:s}Z " +
+                $"and date(Open) eq {DateTimeOffset.Now:s}Z " +
+                $"and Open eq {DateTime.Today:s}Z " +
+                $"and Open eq 2019-02-09T00:00:00Z " +
+                $"and date(Open) eq 2019-02-09T00:00:00Z " +
+                $"and date(ODataKind/OpenDate) eq 2019-07-09T00:00:00Z " +
+                $"and date(ODataKind/OpenDate) eq 2019-02-09T00:00:00Z " +
+                $"and date(BeginDate) eq {DateTime.Today:s}Z");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN => Success")]
@@ -353,14 +366,14 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter(s => s.IdRule == constValue
+                .Filter((s, f) => s.IdRule == constValue
                     && s.IsActive
-                    && (((DateTimeOffset)s.EndDate).Date == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
-                    && (((DateTime)s.BeginDate).Date != default(DateTime?) || ((DateTime)s.BeginDate).Date <= DateTime.Today)
+                    && (f.Date(s.EndDate.Value) == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
+                    && (f.Date((DateTimeOffset)s.BeginDate) != default(DateTime?) || f.Date((DateTime)s.BeginDate) <= DateTime.Now)
                     && constStrIds.Contains(s.ODataKind.ODataCode.Code))
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt {DateTime.Today.ToString("O")} and date(BeginDate) ne null or date(BeginDate) le {DateTime.Today.ToString("yyyy-MM-dd")} and ODataKind/ODataCode/Code in ('123','512')");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt {DateTime.Today:s}Z and date(BeginDate) ne null or date(BeginDate) le {DateTime.Now:s}Z and ODataKind/ODataCode/Code in ('123','512')");
         }
 
         [Theory(DisplayName = "(ODataQueryBuilderList) Count value => Success")]

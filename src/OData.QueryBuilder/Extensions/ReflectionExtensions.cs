@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace OData.QueryBuilder.Extensions
 {
-    internal static class MemberInfoExtensions
+    internal static class ReflectionExtensions
     {
         public static object GetValue(this MemberInfo memberInfo, object obj = default)
         {
@@ -24,5 +24,8 @@ namespace OData.QueryBuilder.Extensions
                 return default;
             }
         }
+
+        public static bool IsNullableType(this Type type) =>
+            Nullable.GetUnderlyingType(type) != default;
     }
 }

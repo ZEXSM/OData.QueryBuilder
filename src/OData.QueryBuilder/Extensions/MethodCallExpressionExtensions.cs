@@ -80,6 +80,7 @@ namespace OData.QueryBuilder.Extensions
             {
                 return default;
             }
+
             if (arrayObj is IEnumerable<int>)
             {
                 var inSequenceInt = string.Join(",", arrayObj as IEnumerable<int>);

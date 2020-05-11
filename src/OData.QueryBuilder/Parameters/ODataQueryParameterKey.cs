@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public class ODataQueryParameterKey<TEntity> : ODataQueryParameter<TEntity>, IODataQueryParameterKey<TEntity>
+    public class ODataQueryParameterKey<TEntity> : ODataQuery<TEntity>, IODataQueryParameterKey<TEntity>
     {
         public ODataQueryParameterKey(StringBuilder queryBuilder)
             : base(queryBuilder)
@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var query = entityExpand.Body.ToODataQuery(string.Empty);
+            var query = entityExpand.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
 
@@ -36,7 +36,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var query = entitySelect.Body.ToODataQuery(string.Empty);
+            var query = entitySelect.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
 

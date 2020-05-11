@@ -9,10 +9,8 @@ namespace OData.QueryBuilder.Functions
 
         string Substringof();
 
-        IEnumerable<string> In(IEnumerable<string> enumerable);
+        bool In(IEnumerable<string> enumerable);
 
-        IEnumerable<int> In(IEnumerable<int> enumerable);
-
-        IEnumerable<int?> In(IEnumerable<int?> enumerable);
+        bool In(IEnumerable<int> enumerable);
     }
 }

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public interface IODataQueryParameterList<TEntity> : IODataQueryParameter
+    public interface IODataQueryParameterList<TEntity>: IODataQuery
     {
         IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter);
 

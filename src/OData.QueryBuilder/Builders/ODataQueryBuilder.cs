@@ -17,6 +17,6 @@ namespace OData.QueryBuilder.Builders
             _baseUrl = $"{baseUrl.TrimEnd(ODataQuerySeparators.SlashChar)}{ODataQuerySeparators.SlashString}";
 
         public IODataQueryResource<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource) =>
-            new ODataQueryResource<TEntity>($"{_baseUrl}{entityResource.Body.ToODataQuery(string.Empty)}");
+            new ODataQueryResource<TEntity>($"{_baseUrl}{entityResource.Body.ToODataQuery()}");
     }
 }

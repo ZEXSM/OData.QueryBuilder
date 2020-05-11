@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OData.QueryBuilder.Parameters.Nested
 {
-    public class ODataQueryNestedParameter<TEntity> : ODataQueryNestedParameterBase, IODataQueryNestedParameter<TEntity>
+    public class ODataQueryNestedParameter<TEntity> : ODataQueryNested, IODataQueryNestedParameter<TEntity>
     {
         public ODataQueryNestedParameter()
             : base(new StringBuilder())
@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         public IODataQueryNestedParameter<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand)
         {
-            var query = entityNestedExpand.Body.ToODataQuery(string.Empty);
+            var query = entityNestedExpand.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.NestedString}");
 
@@ -36,7 +36,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         public IODataQueryNestedParameter<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter)
         {
-            var query = entityNestedFilter.Body.ToODataQuery(string.Empty);
+            var query = entityNestedFilter.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.Filter}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.NestedString}");
 
@@ -45,7 +45,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         public IODataQueryNestedParameter<TEntity> OrderBy(Expression<Func<TEntity, object>> entityNestedOrderBy)
         {
-            var query = entityNestedOrderBy.Body.ToODataQuery(string.Empty);
+            var query = entityNestedOrderBy.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.OrderBy}{ODataQuerySeparators.EqualSignString}{query} {ODataQuerySorts.Asc}{ODataQuerySeparators.NestedString}");
 
@@ -54,7 +54,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         public IODataQueryNestedParameter<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityNestedOrderByDescending)
         {
-            var query = entityNestedOrderByDescending.Body.ToODataQuery(string.Empty);
+            var query = entityNestedOrderByDescending.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.OrderBy}{ODataQuerySeparators.EqualSignString}{query} {ODataQuerySorts.Desc}{ODataQuerySeparators.NestedString}");
 
@@ -63,7 +63,7 @@ namespace OData.QueryBuilder.Parameters.Nested
 
         public IODataQueryNestedParameter<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect)
         {
-            var query = entityNestedSelect.Body.ToODataQuery(string.Empty);
+            var query = entityNestedSelect.Body.ToODataQuery();
 
             _stringBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.NestedString}");
 

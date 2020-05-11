@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public interface IODataQueryParameterKey<TEntity>: IODataQueryParameter
+    public interface IODataQueryParameterKey<TEntity> : IODataQuery
     {
         IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 

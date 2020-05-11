@@ -2,7 +2,7 @@
 
 namespace OData.QueryBuilder.Expressions
 {
-    public sealed class ExpandExpression : Expression
+    public class ExpandExpression<T> : Expression
     {
     }
 }

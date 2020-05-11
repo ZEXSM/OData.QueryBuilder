@@ -4,7 +4,7 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionExtensions
     {
-        public static string ToODataQuery(this Expression expression, string queryString)
+        public static string ToODataQuery(this Expression expression, string queryString = "")
         {
             switch (expression)
             {

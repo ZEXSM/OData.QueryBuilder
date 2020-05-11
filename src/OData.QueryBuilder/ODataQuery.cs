@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OData.QueryBuilder.Parameters
+namespace OData.QueryBuilder
 {
-    public class ODataQueryParameter<TEntity> : IODataQueryParameter
+    public class ODataQuery<TEntity> : IODataQuery
     {
         protected readonly StringBuilder _stringBuilder;
         protected readonly string _resourceName;
 
-        public ODataQueryParameter(StringBuilder queryBuilder)
+        public ODataQuery(StringBuilder queryBuilder)
         {
             _stringBuilder = queryBuilder;
             _resourceName = typeof(TEntity).Name;

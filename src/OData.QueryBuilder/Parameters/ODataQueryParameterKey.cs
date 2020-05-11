@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public class ODataQueryParameterKey<TEntity> : ODataQueryParameter, IODataQueryParameterKey<TEntity>
+    public class ODataQueryParameterKey<TEntity> : ODataQueryParameter<TEntity>, IODataQueryParameterKey<TEntity>
     {
         public ODataQueryParameterKey(StringBuilder queryBuilder)
             : base(queryBuilder)
@@ -18,7 +18,7 @@ namespace OData.QueryBuilder.Parameters
         {
             var query = entityExpand.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
 
             return this;
         }
@@ -29,7 +29,7 @@ namespace OData.QueryBuilder.Parameters
 
             actionEntityExpandNested(builder);
 
-            _queryBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{builder.Query}{ODataQuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{builder.Query}{ODataQuerySeparators.MainString}");
 
             return this;
         }
@@ -38,7 +38,7 @@ namespace OData.QueryBuilder.Parameters
         {
             var query = entitySelect.Body.ToODataQuery(string.Empty);
 
-            _queryBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
 
             return this;
         }

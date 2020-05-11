@@ -6,30 +6,30 @@ namespace OData.QueryBuilder.Resourses
 {
     public class ODataQueryResource<TEntity> : IODataQueryResource<TEntity>
     {
-        private readonly StringBuilder _queryBuilder;
+        private readonly StringBuilder _stringBuilder;
 
         public ODataQueryResource(string resourceUrl) =>
-            _queryBuilder = new StringBuilder(resourceUrl);
+            _stringBuilder = new StringBuilder(resourceUrl);
 
         public IODataQueryParameterKey<TEntity> ByKey(int key)
         {
-            _queryBuilder.Append($"({key}){ODataQuerySeparators.BeginString}");
+            _stringBuilder.Append($"({key}){ODataQuerySeparators.BeginString}");
 
-            return new ODataQueryParameterKey<TEntity>(_queryBuilder);
+            return new ODataQueryParameterKey<TEntity>(_stringBuilder);
         }
 
         public IODataQueryParameterKey<TEntity> ByKey(string key)
         {
-            _queryBuilder.Append($"('{key}'){ODataQuerySeparators.BeginString}");
+            _stringBuilder.Append($"('{key}'){ODataQuerySeparators.BeginString}");
 
-            return new ODataQueryParameterKey<TEntity>(_queryBuilder);
+            return new ODataQueryParameterKey<TEntity>(_stringBuilder);
         }
 
         public IODataQueryParameterList<TEntity> ByList()
         {
-            _queryBuilder.Append(ODataQuerySeparators.BeginString);
+            _stringBuilder.Append(ODataQuerySeparators.BeginString);
 
-            return new ODataQueryParameterList<TEntity>(_queryBuilder);
+            return new ODataQueryParameterList<TEntity>(_stringBuilder);
         }
     }
 }

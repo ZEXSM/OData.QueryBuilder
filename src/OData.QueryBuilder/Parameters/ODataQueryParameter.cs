@@ -5,16 +5,20 @@ using System.Text;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public class ODataQueryParameter : IODataQueryParameter
+    public class ODataQueryParameter<TEntity> : IODataQueryParameter
     {
-        protected readonly StringBuilder _queryBuilder;
+        protected readonly StringBuilder _stringBuilder;
+        protected readonly string _resourceName;
 
-        public ODataQueryParameter(StringBuilder queryBuilder) =>
-            _queryBuilder = queryBuilder;
+        public ODataQueryParameter(StringBuilder queryBuilder)
+        {
+            _stringBuilder = queryBuilder;
+            _resourceName = typeof(TEntity).Name;
+        }
 
         public Dictionary<string, string> ToDictionary()
         {
-            var odataOperators = _queryBuilder.ToString()
+            var odataOperators = _stringBuilder.ToString()
                 .Split(new char[2] { ODataQuerySeparators.BeginChar, ODataQuerySeparators.MainChar }, StringSplitOptions.RemoveEmptyEntries);
 
             var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
@@ -29,6 +33,6 @@ namespace OData.QueryBuilder.Parameters
             return dictionary;
         }
 
-        public Uri ToUri() => new Uri(_queryBuilder.ToString().TrimEnd(ODataQuerySeparators.MainChar));
+        public Uri ToUri() => new Uri(_stringBuilder.ToString().TrimEnd(ODataQuerySeparators.MainChar));
     }
 }

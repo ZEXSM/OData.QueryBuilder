@@ -8,23 +8,23 @@ namespace OData.QueryBuilder.Builders.Nested
 {
     public class ODataQueryNestedBuilder<TEntity> : IODataQueryNestedBuilder<TEntity>
     {
-        private readonly StringBuilder _queryBuilder;
+        private readonly StringBuilder _stringBuilder;
         private ODataQueryNestedParameterBase _odataQueryNestedParameter;
 
         public ODataQueryNestedBuilder() =>
-            _queryBuilder = new StringBuilder();
+            _stringBuilder = new StringBuilder();
 
-        public string Query => $"{_queryBuilder}({_odataQueryNestedParameter.Query})";
+        public string Query => $"{_stringBuilder}({_odataQueryNestedParameter.Query})";
 
         public IODataQueryNestedParameter<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
         {
             if (!string.IsNullOrEmpty(_odataQueryNestedParameter?.Query))
             {
-                _queryBuilder.Append($"({_odataQueryNestedParameter.Query}),{nestedEntityExpand.Body.ToODataQuery(string.Empty)}");
+                _stringBuilder.Append($"({_odataQueryNestedParameter.Query}),{nestedEntityExpand.Body.ToODataQuery(string.Empty)}");
             }
             else
             {
-                _queryBuilder.Append($"{nestedEntityExpand.Body.ToODataQuery(string.Empty)}");
+                _stringBuilder.Append($"{nestedEntityExpand.Body.ToODataQuery(string.Empty)}");
             }
 
             _odataQueryNestedParameter = new ODataQueryNestedParameter<TNestedEntity>();

@@ -63,18 +63,12 @@ namespace OData.QueryBuilder.Extensions
                 $"{parentMemberExpressionQuery}/{memberExpression.Member.Name}";
         }
 
-        public static object GetValue(this MemberExpression memberExpression)
-        {
-            switch (memberExpression.Expression)
+        public static object GetValue(this MemberExpression memberExpression) =>
+            memberExpression.Expression switch
             {
-                case ConstantExpression ce:
-                    return memberExpression.Member.GetValue(ce.Value);
-                case MemberExpression me:
-                    return memberExpression.Member.GetValue(GetValue(me));
-                default:
-                    return memberExpression.Member.GetValue();
-
-            }
-        }
+                ConstantExpression ce => memberExpression.Member.GetValue(ce.Value),
+                MemberExpression me => memberExpression.Member.GetValue(GetValue(me)),
+                _ => memberExpression.Member.GetValue(),
+            };
     }
 }

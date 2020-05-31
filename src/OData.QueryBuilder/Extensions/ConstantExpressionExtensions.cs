@@ -4,22 +4,15 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ConstantExpressionExtensions
     {
-        public static string ToODataQuery(this ConstantExpression constantExpression)
-        {
-            switch (constantExpression.Value)
+        public static string ToODataQuery(this ConstantExpression constantExpression) =>
+            constantExpression.Value switch
             {
-                case bool b:
-                    return b.ToString().ToLower();
-                case int i:
-                    return i.ToString();
-                case string s:
-                    return $"'{s}'";
-                case object o:
-                    return $"'{o}'";
-                default:
-                    return "null";
-            }
-        }
+                bool b => b.ToString().ToLower(),
+                int i => i.ToString(),
+                string s => $"'{s}'",
+                object o => $"'{o}'",
+                _ => "null",
+            };
 
         public static object GetValue(this ConstantExpression constantExpression) =>
             constantExpression.Value;

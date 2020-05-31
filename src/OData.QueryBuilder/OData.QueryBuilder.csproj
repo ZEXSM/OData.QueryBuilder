@@ -4,6 +4,7 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <NuspecFile>bin\$(Configuration)\$(TargetFramework)\OData.QueryBuilder.nuspec</NuspecFile>
     <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="MiniCover" Version="2.0.0-ci-20181108093139" />

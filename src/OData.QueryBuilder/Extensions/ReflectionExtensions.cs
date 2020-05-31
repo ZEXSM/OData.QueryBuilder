@@ -9,15 +9,12 @@ namespace OData.QueryBuilder.Extensions
         {
             try
             {
-                switch (memberInfo)
+                return memberInfo switch
                 {
-                    case FieldInfo fieldInfo:
-                        return fieldInfo.GetValue(obj);
-                    case PropertyInfo propertyInfo:
-                        return propertyInfo.GetValue(obj, default);
-                    default:
-                        return default;
-                }
+                    FieldInfo fieldInfo => fieldInfo.GetValue(obj),
+                    PropertyInfo propertyInfo => propertyInfo.GetValue(obj, default),
+                    _ => default,
+                };
             }
             catch (Exception)
             {

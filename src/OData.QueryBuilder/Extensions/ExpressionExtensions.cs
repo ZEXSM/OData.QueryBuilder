@@ -4,49 +4,25 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionExtensions
     {
-        public static string ToODataQuery(this Expression expression, string queryString = "")
-        {
-            switch (expression)
+        public static string ToODataQuery(this Expression expression, string queryString = "") =>
+            expression switch
             {
-                case BinaryExpression binaryExpression:
-                    return binaryExpression.ToODataQuery(queryString);
+                BinaryExpression binaryExpression => binaryExpression.ToODataQuery(queryString),
+                MemberExpression memberExpression => memberExpression.ToODataQuery(queryString),
+                ConstantExpression constantExpression => constantExpression.ToODataQuery(),
+                MethodCallExpression methodCallExpression => methodCallExpression.ToODataQuery(queryString),
+                NewExpression newExpression => newExpression.ToODataQuery(),
+                UnaryExpression unaryExpression => unaryExpression.ToODataQuery(queryString),
+                LambdaExpression lambdaExpression => lambdaExpression.ToODataQuery(),
+                _ => string.Empty,
+            };
 
-                case MemberExpression memberExpression:
-                    return memberExpression.ToODataQuery(queryString);
-
-                case ConstantExpression constantExpression:
-                    return constantExpression.ToODataQuery();
-
-                case MethodCallExpression methodCallExpression:
-                    return methodCallExpression.ToODataQuery(queryString);
-
-                case NewExpression newExpression:
-                    return newExpression.ToODataQuery();
-
-                case UnaryExpression unaryExpression:
-                    return unaryExpression.ToODataQuery(queryString);
-
-                case LambdaExpression lambdaExpression:
-                    return lambdaExpression.ToODataQuery();
-
-                default:
-                    return string.Empty;
-            }
-        }
-
-        public static object GetValue(this Expression expression)
-        {
-            switch (expression)
+        public static object GetValue(this Expression expression) =>
+            expression switch
             {
-                case MemberExpression memberExpression:
-                    return memberExpression.GetValue();
-
-                case ConstantExpression constantExpression:
-                    return constantExpression.GetValue();
-
-                default:
-                    return default;
-            }
-        }
+                MemberExpression memberExpression => memberExpression.GetValue(),
+                ConstantExpression constantExpression => constantExpression.GetValue(),
+                _ => default,
+            };
     }
 }

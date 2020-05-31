@@ -4,33 +4,21 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionTypeExtensions
     {
-        public static string ToODataQueryOperator(this ExpressionType expressionType)
-        {
-            switch (expressionType)
+        public static string ToODataQueryOperator(this ExpressionType expressionType) =>
+            expressionType switch
             {
-                case ExpressionType.And:
-                case ExpressionType.AndAlso:
-                    return "and";
-                case ExpressionType.Or:
-                case ExpressionType.OrElse:
-                    return "or";
-                case ExpressionType.Equal:
-                    return "eq";
-                case ExpressionType.Not:
-                    return "not";
-                case ExpressionType.NotEqual:
-                    return "ne";
-                case ExpressionType.LessThan:
-                    return "lt";
-                case ExpressionType.LessThanOrEqual:
-                    return "le";
-                case ExpressionType.GreaterThan:
-                    return "gt";
-                case ExpressionType.GreaterThanOrEqual:
-                    return "ge";
-                default:
-                    return string.Empty;
-            }
-        }
+                ExpressionType.And => "and",
+                ExpressionType.AndAlso => "and",
+                ExpressionType.Or => "or",
+                ExpressionType.OrElse => "or",
+                ExpressionType.Equal => "eq",
+                ExpressionType.Not => "not",
+                ExpressionType.NotEqual => "ne",
+                ExpressionType.LessThan => "lt",
+                ExpressionType.LessThanOrEqual => "le",
+                ExpressionType.GreaterThan => "gt",
+                ExpressionType.GreaterThanOrEqual => "ge",
+                _ => string.Empty,
+            };
     }
 }

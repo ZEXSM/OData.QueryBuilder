@@ -1,15 +1,18 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
 using OData.QueryBuilder.Functions;
+using OData.QueryBuilder.Operators;
 using System;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Parameters
 {
-    public interface IODataQueryParameterList<TEntity>: IODataQuery
+    public interface IODataQueryParameterList<TEntity> : IODataQuery
     {
         IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter);
 
         IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, IODataQueryFunction, bool>> entityFilter);
+
+        IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, IODataQueryFunction, IODataQueryOperator, bool>> entityFilter);
 
         IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 

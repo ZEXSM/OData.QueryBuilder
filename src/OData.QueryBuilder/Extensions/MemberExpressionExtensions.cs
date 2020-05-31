@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OData.QueryBuilder.Constants;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Extensions
@@ -31,6 +33,20 @@ namespace OData.QueryBuilder.Extensions
                     return $"{dateTimeOffset:s}Z";
                 }
 
+                if (memberExpressionValue is IEnumerable<int> intValues)
+                {
+                    var intValuesString = string.Join(ODataQuerySeparators.CommaString, intValues);
+
+                    return !string.IsNullOrEmpty(intValuesString) ? intValuesString : default;
+                }
+
+                if (memberExpressionValue is IEnumerable<string> stringValues)
+                {
+                    var stringValuesString = string.Join($"'{ODataQuerySeparators.CommaString}'", stringValues);
+
+                    return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : default;
+                }
+
                 return $"{memberExpressionValue}";
             }
 
@@ -44,23 +60,21 @@ namespace OData.QueryBuilder.Extensions
             return memberExpression.Member.DeclaringType.IsNullableType() ?
                 parentMemberExpressionQuery
                 :
-                $"{parentMemberExpressionQuery}/{memberExpression.Member.Name}"
-                ;
+                $"{parentMemberExpressionQuery}/{memberExpression.Member.Name}";
         }
 
         public static object GetValue(this MemberExpression memberExpression)
         {
-            if (memberExpression.Expression is ConstantExpression ce)
+            switch (memberExpression.Expression)
             {
-                return memberExpression.Member.GetValue(ce.Value);
-            }
+                case ConstantExpression ce:
+                    return memberExpression.Member.GetValue(ce.Value);
+                case MemberExpression me:
+                    return memberExpression.Member.GetValue(GetValue(me));
+                default:
+                    return memberExpression.Member.GetValue();
 
-            if (memberExpression.Expression is MemberExpression me)
-            {
-                return memberExpression.Member.GetValue(GetValue(me));
             }
-
-            return memberExpression.Member.GetValue();
         }
     }
 }

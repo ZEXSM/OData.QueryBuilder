@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OData.QueryBuilder.Constants;
+using System;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Extensions
@@ -40,7 +41,7 @@ namespace OData.QueryBuilder.Extensions
                 names[i] = newExpression.Members[i].Name;
             }
 
-            return string.Join(",", names);
+            return string.Join(ODataQuerySeparators.CommaString, names);
         }
     }
 }

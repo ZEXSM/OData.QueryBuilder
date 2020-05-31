@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace OData.QueryBuilder.Functions
+﻿namespace OData.QueryBuilder.Functions
 {
-    public interface IODataQueryFunction
+    public interface IODataQueryFunction : IODataQueryStringFunction, IODataQueryDateFunction
     {
-        DateTime Date(DateTimeOffset dateTimeOffset);
-
-        string Substringof();
-
-        bool In(IEnumerable<string> enumerable);
-
-        bool In(IEnumerable<int> enumerable);
     }
 }

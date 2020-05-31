@@ -6,14 +6,14 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test
 {
-    public class ODataQueryBuilderByKeyTest : IClassFixture<CommonFixture>
+    public class ODataQueryParameterKeyTest : IClassFixture<CommonFixture>
     {
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
-        public ODataQueryBuilderByKeyTest(CommonFixture commonFixture) =>
+        public ODataQueryParameterKeyTest(CommonFixture commonFixture) =>
             _odataQueryBuilder = commonFixture.ODataQueryBuilder1;
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand simple => Success")]
+        [Fact(DisplayName = "Expand simple => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_Success()
         {
             var uri = _odataQueryBuilder
@@ -25,7 +25,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand simple with key string => Success")]
+        [Fact(DisplayName = "Expand simple with key string => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_With_Key_String_Success()
         {
             var uri = _odataQueryBuilder
@@ -37,7 +37,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType('223123123')?$expand=ODataKind");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Select simple => Success")]
+        [Fact(DisplayName = "Select simple => Success")]
         public void ODataQueryBuilderKey_Select_Simple_Success()
         {
             var uri = _odataQueryBuilder
@@ -49,7 +49,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$select=IdType");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand and Select => Success")]
+        [Fact(DisplayName = "Expand and Select => Success")]
         public void ODataQueryBuilderKey_Expand_Select_Success()
         {
             var uri = _odataQueryBuilder
@@ -62,7 +62,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind&$select=IdType,Sum");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested and Select => Success")]
+        [Fact(DisplayName = "Expand nested and Select => Success")]
         public void ODataQueryBuilderKey_ExpandNested_Select_Success()
         {
             var uri = _odataQueryBuilder
@@ -85,7 +85,7 @@ namespace OData.QueryBuilder.Test
         }
 
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested orderby => Success")]
+        [Fact(DisplayName = "Expand nested orderby => Success")]
         public void ODataQueryBuilderList_ExpandNested_OrderBy_Success()
         {
             var uri = _odataQueryBuilder
@@ -102,7 +102,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate asc)");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested orderby desc => Success")]
+        [Fact(DisplayName = "Expand nested orderby desc => Success")]
         public void ODataQueryBuilderList_ExpandNested_OrderByDescending_Success()
         {
             var uri = _odataQueryBuilder
@@ -119,7 +119,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested top => Success")]
+        [Fact(DisplayName = "Expand nested top => Success")]
         public void ODataQueryBuilderList_ExpandNested_Top_Success()
         {
             var uri = _odataQueryBuilder
@@ -137,7 +137,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc;$top=1)");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) Expand nested Filter => Success")]
+        [Fact(DisplayName = "Expand nested Filter => Success")]
         public void ODataQueryBuilderKey_Expand_Nested_Filter_Success()
         {
             var uri = _odataQueryBuilder
@@ -155,7 +155,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
         }
 
-        [Fact(DisplayName = "(ODataQueryBuilderKey) ToDicionary => Success")]
+        [Fact(DisplayName = "ToDicionary => Success")]
         public void ToDicionaryTest()
         {
             var uri = _odataQueryBuilder

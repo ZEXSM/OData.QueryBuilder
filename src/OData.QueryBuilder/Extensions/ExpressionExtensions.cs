@@ -17,11 +17,11 @@ namespace OData.QueryBuilder.Extensions
                 _ => string.Empty,
             };
 
-        public static object GetValue(this Expression expression) =>
+        public static object GetValueOfExpression(this Expression expression) =>
             expression switch
             {
-                MemberExpression memberExpression => memberExpression.GetValue(),
-                ConstantExpression constantExpression => constantExpression.GetValue(),
+                MemberExpression memberExpression => memberExpression.GetValueOfMemberExpression(),
+                ConstantExpression constantExpression => constantExpression.GetValueOfConstantExpression(),
                 _ => default,
             };
     }

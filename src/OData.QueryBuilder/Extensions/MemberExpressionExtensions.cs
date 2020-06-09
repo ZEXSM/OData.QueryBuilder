@@ -9,7 +9,7 @@ namespace OData.QueryBuilder.Extensions
     {
         public static string ToODataQuery(this MemberExpression memberExpression, string queryString)
         {
-            var memberExpressionValue = memberExpression.GetValue();
+            var memberExpressionValue = memberExpression.GetValueOfMemberExpression();
 
             if (memberExpressionValue != default)
             {
@@ -63,12 +63,12 @@ namespace OData.QueryBuilder.Extensions
                 $"{parentMemberExpressionQuery}/{memberExpression.Member.Name}";
         }
 
-        public static object GetValue(this MemberExpression memberExpression) =>
-            memberExpression.Expression switch
+        public static object GetValueOfMemberExpression(this MemberExpression expression) =>
+            expression.Expression switch
             {
-                ConstantExpression ce => memberExpression.Member.GetValue(ce.Value),
-                MemberExpression me => memberExpression.Member.GetValue(GetValue(me)),
-                _ => memberExpression.Member.GetValue(),
+                ConstantExpression constantExpression => expression.Member.GetValue(constantExpression.Value),
+                MemberExpression memberExpression => expression.Member.GetValue(GetValueOfMemberExpression(memberExpression)),
+                _ => expression.Member.GetValue(),
             };
     }
 }

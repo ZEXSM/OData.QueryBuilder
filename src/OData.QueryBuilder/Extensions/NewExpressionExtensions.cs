@@ -14,7 +14,7 @@ namespace OData.QueryBuilder.Extensions
 
                 for (var i = 0; i < newExpression.Arguments.Count; i++)
                 {
-                    arguments[i] = newExpression.Arguments[i].GetValue();
+                    arguments[i] = newExpression.Arguments[i].GetValueOfExpression();
                 }
 
                 if (newExpression.Type == typeof(DateTime))

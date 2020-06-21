@@ -8,8 +8,8 @@ namespace OData.QueryBuilder.Parameters
 {
     public class ODataQueryParameterKey<TEntity> : ODataQuery<TEntity>, IODataQueryParameterKey<TEntity>
     {
-        public ODataQueryParameterKey(StringBuilder queryBuilder)
-            : base(queryBuilder)
+        public ODataQueryParameterKey(StringBuilder stringBuilder)
+            : base(stringBuilder)
         {
         }
 

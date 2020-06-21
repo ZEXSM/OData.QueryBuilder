@@ -9,10 +9,8 @@ namespace OData.QueryBuilder
     {
         protected readonly StringBuilder _stringBuilder;
 
-        public ODataQuery(StringBuilder queryBuilder)
-        {
-            _stringBuilder = queryBuilder;
-        }
+        public ODataQuery(StringBuilder stringBuilder) =>
+            _stringBuilder = stringBuilder;
 
         public Dictionary<string, string> ToDictionary()
         {

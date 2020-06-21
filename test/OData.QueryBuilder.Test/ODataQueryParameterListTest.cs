@@ -266,6 +266,64 @@ namespace OData.QueryBuilder.Test
                 $"and date(BeginDate) eq {DateTime.Today:s}Z");
         }
 
+        [Fact(DisplayName = "Function Datetime convert => Success")]
+        public void ODataQueryBuilderList_Function_Datetime_convert_Success()
+        {
+            var currentDateToday = new DateTime?(new DateTime(2019, 2, 9));
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) =>
+                    f.Date(s.ODataKind.OpenDate) == f.ConvertDateTimeToString(currentDateToday.Value, "yyyy-MM-dd"))
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09");
+        }
+
+        [Fact(DisplayName = "Function Datetime convert => Exception")]
+        public void ODataQueryBuilderList_Function_Datetime_convert_exception()
+        {
+            var currentDateToday = new DateTime?(new DateTime(2019, 2, 9));
+
+            _odataQueryBuilder.Invoking((q) => q
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) =>
+                    f.Date(s.ODataKind.OpenDate) == f.ConvertDateTimeToString(currentDateToday.Value, "3"))
+                .ToUri())
+                .Should().Throw<FormatException>();
+        }
+
+        [Fact(DisplayName = "Function Datetimeoffset convert => Success")]
+        public void ODataQueryBuilderList_Function_Datetimeoffset_convert_Success()
+        {
+            var currentDateToday = new DateTimeOffset?(new DateTime(2019, 2, 9));
+
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) =>
+                    f.Date(s.ODataKind.OpenDate) == f.ConvertDateTimeOffsetToString(currentDateToday.Value, "yyyy-MM-dd"))
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09");
+        }
+
+        [Fact(DisplayName = "Function Datetimeoffset convert => Exception")]
+        public void ODataQueryBuilderList_Function_Datetimeoffset_convert_exception()
+        {
+            var currentDateToday = new DateTimeOffset?(new DateTime(2019, 2, 9));
+
+            _odataQueryBuilder.Invoking((q) => q
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) =>
+                    f.Date(s.ODataKind.OpenDate) == f.ConvertDateTimeOffsetToString(currentDateToday.Value, "3"))
+                .ToUri())
+                .Should().Throw<FormatException>();
+        }
+
         [Fact(DisplayName = "Operator IN => Success")]
         public void ODataQueryBuilderList_Operator_In_Success()
         {

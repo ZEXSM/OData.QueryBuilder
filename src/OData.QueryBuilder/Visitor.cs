@@ -84,10 +84,18 @@ namespace OData.QueryBuilder
                     var filterTu = VisitExpression(methodCallExpression.Arguments[0]);
 
                     return $"{ODataQueryFunctions.ToUpper}({filterTu})";
-                case nameof(ICustomFunction.ConvertEnumToString):
-                    var filterCets = VisitExpression(methodCallExpression.Arguments[0]);
+                case nameof(IConvertFunction.ConvertEnumToString):
+                    var @enum = GetValueOfExpression(methodCallExpression.Arguments[0]);
 
-                    return $"'{filterCets}'";
+                    return $"'{@enum}'";
+                case nameof(IConvertFunction.ConvertDateTimeToString):
+                    var dateTime = (DateTime)GetValueOfExpression(methodCallExpression.Arguments[0]);
+
+                    return dateTime.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
+                case nameof(IConvertFunction.ConvertDateTimeOffsetToString):
+                    var dateTimeOffset = (DateTimeOffset)GetValueOfExpression(methodCallExpression.Arguments[0]);
+
+                    return dateTimeOffset.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
                 case nameof(ToString):
                     return VisitExpression(methodCallExpression.Object);
                 default:

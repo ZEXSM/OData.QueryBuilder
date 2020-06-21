@@ -1,5 +1,4 @@
-﻿using OData.QueryBuilder.Extensions;
-using OData.QueryBuilder.Parameters.Nested;
+﻿using OData.QueryBuilder.Parameters.Nested;
 using System;
 using System.Linq.Expressions;
 using System.Text;
@@ -20,11 +19,17 @@ namespace OData.QueryBuilder.Builders.Nested
         {
             if (!string.IsNullOrEmpty(_odataQueryNested?.Query))
             {
-                _stringBuilder.Append($"({_odataQueryNested.Query}),{nestedEntityExpand.Body.ToODataQuery()}");
+                var visitor = new Visitor(nestedEntityExpand.Body);
+                var query = visitor.ToString();
+
+                _stringBuilder.Append($"({_odataQueryNested.Query}),{query}");
             }
             else
             {
-                _stringBuilder.Append($"{nestedEntityExpand.Body.ToODataQuery()}");
+                var visitor = new Visitor(nestedEntityExpand.Body);
+                var query = visitor.ToString();
+
+                _stringBuilder.Append(query);
             }
 
             _odataQueryNested = new ODataQueryNestedParameter<TNestedEntity>();

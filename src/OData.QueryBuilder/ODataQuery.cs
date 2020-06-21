@@ -8,12 +8,10 @@ namespace OData.QueryBuilder
     public class ODataQuery<TEntity> : IODataQuery
     {
         protected readonly StringBuilder _stringBuilder;
-        protected readonly string _resourceName;
 
         public ODataQuery(StringBuilder queryBuilder)
         {
             _stringBuilder = queryBuilder;
-            _resourceName = typeof(TEntity).Name;
         }
 
         public Dictionary<string, string> ToDictionary()

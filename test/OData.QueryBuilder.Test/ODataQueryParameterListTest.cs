@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using OData.QueryBuilder.Builders;
-using OData.QueryBuilder.Parameters;
 using OData.QueryBuilder.Test.Fakes;
 using System;
 using System.Collections.Generic;
@@ -191,7 +190,7 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3' or ODataKind/ODataCode/Code eq '5' and ODataKind/ODataCode/Code eq 'testCode'");
         }
 
-        [Fact(DisplayName = "Filter All/Any => Success")]
+        [Fact(DisplayName = "Filter  operators All/Any => Success")]
         public void ODataQueryBuilderList_Filter_All_Any_Success()
         {
             var uri = _odataQueryBuilder
@@ -215,11 +214,10 @@ namespace OData.QueryBuilder.Test
                 .ByList()
                 .Expand(s => new { s.ODataKind })
                 .Filter(s =>
-                    (s.IdType < constValue && s.ODataKind.ODataCode.IdCode >= 3)
+                    (s.IdType < constValue && 3 <= s.ODataKind.ODataCode.IdCode)
                     || s.IdType == 5
                     && s.IdRule != default(int?)
-                    && s.IdRule == null
-                    )
+                    && s.IdRule == null)
                 .Select(s => new { s.ODataKind, s.Sum })
                 .OrderBy(s => new { s.IdType })
                 .Skip(1)
@@ -227,7 +225,7 @@ namespace OData.QueryBuilder.Test
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$skip=1&$top=1&$count=true");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and 3 le ODataKind/ODataCode/IdCode or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$skip=1&$top=1&$count=true");
         }
 
         [Fact(DisplayName = "Function Date => Success")]
@@ -313,27 +311,75 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)");
         }
 
-        [Fact(DisplayName = "Operator IN empty => Success")]
-        public void ODataQueryBuilderList_Operator_In_Empty_Success()
+        [Fact(DisplayName = "Operator IN is null => ArgumentException 1")]
+        public void ODataQueryBuilderList_Operator_In_is_null_1()
+        {
+            var constEmprtyStrListIds = new string[] { }.ToList();
+
+            _odataQueryBuilder.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, constEmprtyStrListIds))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Enumeration is empty or null");
+        }
+
+        [Fact(DisplayName = "Operator IN is null => ArgumentException 2")]
+        public void ODataQueryBuilderList_Operator_In_is_null_2()
         {
             var constStrIds = default(IEnumerable<string>);
-            var constEmprtyStrListIds = new string[] { }.ToList();
+
+            _odataQueryBuilder.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, constStrIds))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Enumeration is empty or null");
+        }
+
+        [Fact(DisplayName = "Operator IN is null => ArgumentException 3")]
+        public void ODataQueryBuilderList_Operator_In_is_null_3()
+        {
             var constIntIds = default(int[]);
-            var constEmptyIntIds = new int[0];
+
+            _odataQueryBuilder.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.IdType, constIntIds))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Enumeration is empty or null");
+        }
+
+        [Fact(DisplayName = "Operator IN is null => ArgumentException 4")]
+        public void ODataQueryBuilderList_Operator_In_is_null_4()
+        {
+            var constIntIds = default(int[]);
             var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
 
-            var uri = _odataQueryBuilder
-                .For<ODataTypeEntity>(s => s.ODataType)
-                .ByList()
-                .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, constStrIds)
-                    && o.In(s.ODataKind.ODataCode.Code, constEmprtyStrListIds)
-                    && o.In(s.IdType, constIntIds)
-                    && o.In(s.IdType, constEmptyIntIds)
-                    && o.In((int)s.IdRule, constIntIds)
-                    && o.In(s.ODataKind.ODataCode.IdCode, newObjectSequenceArray.ODataKind.SequenceArray))
-                .ToUri();
+            _odataQueryBuilder.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.IdCode, newObjectSequenceArray.ODataKind.SequenceArray))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Enumeration is empty or null");
+        }
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)");
+        [Fact(DisplayName = "Operator IN is empty => ArgumentException")]
+        public void ODataQueryBuilderList_Operator_In_is_empty_1()
+        {
+            var constEmptyIntIds = new int[0];
+
+            _odataQueryBuilder.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.IdType, constEmptyIntIds))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Enumeration is empty or null");
         }
 
         [Fact(DisplayName = "Filter boolean values => Success")]
@@ -432,7 +478,7 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter(s => s.ODataKind.Color.ToString() == ColorEnum.Blue.ToString()
+                .Filter((s, f) => s.ODataKind.Color == f.ConvertEnumToString(ColorEnum.Blue)
                     && s.ODataKind.Color == ColorEnum.Blue)
                 .Skip(1)
                 .Top(10)

@@ -76,18 +76,16 @@ namespace OData.QueryBuilder.Visitors
 
                     return $"{ODataQueryFunctions.Date}({filterDate})";
                 case nameof(IODataQueryFunction.SubstringOf):
-                    var resourceSof = VisitExpression(methodCallExpression.Arguments[0]);
-                    var filterSof = VisitExpression(methodCallExpression.Arguments[1]);
+                    var substring = GetValueOfExpression(methodCallExpression.Arguments[0]);
+                    var columName = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{ODataQueryFunctions.SubstringOf}({resourceSof},{filterSof})";
-                case nameof(string.ToUpper):
+                    return $"{ODataQueryFunctions.SubstringOf}('{substring}',{columName})";
+                case nameof(IODataQueryStringFunction.ToUpper):
                     var filterTu = VisitExpression(methodCallExpression.Arguments[0]);
 
                     return $"{ODataQueryFunctions.ToUpper}({filterTu})";
                 case nameof(IConvertFunction.ConvertEnumToString):
-                    var @enum = GetValueOfExpression(methodCallExpression.Arguments[0]);
-
-                    return $"'{@enum}'";
+                    return $"'{GetValueOfExpression(methodCallExpression.Arguments[0])}'";
                 case nameof(IConvertFunction.ConvertDateTimeToString):
                     var dateTime = (DateTime)GetValueOfExpression(methodCallExpression.Arguments[0]);
 

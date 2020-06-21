@@ -5,13 +5,13 @@ using OData.QueryBuilder.Operators;
 using System;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder
+namespace OData.QueryBuilder.Visitors
 {
-    internal class Visitor
+    internal class VisitorExpression
     {
         private readonly Expression _expression;
 
-        public Visitor(Expression expression) => _expression = expression;
+        public VisitorExpression(Expression expression) => _expression = expression;
 
         protected string VisitExpression(Expression expression) => expression switch
         {

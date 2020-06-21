@@ -1,5 +1,6 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
 using OData.QueryBuilder.Constants;
+using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
 using System.Text;
@@ -15,7 +16,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var visitor = new Visitor(entityExpand.Body);
+            var visitor = new VisitorExpression(entityExpand.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
@@ -36,7 +37,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var visitor = new Visitor(entitySelect.Body);
+            var visitor = new VisitorExpression(entitySelect.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");

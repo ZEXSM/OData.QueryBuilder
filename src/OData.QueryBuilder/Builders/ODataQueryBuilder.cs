@@ -1,5 +1,6 @@
 ﻿using OData.QueryBuilder.Constants;
 using OData.QueryBuilder.Resourses;
+using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
 
@@ -17,7 +18,7 @@ namespace OData.QueryBuilder.Builders
 
         public IODataQueryResource<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
         {
-            var visitor = new Visitor(entityResource.Body);
+            var visitor = new VisitorExpression(entityResource.Body);
             var query = visitor.ToString();
 
             return new ODataQueryResource<TEntity>($"{_baseUrl}{query}");

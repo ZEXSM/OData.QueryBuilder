@@ -2,6 +2,7 @@
 using OData.QueryBuilder.Constants;
 using OData.QueryBuilder.Functions;
 using OData.QueryBuilder.Operators;
+using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
 using System.Text;
@@ -17,7 +18,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {
-            var visitor = new Visitor(entityFilter.Body);
+            var visitor = new VisitorExpression(entityFilter.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Filter}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
@@ -27,7 +28,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, IODataQueryFunction, bool>> entityFilter)
         {
-            var visitor = new Visitor(entityFilter.Body);
+            var visitor = new VisitorExpression(entityFilter.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Filter}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
@@ -37,7 +38,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Filter(Expression<Func<TEntity, IODataQueryFunction, IODataQueryOperator, bool>> entityFilter)
         {
-            var visitor = new Visitor(entityFilter.Body);
+            var visitor = new VisitorExpression(entityFilter.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Filter}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
@@ -47,7 +48,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var visitor = new Visitor(entityExpand.Body);
+            var visitor = new VisitorExpression(entityExpand.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Expand}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
@@ -67,7 +68,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var visitor = new Visitor(entitySelect.Body);
+            var visitor = new VisitorExpression(entitySelect.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.Select}{ODataQuerySeparators.EqualSignString}{query}{ODataQuerySeparators.MainString}");
@@ -77,7 +78,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
         {
-            var visitor = new Visitor(entityOrderBy.Body);
+            var visitor = new VisitorExpression(entityOrderBy.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.OrderBy}{ODataQuerySeparators.EqualSignString}{query} {ODataQuerySorts.Asc}{ODataQuerySeparators.MainString}");
@@ -87,7 +88,7 @@ namespace OData.QueryBuilder.Parameters
 
         public IODataQueryParameterList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
-            var visitor = new Visitor(entityOrderByDescending.Body);
+            var visitor = new VisitorExpression(entityOrderByDescending.Body);
             var query = visitor.ToString();
 
             _stringBuilder.Append($"{ODataQueryParameters.OrderBy}{ODataQuerySeparators.EqualSignString}{query} {ODataQuerySorts.Desc}{ODataQuerySeparators.MainString}");

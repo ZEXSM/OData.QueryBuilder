@@ -11,8 +11,8 @@ namespace OData.QueryBuilder.Parameters
 {
     public class ODataQueryParameterList<TEntity> : ODataQuery<TEntity>, IODataQueryParameterList<TEntity>
     {
-        public ODataQueryParameterList(StringBuilder stringBuilder) :
-            base(stringBuilder)
+        public ODataQueryParameterList(StringBuilder stringBuilder)
+            : base(stringBuilder)
         {
         }
 

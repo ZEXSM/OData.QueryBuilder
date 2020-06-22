@@ -369,6 +369,24 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)");
         }
 
+        [Fact(DisplayName = "Contains with ToLower Simple Test => Success")]
+        public void ODataQueryBuilderList_Test_Contains_Simple()
+        {
+            var constValue = "p".ToLower();
+            var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToLower() };
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) =>
+                    f.Contains(f.ToLower(s.ODataKind.ODataCode.Code), "W")
+                    || f.Contains(s.ODataKind.ODataCode.Code, constValue)
+                    || f.Contains(s.ODataKindNew.ODataCode.Code, newObject.TypeCode)
+                    || f.Contains(s.ODataKindNew.ODataCode.Code, "55"))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=contains(tolower(ODataKind/ODataCode/Code),'W') or contains(ODataKind/ODataCode/Code,'p') or contains(ODataKindNew/ODataCode/Code,'typecodevalue') or contains(ODataKindNew/ODataCode/Code,'55')");
+        }
+
         [Fact(DisplayName = "Operator IN is null => ArgumentException 1")]
         public void ODataQueryBuilderList_Operator_In_is_null_1()
         {

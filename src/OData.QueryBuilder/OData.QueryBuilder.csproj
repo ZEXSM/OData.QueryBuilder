@@ -14,4 +14,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Versions\V4\" />
+    <Folder Include="Versions\V3\" />
+    <Folder Include="Versions\V2\" />
+  </ItemGroup>
 </Project>

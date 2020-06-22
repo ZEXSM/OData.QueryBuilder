@@ -7,9 +7,13 @@ namespace OData.QueryBuilder.Resourses
     public class ODataQueryResource<TEntity> : IODataQueryResource<TEntity>
     {
         private readonly StringBuilder _stringBuilder;
+        private readonly ODataVersion _odataVersion;
 
-        public ODataQueryResource(string resourceUrl) =>
+        public ODataQueryResource(string resourceUrl, ODataVersion odataVersion)
+        {
             _stringBuilder = new StringBuilder(resourceUrl);
+            _odataVersion = odataVersion;
+        }
 
         public IODataQueryParameterKey<TEntity> ByKey(int key)
         {

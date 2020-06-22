@@ -22,25 +22,25 @@ namespace OData.QueryBuilder.Visitors
             NewExpression newExpression => VisitNewExpression(newExpression),
             UnaryExpression unaryExpression => VisitUnaryExpression(unaryExpression),
             LambdaExpression lambdaExpression => VisitLambdaExpression(lambdaExpression),
-            _ => string.Empty,
+            _ => default,
         };
 
         protected string VisitBinaryExpression(BinaryExpression binaryExpression)
         {
-            var leftQueryString = VisitExpression(binaryExpression.Left);
-            var rightQueryString = VisitExpression(binaryExpression.Right);
+            var left = VisitExpression(binaryExpression.Left);
+            var right = VisitExpression(binaryExpression.Right);
 
-            if (string.IsNullOrEmpty(leftQueryString))
+            if (string.IsNullOrEmpty(left))
             {
-                return rightQueryString;
+                return right;
             }
 
-            if (string.IsNullOrEmpty(rightQueryString))
+            if (string.IsNullOrEmpty(right))
             {
-                return leftQueryString;
+                return left;
             }
 
-            return $"{leftQueryString} {binaryExpression.NodeType.ToODataQueryOperator()} {rightQueryString}";
+            return $"{left} {binaryExpression.NodeType.ToODataQueryOperator()} {right}";
         }
 
         protected string VisitMemberExpression(MemberExpression memberExpression) =>
@@ -97,7 +97,7 @@ namespace OData.QueryBuilder.Visitors
                 case nameof(ToString):
                     return VisitExpression(methodCallExpression.Object);
                 default:
-                    return string.Empty;
+                    return default;
             }
         }
 
@@ -117,7 +117,7 @@ namespace OData.QueryBuilder.Visitors
                     return ReflectionExtensions.ConvertToString(newExpression.Constructor.Invoke(arguments));
                 }
 
-                return string.Empty;
+                return default;
             }
 
             var names = new string[newExpression.Members.Count];
@@ -133,7 +133,7 @@ namespace OData.QueryBuilder.Visitors
         protected string VisitUnaryExpression(UnaryExpression unaryExpression)
         {
             var odataOperator = unaryExpression.NodeType.ToODataQueryOperator();
-            var whitespace = odataOperator != default ? " " : string.Empty;
+            var whitespace = odataOperator != default ? " " : default;
 
             return $"{odataOperator}{whitespace}{VisitExpression(unaryExpression.Operand)}";
         }

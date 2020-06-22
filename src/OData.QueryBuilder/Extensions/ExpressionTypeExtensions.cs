@@ -18,7 +18,7 @@ namespace OData.QueryBuilder.Extensions
                 ExpressionType.LessThanOrEqual => "le",
                 ExpressionType.GreaterThan => "gt",
                 ExpressionType.GreaterThanOrEqual => "ge",
-                _ => string.Empty,
+                _ => default,
             };
     }
 }

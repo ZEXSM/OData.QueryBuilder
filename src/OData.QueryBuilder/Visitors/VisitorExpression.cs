@@ -45,7 +45,7 @@ namespace OData.QueryBuilder.Visitors
 
         protected string VisitMemberExpression(MemberExpression memberExpression) =>
             IsResourceOfMemberExpression(memberExpression) ?
-                CreatePath(memberExpression) : ReflectionExtensions.ConvertToString(GetValueOfMemberExpression(memberExpression));
+                CreateResourcePath(memberExpression) : ReflectionExtensions.ConvertToString(GetValueOfMemberExpression(memberExpression));
 
         protected string VisitConstantExpression(ConstantExpression constantExpression) =>
             constantExpression.Value == default ?
@@ -133,9 +133,9 @@ namespace OData.QueryBuilder.Visitors
         protected string VisitUnaryExpression(UnaryExpression unaryExpression)
         {
             var odataOperator = unaryExpression.NodeType.ToODataQueryOperator();
-            odataOperator = !string.IsNullOrEmpty(odataOperator) ? $"{odataOperator} " : string.Empty;
+            var whitespace = odataOperator != default ? " " : string.Empty;
 
-            return $"{odataOperator}{VisitExpression(unaryExpression.Operand)}";
+            return $"{odataOperator}{whitespace}{VisitExpression(unaryExpression.Operand)}";
         }
 
         protected string VisitLambdaExpression(LambdaExpression lambdaExpression)
@@ -170,7 +170,7 @@ namespace OData.QueryBuilder.Visitors
             _ => false,
         };
 
-        private string CreatePath(MemberExpression memberExpression)
+        private string CreateResourcePath(MemberExpression memberExpression)
         {
             var name = VisitExpression(memberExpression.Expression);
 

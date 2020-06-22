@@ -1,5 +1,5 @@
 ﻿using OData.QueryBuilder.Constants;
-using OData.QueryBuilder.Parameters;
+using OData.QueryBuilder.V4.Options;
 using System.Text;
 
 namespace OData.QueryBuilder.Resourses
@@ -15,25 +15,25 @@ namespace OData.QueryBuilder.Resourses
             _odataVersion = odataVersion;
         }
 
-        public IODataQueryParameterKey<TEntity> ByKey(int key)
+        public IODataQueryOptionKey<TEntity> ByKey(int key)
         {
-            _stringBuilder.Append($"({key}){ODataQuerySeparators.BeginString}");
+            _stringBuilder.Append($"({key}){QuerySeparators.BeginString}");
 
-            return new ODataQueryParameterKey<TEntity>(_stringBuilder);
+            return new ODataQueryOptionKey<TEntity>(_stringBuilder);
         }
 
-        public IODataQueryParameterKey<TEntity> ByKey(string key)
+        public IODataQueryOptionKey<TEntity> ByKey(string key)
         {
-            _stringBuilder.Append($"('{key}'){ODataQuerySeparators.BeginString}");
+            _stringBuilder.Append($"('{key}'){QuerySeparators.BeginString}");
 
-            return new ODataQueryParameterKey<TEntity>(_stringBuilder);
+            return new ODataQueryOptionKey<TEntity>(_stringBuilder);
         }
 
-        public IODataQueryParameterList<TEntity> ByList()
+        public IODataQueryOptionList<TEntity> ByList()
         {
-            _stringBuilder.Append(ODataQuerySeparators.BeginString);
+            _stringBuilder.Append(QuerySeparators.BeginString);
 
-            return new ODataQueryParameterList<TEntity>(_stringBuilder);
+            return new ODataQueryOptionList<TEntity>(_stringBuilder);
         }
     }
 }

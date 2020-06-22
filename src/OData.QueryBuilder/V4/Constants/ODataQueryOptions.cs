@@ -1,6 +1,6 @@
-﻿namespace OData.QueryBuilder.Constants
+﻿namespace OData.QueryBuilder.V4.Constants
 {
-    internal struct ODataQueryParameters
+    internal struct ODataQueryOptions
     {
         public const string Select = "$select";
 

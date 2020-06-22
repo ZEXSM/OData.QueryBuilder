@@ -6,11 +6,11 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test
 {
-    public class ODataQueryParameterKeyTest : IClassFixture<CommonFixture>
+    public class ODataQueryOptionKeyTest : IClassFixture<CommonFixture>
     {
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
-        public ODataQueryParameterKeyTest(CommonFixture commonFixture) =>
+        public ODataQueryOptionKeyTest(CommonFixture commonFixture) =>
             _odataQueryBuilder = commonFixture.ODataQueryBuilder1;
 
         [Fact(DisplayName = "Expand simple => Success")]

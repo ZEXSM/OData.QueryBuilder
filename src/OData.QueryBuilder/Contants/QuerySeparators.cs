@@ -1,6 +1,6 @@
 ﻿namespace OData.QueryBuilder.Constants
 {
-    internal struct ODataQuerySeparators
+    internal struct QuerySeparators
     {
         public const string MainString = "&";
 

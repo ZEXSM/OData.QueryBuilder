@@ -1,7 +1,8 @@
 ﻿using OData.QueryBuilder.Constants;
 using OData.QueryBuilder.Extensions;
-using OData.QueryBuilder.Functions;
-using OData.QueryBuilder.Operators;
+using OData.QueryBuilder.V4.Constants;
+using OData.QueryBuilder.V4.Functions;
+using OData.QueryBuilder.V4.Operators;
 using System;
 using System.Linq.Expressions;
 
@@ -136,7 +137,7 @@ namespace OData.QueryBuilder.Visitors
                 names[i] = newExpression.Members[i].Name;
             }
 
-            return string.Join(ODataQuerySeparators.CommaString, names);
+            return string.Join(QuerySeparators.CommaString, names);
         }
 
         protected string VisitUnaryExpression(UnaryExpression unaryExpression)

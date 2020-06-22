@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Parameters.Nested;
+﻿using OData.QueryBuilder.V4.Options.Nested;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Builders.Nested
 
         public string Query => $"{_stringBuilder}({_odataQueryNested.Query})";
 
-        public IODataQueryNestedParameter<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
+        public IODataQueryOptionNested<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
         {
             if (!string.IsNullOrEmpty(_odataQueryNested?.Query))
             {
@@ -33,9 +33,9 @@ namespace OData.QueryBuilder.Builders.Nested
                 _stringBuilder.Append(query);
             }
 
-            _odataQueryNested = new ODataQueryNestedParameter<TNestedEntity>();
+            _odataQueryNested = new ODataQueryOptionNested<TNestedEntity>();
 
-            return _odataQueryNested as ODataQueryNestedParameter<TNestedEntity>;
+            return _odataQueryNested as ODataQueryOptionNested<TNestedEntity>;
         }
     }
 }

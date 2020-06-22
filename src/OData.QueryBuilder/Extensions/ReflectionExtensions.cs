@@ -44,11 +44,11 @@ namespace OData.QueryBuilder.Extensions
                 case DateTimeOffset dateTimeOffset:
                     return $"{dateTimeOffset:s}Z";
                 case IEnumerable<int> intValues:
-                    var intValuesString = string.Join(ODataQuerySeparators.CommaString, intValues);
+                    var intValuesString = string.Join(QuerySeparators.CommaString, intValues);
 
                     return !string.IsNullOrEmpty(intValuesString) ? intValuesString : default;
                 case IEnumerable<string> stringValues:
-                    var stringValuesString = string.Join($"'{ODataQuerySeparators.CommaString}'", stringValues);
+                    var stringValuesString = string.Join($"'{QuerySeparators.CommaString}'", stringValues);
 
                     return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : default;
                 default:

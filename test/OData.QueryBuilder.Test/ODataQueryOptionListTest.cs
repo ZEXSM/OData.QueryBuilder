@@ -8,13 +8,13 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test
 {
-    public class ODataQueryParameterListTest : IClassFixture<CommonFixture>
+    public class ODataQueryOptionListTest : IClassFixture<CommonFixture>
     {
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
         public static string IdCodeStatic => "testCode";
 
-        public ODataQueryParameterListTest(CommonFixture commonFixture) =>
+        public ODataQueryOptionListTest(CommonFixture commonFixture) =>
             _odataQueryBuilder = commonFixture.ODataQueryBuilder2;
 
         [Fact(DisplayName = "Expand simple => Success")]

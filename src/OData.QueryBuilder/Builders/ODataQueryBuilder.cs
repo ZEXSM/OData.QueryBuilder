@@ -13,13 +13,13 @@ namespace OData.QueryBuilder.Builders
 
         public ODataQueryBuilder(Uri baseUrl, ODataVersion odataVersion = ODataVersion.V4)
         {
-            _baseUrl = $"{baseUrl.OriginalString.TrimEnd(ODataQuerySeparators.SlashChar)}{ODataQuerySeparators.SlashString}";
+            _baseUrl = $"{baseUrl.OriginalString.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
             _odataVersion = odataVersion;
         }
 
         public ODataQueryBuilder(string baseUrl, ODataVersion odataVersion = ODataVersion.V4)
         {
-            _baseUrl = $"{baseUrl.TrimEnd(ODataQuerySeparators.SlashChar)}{ODataQuerySeparators.SlashString}";
+            _baseUrl = $"{baseUrl.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
             _odataVersion = odataVersion;
         }
 

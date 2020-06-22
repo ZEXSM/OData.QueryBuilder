@@ -1,4 +1,4 @@
-﻿namespace OData.QueryBuilder.Constants
+﻿namespace OData.QueryBuilder.V4.Constants
 {
     internal struct ODataQueryFunctions
     {

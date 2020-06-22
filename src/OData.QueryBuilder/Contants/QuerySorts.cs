@@ -1,6 +1,6 @@
 ﻿namespace OData.QueryBuilder.Constants
 {
-    internal struct ODataQuerySorts
+    internal struct QuerySorts
     {
         public const string Asc = "asc";
 

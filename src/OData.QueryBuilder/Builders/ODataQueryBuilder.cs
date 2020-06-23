@@ -9,18 +9,15 @@ namespace OData.QueryBuilder.Builders
     public class ODataQueryBuilder<TResource> : IODataQueryBuilder<TResource>
     {
         private readonly string _baseUrl;
-        private readonly ODataVersion _odataVersion;
 
-        public ODataQueryBuilder(Uri baseUrl, ODataVersion odataVersion = ODataVersion.V4)
+        public ODataQueryBuilder(Uri baseUrl)
         {
             _baseUrl = $"{baseUrl.OriginalString.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
-            _odataVersion = odataVersion;
         }
 
-        public ODataQueryBuilder(string baseUrl, ODataVersion odataVersion = ODataVersion.V4)
+        public ODataQueryBuilder(string baseUrl)
         {
             _baseUrl = $"{baseUrl.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
-            _odataVersion = odataVersion;
         }
 
         public IODataQueryResource<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
@@ -28,7 +25,7 @@ namespace OData.QueryBuilder.Builders
             var visitor = new VisitorExpression(entityResource.Body);
             var query = visitor.ToString();
 
-            return new ODataQueryResource<TEntity>($"{_baseUrl}{query}", _odataVersion);
+            return new ODataQueryResource<TEntity>($"{_baseUrl}{query}");
         }
     }
 }

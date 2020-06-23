@@ -1,5 +1,5 @@
 ﻿using OData.QueryBuilder.Constants;
-using OData.QueryBuilder.V4.Options;
+using OData.QueryBuilder.Options;
 using System.Text;
 
 namespace OData.QueryBuilder.Resourses
@@ -7,12 +7,10 @@ namespace OData.QueryBuilder.Resourses
     public class ODataQueryResource<TEntity> : IODataQueryResource<TEntity>
     {
         private readonly StringBuilder _stringBuilder;
-        private readonly ODataVersion _odataVersion;
 
-        public ODataQueryResource(string resourceUrl, ODataVersion odataVersion)
+        public ODataQueryResource(string resourceUrl)
         {
             _stringBuilder = new StringBuilder(resourceUrl);
-            _odataVersion = odataVersion;
         }
 
         public IODataQueryOptionKey<TEntity> ByKey(int key)

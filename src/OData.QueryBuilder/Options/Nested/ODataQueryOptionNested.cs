@@ -1,12 +1,11 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
 using OData.QueryBuilder.Constants;
-using OData.QueryBuilder.V4.Constants;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.V4.Options.Nested
+namespace OData.QueryBuilder.Options.Nested
 {
     public class ODataQueryOptionNested<TEntity> : ODataQueryNested, IODataQueryOptionNested<TEntity>
     {

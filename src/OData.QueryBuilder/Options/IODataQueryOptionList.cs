@@ -1,10 +1,10 @@
 ﻿using OData.QueryBuilder.Builders.Nested;
-using OData.QueryBuilder.V4.Functions;
-using OData.QueryBuilder.V4.Operators;
+using OData.QueryBuilder.Functions;
+using OData.QueryBuilder.Operators;
 using System;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.V4.Options
+namespace OData.QueryBuilder.Options
 {
     public interface IODataQueryOptionList<TEntity> : IODataQuery
     {

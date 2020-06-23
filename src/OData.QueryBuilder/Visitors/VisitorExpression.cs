@@ -1,8 +1,7 @@
 ﻿using OData.QueryBuilder.Constants;
 using OData.QueryBuilder.Extensions;
-using OData.QueryBuilder.V4.Constants;
-using OData.QueryBuilder.V4.Functions;
-using OData.QueryBuilder.V4.Operators;
+using OData.QueryBuilder.Functions;
+using OData.QueryBuilder.Operators;
 using System;
 using System.Linq.Expressions;
 

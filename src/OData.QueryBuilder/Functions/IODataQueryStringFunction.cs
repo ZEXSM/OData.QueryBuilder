@@ -1,4 +1,4 @@
-﻿namespace OData.QueryBuilder.V4.Functions
+﻿namespace OData.QueryBuilder.Functions
 {
     public interface IODataQueryStringFunction
     {

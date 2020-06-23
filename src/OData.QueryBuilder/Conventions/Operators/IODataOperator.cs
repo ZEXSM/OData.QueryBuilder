@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OData.QueryBuilder.Operators
+namespace OData.QueryBuilder.Conventions.Operators
 {
     public interface IODataOperator
     {

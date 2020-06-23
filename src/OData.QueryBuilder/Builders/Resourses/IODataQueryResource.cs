@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Options;
+﻿using OData.QueryBuilder.Conventions.Options;
 
 namespace OData.QueryBuilder.Builders.Resourses
 {

@@ -1,4 +1,4 @@
-﻿namespace OData.QueryBuilder.Constants
+﻿namespace OData.QueryBuilder.Conventions.Constants
 {
     internal struct QuerySorts
     {

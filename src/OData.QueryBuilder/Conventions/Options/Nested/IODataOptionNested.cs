@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.Options.Nested
+namespace OData.QueryBuilder.Conventions.Options.Nested
 {
     public interface IODataOptionNested<TEntity>
     {

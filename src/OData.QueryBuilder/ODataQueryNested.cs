@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Constants;
+﻿using OData.QueryBuilder.Conventions.Constants;
 using System.Text;
 
 namespace OData.QueryBuilder

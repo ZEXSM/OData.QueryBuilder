@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.Options
+namespace OData.QueryBuilder.Conventions.Options
 {
     public interface IODataOptionKey<TEntity> : IODataQuery
     {

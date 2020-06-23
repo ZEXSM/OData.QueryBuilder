@@ -1,5 +1,5 @@
-﻿using OData.QueryBuilder.Constants;
-using OData.QueryBuilder.Options;
+﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Conventions.Options;
 using System.Text;
 
 namespace OData.QueryBuilder.Builders.Resourses

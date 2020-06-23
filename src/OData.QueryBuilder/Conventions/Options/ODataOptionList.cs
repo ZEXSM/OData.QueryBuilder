@@ -1,13 +1,13 @@
 ﻿using OData.QueryBuilder.Builders;
-using OData.QueryBuilder.Constants;
-using OData.QueryBuilder.Functions;
-using OData.QueryBuilder.Operators;
+using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Conventions.Functions;
+using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Options
+namespace OData.QueryBuilder.Conventions.Options
 {
     public class ODataOptionList<TEntity> : ODataQuery<TEntity>, IODataOptionList<TEntity>
     {

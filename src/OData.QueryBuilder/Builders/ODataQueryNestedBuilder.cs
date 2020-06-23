@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Options.Nested;
+﻿using OData.QueryBuilder.Conventions.Options.Nested;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;

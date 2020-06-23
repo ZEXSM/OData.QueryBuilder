@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,10 +8,14 @@ namespace OData.QueryBuilder
 {
     public class ODataQuery<TEntity> : IODataQuery
     {
+        protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         protected readonly StringBuilder _stringBuilder;
 
-        public ODataQuery(StringBuilder stringBuilder) =>
+        public ODataQuery(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        {
             _stringBuilder = stringBuilder;
+            _odataQueryBuilderOptions = odataQueryBuilderOptions;
+        }
 
         public Dictionary<string, string> ToDictionary()
         {

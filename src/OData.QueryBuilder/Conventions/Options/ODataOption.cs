@@ -1,14 +1,13 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
-using OData.QueryBuilder.Conventions.Options;
 using System.Text;
 
-namespace OData.QueryBuilder.Builders.Resourses
+namespace OData.QueryBuilder.Conventions.Options
 {
-    public class ODataQueryResource<TEntity> : IODataQueryResource<TEntity>
+    public class ODataOption<TEntity> : IODataOption<TEntity>
     {
         private readonly StringBuilder _stringBuilder;
 
-        public ODataQueryResource(string resourceUrl)
+        public ODataOption(string resourceUrl)
         {
             _stringBuilder = new StringBuilder(resourceUrl);
         }

@@ -1,8 +1,6 @@
-﻿using OData.QueryBuilder.Conventions.Options;
-
-namespace OData.QueryBuilder.Builders.Resourses
+﻿namespace OData.QueryBuilder.Conventions.Options
 {
-    public interface IODataQueryResource<TEntity>
+    public interface IODataOption<TEntity>
     {
         IODataOptionKey<TEntity> ByKey(int key);
 

@@ -13,7 +13,7 @@ namespace OData.QueryBuilder.Visitors
 
         public VisitorExpression(Expression expression) => _expression = expression;
 
-        protected string VisitExpression(Expression expression) => expression switch
+        protected virtual string VisitExpression(Expression expression) => expression switch
         {
             BinaryExpression binaryExpression => VisitBinaryExpression(binaryExpression),
             MemberExpression memberExpression => VisitMemberExpression(memberExpression),
@@ -25,7 +25,7 @@ namespace OData.QueryBuilder.Visitors
             _ => default,
         };
 
-        protected string VisitBinaryExpression(BinaryExpression binaryExpression)
+        protected virtual string VisitBinaryExpression(BinaryExpression binaryExpression)
         {
             var left = VisitExpression(binaryExpression.Left);
             var right = VisitExpression(binaryExpression.Right);
@@ -43,15 +43,15 @@ namespace OData.QueryBuilder.Visitors
             return $"{left} {binaryExpression.NodeType.ToODataQueryOperator()} {right}";
         }
 
-        protected string VisitMemberExpression(MemberExpression memberExpression) =>
+        protected virtual string VisitMemberExpression(MemberExpression memberExpression) =>
             IsResourceOfMemberExpression(memberExpression) ?
                 CreateResourcePath(memberExpression) : ReflectionExtensions.ConvertToString(GetValueOfMemberExpression(memberExpression));
 
-        protected string VisitConstantExpression(ConstantExpression constantExpression) =>
+        protected virtual string VisitConstantExpression(ConstantExpression constantExpression) =>
             constantExpression.Value == default ?
                 "null" : ReflectionExtensions.ConvertToString(constantExpression.Value);
 
-        protected string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
+        protected virtual string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
         {
             switch (methodCallExpression.Method.Name)
             {
@@ -110,7 +110,7 @@ namespace OData.QueryBuilder.Visitors
             }
         }
 
-        protected string VisitNewExpression(NewExpression newExpression)
+        protected virtual string VisitNewExpression(NewExpression newExpression)
         {
             if (newExpression.Members == default)
             {
@@ -139,7 +139,7 @@ namespace OData.QueryBuilder.Visitors
             return string.Join(QuerySeparators.CommaString, names);
         }
 
-        protected string VisitUnaryExpression(UnaryExpression unaryExpression)
+        protected virtual string VisitUnaryExpression(UnaryExpression unaryExpression)
         {
             var odataOperator = unaryExpression.NodeType.ToODataQueryOperator();
             var whitespace = odataOperator != default ? " " : default;
@@ -147,7 +147,7 @@ namespace OData.QueryBuilder.Visitors
             return $"{odataOperator}{whitespace}{VisitExpression(unaryExpression.Operand)}";
         }
 
-        protected string VisitLambdaExpression(LambdaExpression lambdaExpression)
+        protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression)
         {
             var tag = lambdaExpression.Parameters[0]?.Name;
             var filter = VisitExpression(lambdaExpression.Body);
@@ -155,31 +155,31 @@ namespace OData.QueryBuilder.Visitors
             return $"{tag}:{tag}/{filter}";
         }
 
-        private object GetValueOfExpression(Expression expression) => expression switch
+        protected object GetValueOfExpression(Expression expression) => expression switch
         {
             MemberExpression memberExpression => GetValueOfMemberExpression(memberExpression),
             ConstantExpression constantExpression => GetValueOfConstantExpression(constantExpression),
             _ => default,
         };
 
-        private object GetValueOfConstantExpression(ConstantExpression constantExpression) =>
+        protected object GetValueOfConstantExpression(ConstantExpression constantExpression) =>
             constantExpression.Value;
 
-        private object GetValueOfMemberExpression(MemberExpression expression) => expression.Expression switch
+        protected object GetValueOfMemberExpression(MemberExpression expression) => expression.Expression switch
         {
             ConstantExpression constantExpression => expression.Member.GetValue(constantExpression.Value),
             MemberExpression memberExpression => expression.Member.GetValue(GetValueOfMemberExpression(memberExpression)),
             _ => expression.Member.GetValue(),
         };
 
-        private bool IsResourceOfMemberExpression(MemberExpression memberExpression) => memberExpression.Expression switch
+        protected bool IsResourceOfMemberExpression(MemberExpression memberExpression) => memberExpression.Expression switch
         {
             ParameterExpression pe => pe.Type.GetProperty(memberExpression.Member.Name, memberExpression.Type) != default,
             MemberExpression me => IsResourceOfMemberExpression(me),
             _ => false,
         };
 
-        private string CreateResourcePath(MemberExpression memberExpression)
+        protected string CreateResourcePath(MemberExpression memberExpression)
         {
             var name = VisitExpression(memberExpression.Expression);
 

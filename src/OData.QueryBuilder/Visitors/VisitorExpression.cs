@@ -55,44 +55,44 @@ namespace OData.QueryBuilder.Visitors
         {
             switch (methodCallExpression.Method.Name)
             {
-                case nameof(IODataQueryOperator.In):
+                case nameof(IODataOperator.In):
                     var in0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var in1 = VisitExpression(methodCallExpression.Arguments[1]) ??
                         throw new ArgumentException("Enumeration is empty or null");
 
-                    return $"{in0} {ODataQueryOperators.In} ({in1})";
-                case nameof(IODataQueryOperator.All):
+                    return $"{in0} {ODataOperatorNames.In} ({in1})";
+                case nameof(IODataOperator.All):
                     var all0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var all1 = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{all0}/{ODataQueryOperators.All}({all1})";
-                case nameof(IODataQueryOperator.Any):
+                    return $"{all0}/{ODataOperatorNames.All}({all1})";
+                case nameof(IODataOperator.Any):
                     var any0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var any1 = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{any0}/{ODataQueryOperators.Any}({any1})";
-                case nameof(IODataQueryFunction.Date):
+                    return $"{any0}/{ODataOperatorNames.Any}({any1})";
+                case nameof(IODataFunction.Date):
                     var date0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{ODataQueryFunctions.Date}({date0})";
-                case nameof(IODataQueryFunction.SubstringOf):
+                    return $"{ODataFunctionNames.Date}({date0})";
+                case nameof(IODataFunction.SubstringOf):
                     var substringOf0 = GetValueOfExpression(methodCallExpression.Arguments[0]);
                     var substringOf1 = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{ODataQueryFunctions.SubstringOf}('{substringOf0}',{substringOf1})";
-                case nameof(IODataQueryFunction.Contains):
+                    return $"{ODataFunctionNames.SubstringOf}('{substringOf0}',{substringOf1})";
+                case nameof(IODataFunction.Contains):
                     var contains0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var contains1 = GetValueOfExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{ODataQueryFunctions.Contains}({contains0},'{contains1}')";
-                case nameof(IODataQueryStringFunction.ToUpper):
+                    return $"{ODataFunctionNames.Contains}({contains0},'{contains1}')";
+                case nameof(IODataStringFunction.ToUpper):
                     var toUpper0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{ODataQueryFunctions.ToUpper}({toUpper0})";
-                case nameof(IODataQueryStringFunction.ToLower):
+                    return $"{ODataFunctionNames.ToUpper}({toUpper0})";
+                case nameof(IODataStringFunction.ToLower):
                     var toLower0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{ODataQueryFunctions.ToLower}({toLower0})";
+                    return $"{ODataFunctionNames.ToLower}({toLower0})";
                 case nameof(IConvertFunction.ConvertEnumToString):
                     return $"'{GetValueOfExpression(methodCallExpression.Arguments[0])}'";
                 case nameof(IConvertFunction.ConvertDateTimeToString):

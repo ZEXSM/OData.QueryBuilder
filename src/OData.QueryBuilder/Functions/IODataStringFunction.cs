@@ -1,6 +1,6 @@
 ﻿namespace OData.QueryBuilder.Functions
 {
-    public interface IODataQueryStringFunction
+    public interface IODataStringFunction
     {
         bool SubstringOf(string value, string columnName);
 

@@ -1,6 +1,6 @@
 ﻿namespace OData.QueryBuilder.Constants
 {
-    internal struct ODataQueryOperators
+    internal struct ODataOperatorNames
     {
         public const string Any = "any";
 

@@ -2,7 +2,7 @@
 using OData.QueryBuilder.Options;
 using System.Text;
 
-namespace OData.QueryBuilder.Resourses
+namespace OData.QueryBuilder.Builders.Resourses
 {
     public class ODataQueryResource<TEntity> : IODataQueryResource<TEntity>
     {
@@ -13,25 +13,25 @@ namespace OData.QueryBuilder.Resourses
             _stringBuilder = new StringBuilder(resourceUrl);
         }
 
-        public IODataQueryOptionKey<TEntity> ByKey(int key)
+        public IODataOptionKey<TEntity> ByKey(int key)
         {
             _stringBuilder.Append($"({key}){QuerySeparators.BeginString}");
 
-            return new ODataQueryOptionKey<TEntity>(_stringBuilder);
+            return new ODataOptionKey<TEntity>(_stringBuilder);
         }
 
-        public IODataQueryOptionKey<TEntity> ByKey(string key)
+        public IODataOptionKey<TEntity> ByKey(string key)
         {
             _stringBuilder.Append($"('{key}'){QuerySeparators.BeginString}");
 
-            return new ODataQueryOptionKey<TEntity>(_stringBuilder);
+            return new ODataOptionKey<TEntity>(_stringBuilder);
         }
 
-        public IODataQueryOptionList<TEntity> ByList()
+        public IODataOptionList<TEntity> ByList()
         {
             _stringBuilder.Append(QuerySeparators.BeginString);
 
-            return new ODataQueryOptionList<TEntity>(_stringBuilder);
+            return new ODataOptionList<TEntity>(_stringBuilder);
         }
     }
 }

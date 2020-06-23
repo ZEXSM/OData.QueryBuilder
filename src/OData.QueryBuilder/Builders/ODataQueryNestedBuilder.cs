@@ -4,7 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Builders.Nested
+namespace OData.QueryBuilder.Builders
 {
     public class ODataQueryNestedBuilder<TEntity> : IODataQueryNestedBuilder<TEntity>
     {
@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Builders.Nested
 
         public string Query => $"{_stringBuilder}({_odataQueryNested.Query})";
 
-        public IODataQueryOptionNested<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
+        public IODataOptionNested<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
         {
             if (!string.IsNullOrEmpty(_odataQueryNested?.Query))
             {
@@ -33,9 +33,9 @@ namespace OData.QueryBuilder.Builders.Nested
                 _stringBuilder.Append(query);
             }
 
-            _odataQueryNested = new ODataQueryOptionNested<TNestedEntity>();
+            _odataQueryNested = new ODataOptionNested<TNestedEntity>();
 
-            return _odataQueryNested as ODataQueryOptionNested<TNestedEntity>;
+            return _odataQueryNested as ODataOptionNested<TNestedEntity>;
         }
     }
 }

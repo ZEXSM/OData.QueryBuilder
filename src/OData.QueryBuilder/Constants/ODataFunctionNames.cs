@@ -1,6 +1,6 @@
 ﻿namespace OData.QueryBuilder.Constants
 {
-    internal struct ODataQueryFunctions
+    internal struct ODataFunctionNames
     {
         public const string Date = "date";
 

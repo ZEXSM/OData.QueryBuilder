@@ -1,5 +1,5 @@
-﻿using OData.QueryBuilder.Constants;
-using OData.QueryBuilder.Resourses;
+﻿using OData.QueryBuilder.Builders.Resourses;
+using OData.QueryBuilder.Constants;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;

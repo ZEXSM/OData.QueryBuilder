@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OData.QueryBuilder.Operators
 {
-    public interface IODataQueryOperator
+    public interface IODataOperator
     {
         bool In<T>(T columnName, IEnumerable<T> values);
 

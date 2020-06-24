@@ -10,15 +10,15 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 {
     public class ODataOptionNested<TEntity> : ODataQueryNested, IODataOptionNested<TEntity>
     {
+        internal readonly VisitorExpression _visitorExpression;
+
         public ODataOptionNested(ODataQueryBuilderOptions odataQueryBuilderOptions)
-            : base(new StringBuilder(), odataQueryBuilderOptions)
-        {
-        }
+            : base(new StringBuilder(), odataQueryBuilderOptions) =>
+            _visitorExpression = new VisitorExpression();
 
         public IODataOptionNested<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand)
         {
-            var visitor = new VisitorExpression(entityNestedExpand.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityNestedExpand.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
 
@@ -38,8 +38,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
         public IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter)
         {
-            var visitor = new VisitorExpression(entityNestedFilter.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityNestedFilter.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
 
@@ -48,8 +47,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
         public IODataOptionNested<TEntity> OrderBy(Expression<Func<TEntity, object>> entityNestedOrderBy)
         {
-            var visitor = new VisitorExpression(entityNestedOrderBy.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityNestedOrderBy.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Asc}{QuerySeparators.NestedString}");
 
@@ -58,8 +56,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
         public IODataOptionNested<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityNestedOrderByDescending)
         {
-            var visitor = new VisitorExpression(entityNestedOrderByDescending.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityNestedOrderByDescending.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Desc}{QuerySeparators.NestedString}");
 
@@ -68,8 +65,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
         public IODataOptionNested<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect)
         {
-            var visitor = new VisitorExpression(entityNestedSelect.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityNestedSelect.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
 

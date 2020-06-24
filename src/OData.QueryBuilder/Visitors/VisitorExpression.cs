@@ -9,9 +9,9 @@ namespace OData.QueryBuilder.Visitors
 {
     internal class VisitorExpression
     {
-        private readonly Expression _expression;
-
-        public VisitorExpression(Expression expression) => _expression = expression;
+        public VisitorExpression()
+        {
+        }
 
         protected virtual string VisitExpression(Expression expression) => expression switch
         {
@@ -192,6 +192,6 @@ namespace OData.QueryBuilder.Visitors
                 name : $"{name}/{memberExpression.Member.Name}";
         }
 
-        public new string ToString() => VisitExpression(_expression);
+        public string ToString(Expression expression) => VisitExpression(expression);
     }
 }

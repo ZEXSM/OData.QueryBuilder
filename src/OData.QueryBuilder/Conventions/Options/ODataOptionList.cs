@@ -12,15 +12,15 @@ namespace OData.QueryBuilder.Conventions.Options
 {
     public class ODataOptionList<TEntity> : ODataQuery<TEntity>, IODataOptionList<TEntity>
     {
+        internal readonly VisitorExpression _visitorExpression;
+
         public ODataOptionList(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
-            : base(stringBuilder, odataQueryBuilderOptions)
-        {
-        }
+            : base(stringBuilder, odataQueryBuilderOptions) =>
+            _visitorExpression = new VisitorExpression();
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {
-            var visitor = new VisitorExpression(entityFilter.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityFilter.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -29,8 +29,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter)
         {
-            var visitor = new VisitorExpression(entityFilter.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityFilter.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -39,8 +38,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter)
         {
-            var visitor = new VisitorExpression(entityFilter.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityFilter.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -49,8 +47,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var visitor = new VisitorExpression(entityExpand.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityExpand.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -69,8 +66,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var visitor = new VisitorExpression(entitySelect.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entitySelect.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -79,8 +75,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
         {
-            var visitor = new VisitorExpression(entityOrderBy.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityOrderBy.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Asc}{QuerySeparators.MainString}");
 
@@ -89,8 +84,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
-            var visitor = new VisitorExpression(entityOrderByDescending.Body);
-            var query = visitor.ToString();
+            var query = _visitorExpression.ToString(entityOrderByDescending.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Desc}{QuerySeparators.MainString}");
 

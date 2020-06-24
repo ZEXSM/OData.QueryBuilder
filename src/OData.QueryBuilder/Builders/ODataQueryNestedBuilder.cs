@@ -12,11 +12,13 @@ namespace OData.QueryBuilder.Builders
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly StringBuilder _stringBuilder;
         private ODataQueryNested _odataQueryNested;
+        internal readonly VisitorExpression _visitorExpression;
 
         public ODataQueryNestedBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _stringBuilder = new StringBuilder();
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
+            _visitorExpression = new VisitorExpression();
         }
 
         public string Query => $"{_stringBuilder}({_odataQueryNested.Query})";
@@ -25,15 +27,13 @@ namespace OData.QueryBuilder.Builders
         {
             if (!string.IsNullOrEmpty(_odataQueryNested?.Query))
             {
-                var visitor = new VisitorExpression(nestedEntityExpand.Body);
-                var query = visitor.ToString();
+                var query = _visitorExpression.ToString(nestedEntityExpand.Body);
 
                 _stringBuilder.Append($"({_odataQueryNested.Query}),{query}");
             }
             else
             {
-                var visitor = new VisitorExpression(nestedEntityExpand.Body);
-                var query = visitor.ToString();
+                var query = _visitorExpression.ToString(nestedEntityExpand.Body);
 
                 _stringBuilder.Append(query);
             }

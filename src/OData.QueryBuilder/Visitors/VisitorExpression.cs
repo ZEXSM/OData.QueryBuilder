@@ -2,6 +2,7 @@
 using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Extensions;
+using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
 
@@ -9,9 +10,10 @@ namespace OData.QueryBuilder.Visitors
 {
     internal class VisitorExpression
     {
-        public VisitorExpression()
-        {
-        }
+        protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
+
+        public VisitorExpression(ODataQueryBuilderOptions odataQueryBuilderOptions) =>
+            _odataQueryBuilderOptions = odataQueryBuilderOptions;
 
         protected virtual string VisitExpression(Expression expression) => expression switch
         {
@@ -57,8 +59,17 @@ namespace OData.QueryBuilder.Visitors
             {
                 case nameof(IODataOperator.In):
                     var in0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var in1 = VisitExpression(methodCallExpression.Arguments[1]) ??
-                        throw new ArgumentException("Enumeration is empty or null");
+                    var in1 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[1]));
+
+                    if (in1.IsNullOrQuotes())
+                    {
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyOperatorArguments)
+                        {
+                            throw new ArgumentException("Enumeration is empty or null");
+                        }
+
+                        return default;
+                    }
 
                     return $"{in0} {ODataOperatorNames.In} ({in1})";
                 case nameof(IODataOperator.All):
@@ -76,15 +87,35 @@ namespace OData.QueryBuilder.Visitors
 
                     return $"{ODataFunctionNames.Date}({date0})";
                 case nameof(IODataFunction.SubstringOf):
-                    var substringOf0 = GetValueOfExpression(methodCallExpression.Arguments[0]);
+                    var substringOf0 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
                     var substringOf1 = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{ODataFunctionNames.SubstringOf}('{substringOf0}',{substringOf1})";
+                    if (substringOf0.IsNullOrQuotes())
+                    {
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArguments)
+                        {
+                            throw new ArgumentException("Value is empty or null");
+                        }
+
+                        return default;
+                    }
+
+                    return $"{ODataFunctionNames.SubstringOf}({substringOf0},{substringOf1})";
                 case nameof(IODataFunction.Contains):
                     var contains0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var contains1 = GetValueOfExpression(methodCallExpression.Arguments[1]);
+                    var contains1 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[1]));
 
-                    return $"{ODataFunctionNames.Contains}({contains0},'{contains1}')";
+                    if (contains1.IsNullOrQuotes())
+                    {
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArguments)
+                        {
+                            throw new ArgumentException("Value is empty or null");
+                        }
+
+                        return default;
+                    }
+
+                    return $"{ODataFunctionNames.Contains}({contains0},{contains1})";
                 case nameof(IODataStringFunction.ToUpper):
                     var toUpper0 = VisitExpression(methodCallExpression.Arguments[0]);
 

@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public ODataOptionList(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions) =>
-            _visitorExpression = new VisitorExpression();
+            _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
         {

@@ -46,11 +46,11 @@ namespace OData.QueryBuilder.Extensions
                 case IEnumerable<int> intValues:
                     var intValuesString = string.Join(QuerySeparators.CommaString, intValues);
 
-                    return !string.IsNullOrEmpty(intValuesString) ? intValuesString : default;
+                    return !string.IsNullOrEmpty(intValuesString) ? intValuesString : string.Empty;
                 case IEnumerable<string> stringValues:
                     var stringValuesString = string.Join($"'{QuerySeparators.CommaString}'", stringValues);
 
-                    return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : default;
+                    return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : string.Empty;
                 default:
                     return $"{@object}";
             }

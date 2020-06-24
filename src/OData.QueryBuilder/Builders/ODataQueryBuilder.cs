@@ -17,14 +17,14 @@ namespace OData.QueryBuilder.Builders
         {
             _baseUrl = $"{baseUrl.OriginalString.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
             _odataQueryBuilderOptions = odataQueryBuilderOptions ?? new ODataQueryBuilderOptions();
-            _visitorExpression = new VisitorExpression();
+            _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
         }
 
         public ODataQueryBuilder(string baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
         {
             _baseUrl = $"{baseUrl.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
             _odataQueryBuilderOptions = odataQueryBuilderOptions ?? new ODataQueryBuilderOptions();
-            _visitorExpression = new VisitorExpression();
+            _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
         }
 
         public IODataOption<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)

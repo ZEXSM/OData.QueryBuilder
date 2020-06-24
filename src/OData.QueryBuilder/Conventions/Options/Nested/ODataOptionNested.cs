@@ -14,7 +14,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
         public ODataOptionNested(ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(new StringBuilder(), odataQueryBuilderOptions) =>
-            _visitorExpression = new VisitorExpression();
+            _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
 
         public IODataOptionNested<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand)
         {

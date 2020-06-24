@@ -14,7 +14,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public ODataOptionKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions) =>
-            _visitorExpression = new VisitorExpression();
+            _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
 
         public IODataOptionKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {

@@ -18,7 +18,7 @@ namespace OData.QueryBuilder.Builders
         {
             _stringBuilder = new StringBuilder();
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
-            _visitorExpression = new VisitorExpression();
+            _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
         }
 
         public string Query => $"{_stringBuilder}({_odataQueryNested.Query})";

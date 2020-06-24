@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Options;
 using OData.QueryBuilder.Test.Fakes;
 using System.Linq;
 using Xunit;
@@ -11,7 +12,8 @@ namespace OData.QueryBuilder.Test
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
         public ODataQueryOptionKeyTest(CommonFixture commonFixture) =>
-            _odataQueryBuilder = commonFixture.ODataQueryBuilder1;
+            _odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                commonFixture.BaseUrl, new ODataQueryBuilderOptions());
 
         [Fact(DisplayName = "Expand simple => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_Success()

@@ -2,7 +2,7 @@
 {
     public class ODataQueryBuilderOptions
     {
-        public bool SuppressNullAndEmptyFunctionArguments { get; set; } = true;
-        public bool SuppressNullAndEmptyOperatorArguments { get; set; } = true;
+        public bool SuppressExceptionOfNullOrEmptyFunctionArguments { get; set; } = true;
+        public bool SuppressExceptionOfNullOrEmptyOperatorArguments { get; set; } = true;
     }
 }

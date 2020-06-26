@@ -76,6 +76,7 @@ namespace OData.QueryBuilder.Test
                         .Expand(ff => ff.For<ODataCodeEntity>(s => s.ODataCode)
                         .Select(s => s.IdCode));
                     f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Expand(ff => ff.ODataCode)
                         .Select(s => s.IdKind);
                     f.For<ODataKindEntity>(s => s.ODataKindNew)
                         .Select(s => s.IdKind);
@@ -83,7 +84,7 @@ namespace OData.QueryBuilder.Test
                 .Select(s => new { s.IdType, s.Sum })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($expand=ODataCode;$select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum");
         }
 
 

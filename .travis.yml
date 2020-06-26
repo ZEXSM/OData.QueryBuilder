@@ -24,7 +24,7 @@ script:
     - MAJOR=$(([ "$(echo $RC)" == "" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1))) || echo $CURRENT_MAJOR)
     - MINOR=$(([ "$(echo $RC)" == "" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
     - PATCH=$(([ "$(echo $RC)" == "" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
-    - echo $MAJOR.$MINOR.$PATCH$RC
+    - echo $(([ "$(echo $RC)" == "" ] && echo $CURRENT_MAJOR.$CURRENT_MINOR.$CURRENT_PATCH) || echo $MAJOR.$MINOR.$PATCH$RC)
 after_success:
     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../
     - dotnet test --no-build ./test/OData.QueryBuilder.Test

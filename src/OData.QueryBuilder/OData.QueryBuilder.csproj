@@ -7,11 +7,11 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="MiniCover" Version="2.0.0-ci-20181108093139" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="OData.QueryBuilder.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <Target Name="RestoreTools" BeforeTargets="Build">
+    <Exec Command="dotnet tool restore" />
+  </Target>
 </Project>

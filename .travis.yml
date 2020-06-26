@@ -16,15 +16,21 @@ script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp3.1
     - PR_TITLE='Merge-pull-request-#1-from-zesm/release/test'
     - LAST_TAG=2.0.0
+
     - CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
     - CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)
     - CURRENT_PATCH=$(echo $(echo $LAST_TAG | cut -d. -f 3) | cut -d- -f 1)
     - CURRENT_RC=$(echo $LAST_TAG | cut -d. -f 4)
-    - RC=$([ "$(echo $PR_TITLE | grep -oP 'release-rc')" == "release-rc" ] && echo -rc.$((CURRENT_RC+1)) || echo '')
-    - MAJOR=$(([ "$(echo $RC)" == "" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1))) || echo $CURRENT_MAJOR)
-    - MINOR=$(([ "$(echo $RC)" == "" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
-    - PATCH=$(([ "$(echo $RC)" == "" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
-    - echo $(([ "$(echo $RC)" == "" ] && echo $CURRENT_MAJOR.$CURRENT_MINOR.$CURRENT_PATCH) || echo $MAJOR.$MINOR.$PATCH$RC)
+
+    - RELEASE_RC_BRANCH=$(echo $PR_TITLE | grep -oP 'release-rc')
+    - RELEASE_BRANCH=$(echo $PR_TITLE | grep -oP 'release')
+    - FEATURE_BRANCH=$(echo $PR_TITLE | grep -oP 'feature')
+
+    - MAJOR=$(([ $RELEASE_RC_BRANCH == "release-rc" ] && echo 0) || ([ $RELEASE_BRANCH == "release" ] && echo $(($CURRENT_MAJOR+1))) || echo $CURRENT_MAJOR)
+    - MINOR=$(([ $RELEASE_RC_BRANCH == "release-rc" ] && echo 0) || ([ $RELEASE_BRANCH == "release" ] && echo 0) || ([ $FEATURE_BRANCH == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
+    - PATCH=$(([ $RELEASE_RC_BRANCH == "release-rc" ] && echo 0) || ([ $RELEASE_BRANCH == "release" ] && echo 0) || ([ $FEATURE_BRANCH == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
+    - RC_PREFIX=$([ $RELEASE_RC_BRANCH == "release-rc" ] && echo $((CURRENT_RC+1)) || echo '')
+    - echo $(([ $RELEASE_RC_BRANCH == "release-rc" ] && echo $MAJOR.$MINOR.$PATCH-rc.$RC_PREFIX) || echo $MAJOR.$MINOR.$PATCH)
 after_success:
     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../
     - dotnet test --no-build ./test/OData.QueryBuilder.Test

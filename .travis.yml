@@ -2,7 +2,7 @@ language: csharp
 dist: trusty
 os: linux
 mono: none
-dotnet: 2.1.502
+dotnet: 3.1.300
 env:
   global:
     - secure: SuKoVIfbXNAQQAQ8FhoK/USbDAJld63DKsBkmqONvUyOm8rBzFPkAfIl0qACKMMVJec7aJ9PhfxBA8nJdh7zCuaw0xcGxnVfQaxtegKo8+yz18LtUDnwv7h2aDDpsL5IdtgNZabusoz0CG0RB2vZEUQCbx80oH41L0Ijcya93ngnVeD4u0PdoFXbqxoBTiadI6qh/Od+jD+6+B04fz2XSa16WSjobSwsYNr5M+CIpa9OmLdZAJkvgHFlshmrAD2oE8iddImB9YIjDqCvnH/jqAP3/Eqci/N5sW5qpgRAyhvRxcI3Gev0wFexN8qMBUB3Iim92hf18s30R9K0Bvbb/Q+HX/VgnIBY8Yy3F68YNQvmga5AoODyuLaqPBe6ptckFp6yPkPBqeQgp1Pu2mySL0tFkjvg6/WWsxLVpco7zCjymF1IDhjVgbeO+rAQ5vEs1Fp89o4mpIAOcP10uM2b3W71fFSWTbKvIyp8ozL8PaTkRq5NiS7NvQ85hE/lVJyCL62vZ1YYOeQb0ArdoCZVdHbZp9L3UAIPYGUW6mJ9PlQtm9RC3hsnBJEvpoBnQl1wx25hhnTt16oif6L8h5XAbgVpW0Bd46LXMQbMXHKFyeMTuH4l94N9HD+qiDh82L95EQk+yHeCmfZqoKE+pf7HuscvHiFLkOxNbtJdPXqF99k=
@@ -21,8 +21,8 @@ script:
     - CURRENT_PATCH=$(echo $LAST_TAG | cut -d. -f 3)
     - CURRENT_RC=$(echo $LAST_TAG | cut -d. -f 4)
     - MAJOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1)) || echo $CURRENT_MAJOR)
-    - MINOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
-    - PATCH=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
+    - MINOR=$(([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
+    - PATCH=$(([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
     - RC=$([ "$(echo $PR_TITLE | grep -oP 'release-rc')" == "release-rc" ] && echo -rc.$((CURRENT_RC+1)) || && echo '')
     - echo $MAJOR.$MINOR.$PATCH$RC
 after_success:

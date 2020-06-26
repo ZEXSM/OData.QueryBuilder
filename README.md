@@ -9,10 +9,9 @@ Library provides linq syntax and allows you to build OData queries based on the 
 * Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
 * Support:
   * nested `OData` extenders with a choice of filtering
-  * `all`, `any`
+  * operators `all`, `any`, `in`
   * date functions `date`
-  * string functions `substringof`, `toupper`
-  * operator `in`
+  * string functions `contains`, `substringof`, `toupper`, `tolower`
 
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:
@@ -71,7 +70,9 @@ dotnet add -v 1.0.0 OData.QueryBuilder
     odataQueryBuilder.ToUri()
     odataQueryBuilder.ToDictionary()
     ```
-## <a name="ByKey"/> ByKey
+## Fluent api
+
+#### <a name="ByKey"/> ByKey
 ```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
@@ -86,7 +87,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .ToUri()
 ```
 > http://mock/odata/ODataType("223123123")
-## <a name="ByList"/> ByList
+#### <a name="ByList"/> ByList
 ```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .For<ODataTypeEntity>(s => s.ODataType)
@@ -94,7 +95,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .ToUri()
 ```
 > http://mock/odata/ODataType
-## <a name="Select"/> Select
+#### <a name="Select"/> Select
 ```csharp
 .Select(s => s.Id)
 ```
@@ -103,7 +104,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Select(s => new { s.Id, s.Sum, s.Type })
 ```
 > $select=Id,Sum,Type
-## <a name="Expand"/> Expand
+#### <a name="Expand"/> Expand
 ```csharp
 .Expand(s => s.BaseType)
 ```
@@ -113,131 +114,39 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > $expand=BaseType,ODataKind
 ```csharp
-.Expand(f =>
-{
-    f.For<ODataKindEntity>(s => s.ODataKind)
-        .Expand(s=> s.For<ODataCodeEntity>(s => s.ODataCode)
+.Expand(f => f
+    .For<ODataKindEntity>(s => s.ODataKind)
+    .Expand(s=> s
+        .For<ODataCodeEntity>(s => s.ODataCode)
         .Filter(s => s.IdKind == 1)
+        .OrderBy(s => s.IdKind)
+        .Top(1)
         .Select(s => s.IdCode));
-    f.For<ODataKindEntity>(s => s.ODataKindNew)
-        .Select(s => s.IdKind);
 })
 ```
-> $expand=ODataKind($expand=ODataCode($filter=IdKind eq 1;$select=IdCode)),ODataKindNew($select=IdKind)
-## <a name="Filter"/> Filter
+> $expand=ODataKind($expand=ODataCode($filter=IdKind eq 1;$orderby=IdKind;$top=1;$select=IdCode))
+#### <a name="Filter"/> Filter
 ```csharp
-.Filter(s => s.ODataKind.ODataCode.IdCode >= 3 || s.IdType == 5)
+.Filter(s => s.ODataKind.ODataCode.Code >= "test_code" || s.IdType >= 5)
 ```
-> $filter=ODataKind/ODataCode/IdCode ge 3 or IdType eq 5
+> $filter=ODataKind/ODataCode/IdCode eq 'test_code' or IdType ge 5
 ```csharp
-private static string IdCodeStatic => "testCode";
-...
-var constValue = "3";
-.Filter(s =>
-    s.ODataKind.ODataCode.Code == constValue || s.ODataKind.ODataCode.Code == "5"
-    && s.ODataKind.ODataCode.Code == IdCodeStatic)
+.Filter(s => s.IdRule != default(int?) && s.IdRule == null)
 ```
-> $filter=ODataKind/ODataCode/Code eq '3' or ODataKind/ODataCode/Code eq '5' and ODataKind/ODataCode/Code eq 'testCode'
+> $filter=IdRule ne null and IdRule eq null 
 ```csharp
-.Filter(s => s.ODataKind.ODataCodes.Any(a => a.IdCode == 1) 
-    && s.ODataKind.ODataCodes.All(v => v.IdActive))
+.Filter(s => s.ODataKind.OpenDate == DateTime.Today or s.ODataKind.OpenDate == new DateTime(2019, 7, 9)) or s.ODataKind.OpenDate == DateTime.Now)
 ```
-> $filter=ODataKind/ODataCodes/any(a:a/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdActive)
+> $filter=ODataKind/OpenDate eq 2019-02-09T00:00:00Z or ODataKind/OpenDate eq 2019-02-09T00:00:00Z or ODataKind/OpenDate eq 2019-02-09T15:10:20Z
 ```csharp
-var constValue = 2;
-var constCurrentDate = DateTime.Today.ToString("yyyy-MM-dd");
-
-.Filter(s =>
-    (s.IdType < constValue && s.ODataKind.ODataCode.IdCode >= 3)
-    || s.IdType == 5
-    && s.IdRule != default(int?)
-    && s.IdRule == null)
+.Filter(s => s.IsActive && s.IsOpen == true && !s.ODataKind.ODataCode.IdActive)
 ```
-> $filter=IdType lt 2 and ODataKind/ODataCode/IdCode ge 3 or IdType eq 5 and IdRule ne null and IdRule eq null 
+> $filter=IsActive and IsOpen eq true and not ODataKind/ODataCode/IdActive
 ```csharp
-var constCurrentDateToday = new DateTime(2019, 2, 9);
-var constCurrentDateNow = new DateTime(2019, 2, 9, 1, 2, 4);
-var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { EndDate = constCurrentDateToday } };
-
-.Filter(s =>
-    s.ODataKind.OpenDate.Date == constCurrentDateNow
-    && s.ODataKind.OpenDate == constCurrentDateToday
-    && s.ODataKind.OpenDate == DateTime.Today
-    && s.Open.Date == DateTime.Today
-    && s.Open == DateTime.Today
-    && s.Open == constCurrentDateToday
-    && s.Open.Date == newObject.ODataKind.EndDate
-    && s.ODataKind.OpenDate.Date == new DateTime(2019, 7, 9)
-    && ((DateTime)s.BeginDate).Date == DateTime.Today)
+.Filter(s => s.ODataKind.Color == ColorEnum.Blue)
 ```
-> $filter=date(ODataKind/OpenDate) eq 2019-02-09 and ODataKind/OpenDate eq 2019-02-09T00:00:00.0000000 and ODataKind/OpenDate eq 2019-08-18T00:00:00.0000000+03:00 and date(Open) eq 2019-08-18 and Open eq 2019-08-18T00:00:00.0000000+03:00 and Open eq 2019-02-09T00:00:00.0000000 and date(Open) eq 2019-02-09 and date(ODataKind/OpenDate) eq 2019-07-09 and date(BeginDate) eq 2019-08-18
-```csharp
-var constStrIds = new[] { "123", "512" };
-var constStrListIds = new[] { "123", "512" }.ToList();
-var constIntIds = new[] { 123, 512 };
-var constIntListIds = new[] { 123, 512 }.ToList();
-var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
-var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
-
-.Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
-    && constStrListIds.Contains(s.ODataKind.ODataCode.Code)
-    && constIntIds.Contains(s.IdType)
-    && constIntListIds.Contains(s.IdType)
-    && constIntIds.Contains((int)s.IdRule)
-    && constIntListIds.Contains((int)s.IdRule)
-    && newObject.ODataKind.Sequence.Contains(s.ODataKind.IdKind)
-    && newObjectSequenceArray.ODataKind.SequenceArray.Contains(s.ODataKind.ODataCode.IdCode))
-```
-> $filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)
-```csharp
-var constStrIds = default(IEnumerable<string>);
-var constStrListIds = new string[] { }.ToList();
-var constIntIds = default(int[]);
-var constIntListIds = new[] { 123, 512 }.ToList();
-var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
-var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
-
-.Filter(s => constStrIds.Contains(s.ODataKind.ODataCode.Code)
-    && constStrListIds.Contains(s.ODataKind.ODataCode.Code)
-    && constIntIds.Contains(s.IdType)
-    && constIntListIds.Contains(s.IdType)
-    && constIntIds.Contains((int)s.IdRule)
-    && constIntListIds.Contains((int)s.IdRule)
-    && newObject.ODataKind.Sequence.Contains(s.ODataKind.IdKind)
-    && newObjectSequenceArray.ODataKind.SequenceArray.Contains(s.ODataKind.ODataCode.IdCode))
-```
-> $filter=IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)
-```csharp
-.Filter(s => s.IsActive && s.IsOpen == true && s.ODataKind.ODataCode.IdActive == false)
-```
-> $filter=IsActive and IsOpen eq true and ODataKind/ODataCode/IdActive eq false
-```csharp
-var constStrIds = new[] { "123", "512" };
-var constValue = 3;
-
-.Filter(s => s.IdRule == constValue
-     && s.IsActive
-     && (((DateTimeOffset)s.EndDate).Date == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
-     && (((DateTime)s.BeginDate).Date != default(DateTime?) || ((DateTime)s.BeginDate).Date <= DateTime.Today)
-     && constStrIds.Contains(s.ODataKind.ODataCode.Code))
-```
-> $filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt 2019-08-18T00:00:00.0000000+03:00 and date(BeginDate) ne null or date(BeginDate) le 2019-08-18 and ODataKind/ODataCode/Code in ('123','512')
-```csharp
-.Filter(s => s.ODataKind.Color.ToString() == ColorEnum.Blue.ToString()
-    && s.ODataKind.Color == ColorEnum.Blue)
-```
-> $filter=ODataKind/Color eq 'Blue' and ODataKind/Color eq 2
-```csharp
-var constValue = "p".ToUpper();
-var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToUpper() };
-
-.Filter(s => s.ODataKind.ODataCode.Code.ToUpper().Contains("W")
-    || s.ODataKind.ODataCode.Code.Contains(constValue)
-    || s.ODataKindNew.ODataCode.Code.Contains(newObject.TypeCode)
-    || s.ODataKindNew.ODataCode.Code.Contains("55"))
-```
-> $filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)
-## <a name="OrderBy"/> OrderBy
+> $filter=ODataKind/Color eq 2
+#### <a name="OrderBy"/> OrderBy
 ```csharp
 .OrderBy(s => s.IdType)
 ```
@@ -246,7 +155,7 @@ var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToUpper() };
 .OrderBy(s => new { s.IdType, s.Sum })
 ```
 > $orderby=IdType,Sum asc
-## <a name="OrderByDescending"/> OrderByDescending
+#### <a name="OrderByDescending"/> OrderByDescending
 ```csharp
 .OrderByDescending(s => s.IdType)
 ```
@@ -255,7 +164,7 @@ var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToUpper() };
 .OrderByDescending(s => new { s.IdType, s.Sum })
 ```
 > $orderby=IdType,Sum desc
-## <a name="Count"/> Count
+#### <a name="Count"/> Count
 ```csharp
 .Count()
 ```
@@ -264,13 +173,95 @@ var newObject = new ODataTypeEntity { TypeCode = "TypeCodeValue".ToUpper() };
 .Count(false)
 ```
 > $count=false
-## <a name="Skip"/> Skip
+#### <a name="Skip"/> Skip
 ```csharp
 .Skip(12)
 ```
 > $skip=12
-## <a name="Top"/> Top
+#### <a name="Top"/> Top
 ```csharp
 .Top(100)
 ```
 > $top=100
+
+## Usage operators
+
+#### In
+
+```csharp
+.Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new[] { "123", "512" }) && o.In(s.IdType, new[] { 123, 512 }))
+```
+> $filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)
+
+#### Any
+
+```csharp
+.Filter((s, f, o) => o.Any(s.ODataKind.ODataCodes, v => v.IdCode == 1)
+```
+> $filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1)
+
+#### All
+
+```csharp
+.Filter((s, f, o) => o.All(s.ODataKind.ODataCodes, v => v.IdActive))
+```
+> $filter=ODataKind/ODataCodes/all(v:v/IdActive)
+
+## Usage date functions
+
+#### Date
+
+```csharp
+.Filter((s, f) => f.Date(s.Open) == DateTime.Today)
+```
+> $filter=date(Open) eq 2019-02-09T00:00:00Z
+
+## Usage string functions
+
+#### Contains
+
+```csharp
+.Filter((s, f) => f.Contains(s.ODataKind.ODataCode.Code, "W"))
+```
+> $filter=contains(ODataKind/ODataCode/Code,'W')
+
+#### SubstringOf
+
+```csharp
+.Filter((s, f) => f.SubstringOf("W", s.ODataKind.ODataCode.Code))
+```
+> $filter=substringof('W',ODataKind/ODataCode/Code)
+
+#### ToUpper
+
+```csharp
+.Filter((s, f) => f.ToUpper(s.ODataKind.ODataCode.Code))
+```
+> $filter=toupper(ODataKind/ODataCode/Code)
+
+#### ToLower
+
+```csharp
+.Filter((s, f) => f.ToLower(s.ODataKind.ODataCode.Code))
+```
+> $filter=tolower(ODataKind/ODataCode/Code)
+
+## Usage convert functions
+
+#### ConvertEnumToString
+```csharp
+.Filter((s, f) => s.ODataKind.Color == f.ConvertEnumToString(ColorEnum.Blue))
+```
+> $filter=ODataKind/Color eq 'Blue'
+
+#### ConvertDateTimeToString
+```csharp
+.Filter((s, f) => s.ODataKind.OpenDate == f.ConvertDateTimeToString(new DateTime(2019, 2, 9), "yyyy-MM-dd"))
+```
+> $filter=ODataKind/OpenDate eq 2019-02-09
+
+#### ConvertDateTimeOffsetToString
+```csharp
+.Filter((s, f) => s.ODataKind.OpenDate == f.ConvertDateTimeToString(new DateTimeOffset(new DateTime(2019, 2, 9)), "yyyy-MM-dd"))
+```
+> $filter=ODataKind/OpenDate eq 2019-02-09

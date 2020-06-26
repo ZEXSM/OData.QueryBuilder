@@ -22,7 +22,7 @@ script:
     - MAJOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1)) || echo $CURRENT_MAJOR)
     - MINOR=$(([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
     - PATCH=$(([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
-    - RC=$([ "$(echo $PR_TITLE | grep -oP 'release-rc')" == "release-rc" ] && echo -rc.$((CURRENT_RC+1)) || && echo '')
+    - RC=$(([ "$(echo $PR_TITLE | grep -oP 'release-rc')" == "release-rc" ] && echo -rc.$((CURRENT_RC+1)) || && echo '')
     - echo $MAJOR.$MINOR.$PATCH$RC
 after_success:
     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../

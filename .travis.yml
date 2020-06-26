@@ -15,6 +15,7 @@ script:
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION
     - PR_TITLE='Merge-pull-request-#1-from-zesm/release/test'
     - LAST_TAG=1.4.9
+    - RC_PREFIX='-rc.'
     - CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
     - CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)
     - CURRENT_PATCH=$(echo $LAST_TAG | cut -d. -f 3)
@@ -22,7 +23,7 @@ script:
     - MAJOR=$([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1)) || echo $CURRENT_MAJOR)
     - MINOR=$(([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
     - PATCH=$(([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
-    - RC=$([ "$(echo $PR_TITLE | grep -oP 'release-rc')" == "release-rc" ] && echo -rc.$((CURRENT_RC+1)) || && echo '')
+    - RC=$([ "$(echo $PR_TITLE | grep -oP 'release-rc')" == "release-rc" ] && echo $((RC_PREFIX))$((CURRENT_RC+1)) || && echo '')
     - echo $MAJOR.$MINOR.$PATCH$RC
 after_success:
     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../

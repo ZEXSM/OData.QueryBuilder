@@ -63,7 +63,7 @@ namespace OData.QueryBuilder.Visitors
 
                     if (in1.IsNullOrQuotes())
                     {
-                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyOperatorArguments)
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyOperatorArgs)
                         {
                             throw new ArgumentException("Enumeration is empty or null");
                         }
@@ -92,7 +92,7 @@ namespace OData.QueryBuilder.Visitors
 
                     if (substringOf0.IsNullOrQuotes())
                     {
-                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArguments)
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArgs)
                         {
                             throw new ArgumentException("Value is empty or null");
                         }
@@ -107,7 +107,7 @@ namespace OData.QueryBuilder.Visitors
 
                     if (contains1.IsNullOrQuotes())
                     {
-                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArguments)
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArgs)
                         {
                             throw new ArgumentException("Value is empty or null");
                         }

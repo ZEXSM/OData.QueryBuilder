@@ -373,7 +373,7 @@ namespace OData.QueryBuilder.Test
             var constValue = default(string);
             var newObject = new ODataTypeEntity { TypeCode = string.Empty };
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 
@@ -414,7 +414,7 @@ namespace OData.QueryBuilder.Test
             var constValue = default(string);
             var newObject = new ODataTypeEntity { TypeCode = string.Empty };
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 
@@ -509,7 +509,7 @@ namespace OData.QueryBuilder.Test
         {
             var constEmprtyStrListIds = new string[] { }.ToList();
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 
@@ -527,7 +527,7 @@ namespace OData.QueryBuilder.Test
         {
             var constStrIds = default(IEnumerable<string>);
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 
@@ -545,7 +545,7 @@ namespace OData.QueryBuilder.Test
         {
             var constIntIds = default(int[]);
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 
@@ -564,7 +564,7 @@ namespace OData.QueryBuilder.Test
             var constIntIds = default(int[]);
             var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 
@@ -582,7 +582,7 @@ namespace OData.QueryBuilder.Test
         {
             var constEmptyIntIds = new int[0];
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArguments = false };
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = false };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
 

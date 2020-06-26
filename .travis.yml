@@ -14,7 +14,7 @@ before_script:
 script:
     - dotnet build
     - dotnet test ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp3.1
-    - PR_TITLE='Merge-pull-request-#1-from-zesm/release-rc/test'
+    - PR_TITLE='Merge-pull-request-#1-from-zesm/reled/test'
     - LAST_TAG=2.0.0-rc.1
     - CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
     - CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)

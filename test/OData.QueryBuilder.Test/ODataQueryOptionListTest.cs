@@ -351,9 +351,13 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "SubstringOf is null or empty value => Success")]
         public void ODataQueryBuilderList_Test_SubstringOf_is_null_or_empty_value_Success()
         {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
             var constValue = "p".ToUpper();
             var newObject = new ODataTypeEntity { TypeCode = string.Empty };
-            var uri = _odataQueryBuilderDefault
+            var uri = odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter((s, f) =>
@@ -373,11 +377,7 @@ namespace OData.QueryBuilder.Test
             var constValue = default(string);
             var newObject = new ODataTypeEntity { TypeCode = string.Empty };
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = false };
-            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
-                _commonFixture.BaseUri, odataQueryBuilderOptions);
-
-            odataQueryBuilder.Invoking(
+            _odataQueryBuilderDefault.Invoking(
                 (r) => r
                     .For<ODataTypeEntity>(s => s.ODataType)
                     .ByList()
@@ -414,11 +414,7 @@ namespace OData.QueryBuilder.Test
             var constValue = default(string);
             var newObject = new ODataTypeEntity { TypeCode = string.Empty };
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = false };
-            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
-                _commonFixture.BaseUri, odataQueryBuilderOptions);
-
-            odataQueryBuilder.Invoking(
+            _odataQueryBuilderDefault.Invoking(
                 (r) => r
                     .For<ODataTypeEntity>(s => s.ODataType)
                     .ByList()
@@ -434,9 +430,13 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "Contains is null or empty value => Success")]
         public void ODataQueryBuilderList_Test_Contains_is_null_or_empty_value_Success()
         {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
             var constValue = "P";
             var newObject = new ODataTypeEntity { TypeCode = string.Empty };
-            var uri = _odataQueryBuilderDefault
+            var uri = odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter((s, f) =>
@@ -479,6 +479,10 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]
         public void ODataQueryBuilderList_Operator_In_Empty_Success()
         {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
             var constStrIds = default(IEnumerable<string>);
             var constEmprtyStrListIds = new string[] { }.ToList();
             var constIntIds = default(int[]);
@@ -487,7 +491,7 @@ namespace OData.QueryBuilder.Test
             var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
             var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
 
-            var uri = _odataQueryBuilderDefault
+            var uri = odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, constStrIds)
@@ -509,11 +513,7 @@ namespace OData.QueryBuilder.Test
         {
             var constEmprtyStrListIds = new string[] { }.ToList();
 
-            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = false };
-            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
-                _commonFixture.BaseUri, odataQueryBuilderOptions);
-
-            odataQueryBuilder.Invoking(
+            _odataQueryBuilderDefault.Invoking(
                 (r) => r
                     .For<ODataTypeEntity>(s => s.ODataType)
                     .ByList()

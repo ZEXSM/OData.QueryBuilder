@@ -235,16 +235,16 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 #### ToUpper
 
 ```csharp
-.Filter((s, f) => f.ToUpper(s.ODataKind.ODataCode.Code))
+.Filter((s, f) => f.ToUpper(s.ODataKind.ODataCode.Code) == "TEST_CODE")
 ```
-> $filter=toupper(ODataKind/ODataCode/Code)
+> $filter=toupper(ODataKind/ODataCode/Code) eq 'TEST_CODE'
 
 #### ToLower
 
 ```csharp
-.Filter((s, f) => f.ToLower(s.ODataKind.ODataCode.Code))
+.Filter((s, f) => f.ToLower(s.ODataKind.ODataCode.Code) == "test_code")
 ```
-> $filter=tolower(ODataKind/ODataCode/Code)
+> $filter=tolower(ODataKind/ODataCode/Code)) eq 'test_code'
 
 ## Usage convert functions
 
@@ -265,3 +265,27 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Filter((s, f) => s.ODataKind.OpenDate == f.ConvertDateTimeToString(new DateTimeOffset(new DateTime(2019, 2, 9)), "yyyy-MM-dd"))
 ```
 > $filter=ODataKind/OpenDate eq 2019-02-09
+
+## Suppress exceptions
+
+:warning: __May result in loss of control over the expected result.__
+
+> Suppression of inclusion excludes the whole expression from the request
+
+By default, suppression of function and operator argument exceptions is disabled. To enable it, you must pass the configuration `ODataQueryBuilderOptions` when initializing the builder
+with initialization of the `SuppressExceptionOfNullOrEmptyFunctionArgs` and` SuppressExceptionOfNullOrEmptyOperatorArgs` properties.
+
+```csharp
+var builder = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata", new ODataQueryBuilderOptions {
+    SuppressExceptionOfNullOrEmptyFunctionArgs = true,
+    SuppressExceptionOfNullOrEmptyOperatorArgs = true,
+});
+
+var uri = builder
+    .For<ODataTypeEntity>(s => s.ODataType)
+    .ByList()
+    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new string[0]) or o.In(s.ODataKind.ODataCode.Code, null) && o.In(s.IdType, new[] { 123, 512 }))
+    .ToUri()
+```
+> http://mock/odata/ODataType?$filter=IdType in (123,512)
+```

@@ -284,7 +284,9 @@ var builder = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata", new
 var uri = builder
     .For<ODataTypeEntity>(s => s.ODataType)
     .ByList()
-    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new string[0]) or o.In(s.ODataKind.ODataCode.Code, null) && o.In(s.IdType, new[] { 123, 512 }))
+    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new string[0]) or o.In(s.ODataKind.ODataCode.Code, null)
+        && f.Contains(s.ODataKind.ODataCode.Code, default(string)) 
+        && o.In(s.IdType, new[] { 123, 512 }))
     .ToUri()
 ```
 > http://mock/odata/ODataType?$filter=IdType in (123,512)

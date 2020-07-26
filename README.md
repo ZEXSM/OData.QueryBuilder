@@ -44,27 +44,27 @@ dotnet add -v 1.0.0 OData.QueryBuilder
 
     The builder allows you to build queries on the key and the list:
     * [ByKey](#ByKey)
-      * [Expand](#Expand)
-        * [Filter](#Filter)
-        * [Select](#Select)
-        * [OrderBy](#OrderBy)
-        * [OrderByDescending](#OrderByDescending)
-        * [Top](#Top)
-      * [Select](#Select) 
+      * [expand](#expand)
+        * [filter](#filter)
+        * [select](#select)
+        * [orderby](#orderby)
+        * [orderby desc](#orderbydesc)
+        * [top](#top)
+      * [select](#select) 
     * [ByList](#ByList)
-      * [Expand](#Expand)
-        * [Filter](#Filter)
-        * [Select](#Select)
-        * [OrderBy](#OrderBy)
-        * [OrderByDescending](#OrderByDescending)
-        * [Top](#Top)
-      * [Filter](#Filter)
-      * [Select](#Select)
-      * [OrderBy](#OrderBy)
-      * [OrderByDescending](#OrderByDescending)
-      * [Top](#Top)
-      * [Skip](#Skip)
-      * [Count](#Count)
+      * [expand](#expand)
+        * [filter](#filter)
+        * [select](#select)
+        * [orderby](#orderby)
+        * [orderby desc](#orderbydesc)
+        * [top](#top)
+      * [filter](#filter)
+      * [select](#select)
+      * [orderby](#orderby)
+      * [orderby desc](#orderby desc)
+      * [top](#top)
+      * [skip](#skip)
+      * [count](#count)
 4. Get Uri request or collection of operators from the builder
     ```csharp
     odataQueryBuilder.ToUri()
@@ -95,7 +95,10 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .ToUri()
 ```
 > http://mock/odata/ODataType
-#### <a name="Select"/> Select
+
+## Usage options
+
+#### <a name="select"/> select
 ```csharp
 .Select(s => s.Id)
 ```
@@ -104,7 +107,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Select(s => new { s.Id, s.Sum, s.Type })
 ```
 > $select=Id,Sum,Type
-#### <a name="Expand"/> Expand
+#### <a name="expand"/> expand
 ```csharp
 .Expand(s => s.BaseType)
 ```
@@ -125,7 +128,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 })
 ```
 > $expand=ODataKind($expand=ODataCode($filter=IdKind eq 1;$orderby=IdKind;$top=1;$select=IdCode))
-#### <a name="Filter"/> Filter
+#### <a name="filter"/> filter
 ```csharp
 .Filter(s => s.ODataKind.ODataCode.Code >= "test_code" || s.IdType >= 5)
 ```
@@ -146,7 +149,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Filter(s => s.ODataKind.Color == ColorEnum.Blue)
 ```
 > $filter=ODataKind/Color eq 2
-#### <a name="OrderBy"/> OrderBy
+#### <a name="orderby"/> orderby
 ```csharp
 .OrderBy(s => s.IdType)
 ```
@@ -155,7 +158,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .OrderBy(s => new { s.IdType, s.Sum })
 ```
 > $orderby=IdType,Sum asc
-#### <a name="OrderByDescending"/> OrderByDescending
+#### <a name="orderbydesc"/> orderby desc
 ```csharp
 .OrderByDescending(s => s.IdType)
 ```
@@ -164,7 +167,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .OrderByDescending(s => new { s.IdType, s.Sum })
 ```
 > $orderby=IdType,Sum desc
-#### <a name="Count"/> Count
+#### <a name="count"/> count
 ```csharp
 .Count()
 ```
@@ -173,12 +176,12 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Count(false)
 ```
 > $count=false
-#### <a name="Skip"/> Skip
+#### <a name="skip"/> skip
 ```csharp
 .Skip(12)
 ```
 > $skip=12
-#### <a name="Top"/> Top
+#### <a name="top"/> top
 ```csharp
 .Top(100)
 ```
@@ -186,21 +189,21 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 
 ## Usage operators
 
-#### In
+#### in
 
 ```csharp
 .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new[] { "123", "512" }) && o.In(s.IdType, new[] { 123, 512 }))
 ```
 > $filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)
 
-#### Any
+#### any
 
 ```csharp
 .Filter((s, f, o) => o.Any(s.ODataKind.ODataCodes, v => v.IdCode == 1)
 ```
 > $filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1)
 
-#### All
+#### all
 
 ```csharp
 .Filter((s, f, o) => o.All(s.ODataKind.ODataCodes, v => v.IdActive))
@@ -209,7 +212,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 
 ## Usage date functions
 
-#### Date
+#### date
 
 ```csharp
 .Filter((s, f) => f.Date(s.Open) == DateTime.Today)
@@ -218,33 +221,40 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 
 ## Usage string functions
 
-#### Contains
+#### contains
 
 ```csharp
 .Filter((s, f) => f.Contains(s.ODataKind.ODataCode.Code, "W"))
 ```
 > $filter=contains(ODataKind/ODataCode/Code,'W')
 
-#### SubstringOf
+#### substringof
 
 ```csharp
 .Filter((s, f) => f.SubstringOf("W", s.ODataKind.ODataCode.Code))
 ```
 > $filter=substringof('W',ODataKind/ODataCode/Code)
 
-#### ToUpper
+#### toupper
 
 ```csharp
 .Filter((s, f) => f.ToUpper(s.ODataKind.ODataCode.Code) == "TEST_CODE")
 ```
 > $filter=toupper(ODataKind/ODataCode/Code) eq 'TEST_CODE'
 
-#### ToLower
+#### tolower
 
 ```csharp
 .Filter((s, f) => f.ToLower(s.ODataKind.ODataCode.Code) == "test_code")
 ```
-> $filter=tolower(ODataKind/ODataCode/Code)) eq 'test_code'
+> $filter=tolower(ODataKind/ODataCode/Code) eq 'test_code'
+
+#### concat
+
+```csharp
+.Filter((s, f) => f.Concat(s.ODataKind.ODataCode.Code, "_1") == "test_code_1")
+```
+> $filter=concat(ODataKind/ODataCode/Code, '_1') eq 'test_code_1'
 
 ## Usage convert functions
 

@@ -61,7 +61,7 @@ dotnet add -v 1.0.0 OData.QueryBuilder
       * [filter](#filter)
       * [select](#select)
       * [orderby](#orderby)
-      * [orderby desc](#orderby desc)
+      * [orderby desc](#orderbydesc)
       * [top](#top)
       * [skip](#skip)
       * [count](#count)

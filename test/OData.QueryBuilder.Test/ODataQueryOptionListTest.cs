@@ -209,6 +209,18 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdActive)");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any => Success")]
+        public void ODataQueryBuilderList_Filter_Any_Success1()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.Any(s.Tags, t => t == "testTag"))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
+        }
+
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {
@@ -447,6 +459,125 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=contains(ODataKind/ODataCode/Code,'P')");
+        }
+
+        [Fact(DisplayName = "Concat string simple => Success")]
+        public void ODataQueryBuilderList_concat_string_simple_success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Concat(s.TypeCode, ";") == "typeCodeTest;")
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(TypeCode,';') eq 'typeCodeTest;'");
+        }
+
+        [Fact(DisplayName = "Nested Concat string => Success")]
+        public void ODataQueryBuilderList_nested_concat_string_simple_success1()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Concat(f.Concat(s.TypeCode, ", "), s.ODataKind.ODataCode.Code) == "testTypeCode1, testTypeCode2")
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
+        }
+
+        [Fact(DisplayName = "Nested Concat string => Success")]
+        public void ODataQueryBuilderList_nested_concat_string_simple_success2()
+        {
+            var constParam = ", ";
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Concat(f.Concat(s.TypeCode, constParam), s.ODataKind.ODataCode.Code) == "testTypeCode1, testTypeCode2")
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
+        }
+
+        [Fact(DisplayName = "Nested Concat string => Success")]
+        public void ODataQueryBuilderList_nested_concat_string_simple_success3()
+        {
+            var constParam = ", ";
+            var constParamObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { ODataCode = new ODataCodeEntity { Code = constParam } } };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Concat(f.Concat(s.TypeCode, constParamObject.ODataKind.ODataCode.Code), s.ODataKind.ODataCode.Code) == "testTypeCode1, testTypeCode2")
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
+        }
+
+        [Fact(DisplayName = "Concat string is null or empty value argument1 => Exception")]
+        public void ODataQueryBuilderList_concat_string_simple_argument1_exception()
+        {
+            var constValue = default(string);
+            var newObject = new ODataTypeEntity { TypeCode = string.Empty };
+
+            _odataQueryBuilderDefault.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f) => f.Concat(s.TypeCode, constValue) == "typeCodeTest;")
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Value is empty or null");
+        }
+
+        [Fact(DisplayName = "Concat string is null or empty value argument2 => Exception")]
+        public void ODataQueryBuilderList_concat_string_simple_argument2_exception()
+        {
+            var constValue = default(string);
+            var newObject = new ODataTypeEntity { TypeCode = string.Empty };
+
+            _odataQueryBuilderDefault.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f) => f.Concat(constValue, s.TypeCode) == "typeCodeTest;")
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Value is empty or null");
+        }
+
+        [Theory(DisplayName = "Concat is null empty value agr1 => Success")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void ODataQueryBuilderList_concat_is_null_or_empty_value_agr1_success(string value)
+        {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
+            var uri = odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Concat(value, s.TypeCode) == "typeCodeTest;")
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter='typeCodeTest;'");
+        }
+
+        [Theory(DisplayName = "Concat is null empty value agr2 => Success")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void ODataQueryBuilderList_concat_is_null_or_empty_value_agr2_success(string value)
+        {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
+            var uri = odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Concat(s.TypeCode, value) == "typeCodeTest;")
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter='typeCodeTest;'");
         }
 
         [Fact(DisplayName = "Operator IN => Success")]

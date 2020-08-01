@@ -27,6 +27,8 @@ namespace OData.QueryBuilder.Test.Fakes
         public ODataKindEntity ODataKind { get; set; }
 
         public ODataKindEntity ODataKindNew { get; set; }
+
+        public string[] Tags { get; set; }
     }
 }
 

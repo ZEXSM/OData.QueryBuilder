@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OData.QueryBuilder.Parameters
+namespace OData.QueryBuilder
 {
-    public interface IODataQueryParameter
+    public interface IODataQuery
     {
         Uri ToUri();
 

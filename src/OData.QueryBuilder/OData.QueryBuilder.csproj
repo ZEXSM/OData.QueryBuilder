@@ -1,16 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <TargetFramework>netstandard1.3</TargetFramework>
-    <NuspecFile>bin\$(Configuration)\$(TargetFramework)\OData.QueryBuilder.nuspec</NuspecFile>
-    <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>OData.QueryBuilder</PackageId>
+    <PackageVersion>$(PackageVersion)</PackageVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/ZEXSM/OData.QueryBuilder</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ZEXSM/OData.QueryBuilder</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>odata;querybuilder;dotnet;charp</PackageTags>
+    <Authors>ZEXSM</Authors>
+    <Description>Library provides linq syntax and allows you to build OData queries based on the data model</Description>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="MiniCover" Version="2.0.0-ci-20181108093139" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="OData.QueryBuilder.nuspec">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+
+  <Target Name="RestoreTools" BeforeTargets="Build">
+    <Exec Command="dotnet tool restore" />
+  </Target>
+
 </Project>

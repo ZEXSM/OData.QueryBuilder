@@ -1,25 +1,25 @@
-﻿using OData.QueryBuilder.Extensions;
-using OData.QueryBuilder.Resourses;
+﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Options;
+using OData.QueryBuilder.Resources;
 using System;
-using System.Linq.Expressions;
+using System.Text;
 
 namespace OData.QueryBuilder.Builders
 {
-    public class ODataQueryBuilder<TResource> : IODataQueryBuilder<TResource>
+    public class ODataQueryBuilder<TResource> : ODataQueryResource<TResource>
     {
-        private readonly string _baseUrl;
-
-        public ODataQueryBuilder(Uri baseUrl) =>
-            _baseUrl = $"{baseUrl.OriginalString.TrimEnd('/')}/";
-
-        public ODataQueryBuilder(string baseUrl) =>
-            _baseUrl = $"{baseUrl.TrimEnd('/')}/";
-
-        public IODataQueryResource<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
+        public ODataQueryBuilder(Uri baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
+            : base(
+                  new StringBuilder($"{baseUrl.OriginalString.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}"),
+                  odataQueryBuilderOptions ?? new ODataQueryBuilderOptions())
         {
-            var entityResourceQuery = entityResource.Body.ToODataQuery(string.Empty);
+        }
 
-            return new ODataQueryResource<TEntity>($"{_baseUrl}{entityResourceQuery}");
+        public ODataQueryBuilder(string baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
+            : base(
+                  new StringBuilder($"{baseUrl.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}"),
+                  odataQueryBuilderOptions ?? new ODataQueryBuilderOptions())
+        {
         }
     }
 }

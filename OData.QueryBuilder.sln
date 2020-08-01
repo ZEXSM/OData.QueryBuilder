@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.705
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FA1582AB-A13D-44A4-A46D-2DAE1111A2BB}"
 EndProject
@@ -15,6 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{179F88B9
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{B8F31CF9-EDE2-4813-A9AC-EBF3514FFE82}"
+	ProjectSection(SolutionItems) = preProject
+		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
 Global
@@ -38,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E4D8F027-2B79-4794-9B75-D08C2BA066B8} = {FA1582AB-A13D-44A4-A46D-2DAE1111A2BB}
 		{537E849E-5291-49F9-BD2A-9F4A01DB1561} = {26982440-340F-48A2-9D73-44DB6C52EBF1}
+		{B8F31CF9-EDE2-4813-A9AC-EBF3514FFE82} = {179F88B9-A06D-4505-9266-A5D66004601C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D51B9A3-94B0-48DF-BFF5-110B13303535}

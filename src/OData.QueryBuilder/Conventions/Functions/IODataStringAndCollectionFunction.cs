@@ -1,10 +1,16 @@
-﻿namespace OData.QueryBuilder.Conventions.Functions
+﻿using System;
+
+namespace OData.QueryBuilder.Conventions.Functions
 {
     /// <summary>
     /// http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#sec_StringandCollectionFunctions
     /// </summary>
     public interface IODataStringAndCollectionFunction
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        [Obsolete("Use Contains OData Version 4.0 Protocol function if possible")]
         bool SubstringOf(string value, string columnName);
 
         /// <summary>

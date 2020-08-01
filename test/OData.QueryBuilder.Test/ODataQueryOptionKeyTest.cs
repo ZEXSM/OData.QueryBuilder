@@ -73,8 +73,9 @@ namespace OData.QueryBuilder.Test
                 .Expand(f =>
                 {
                     f.For<ODataKindEntity>(s => s.ODataKind)
-                        .Expand(ff => ff.For<ODataCodeEntity>(s => s.ODataCode)
-                        .Select(s => s.IdCode));
+                        .Expand(ff => ff
+                            .For<ODataCodeEntity>(s => s.ODataCode)
+                                .Select(s => s.IdCode));
                     f.For<ODataKindEntity>(s => s.ODataKindNew)
                         .Expand(ff => ff.ODataCode)
                         .Select(s => s.IdKind);

@@ -4,6 +4,7 @@ using OData.QueryBuilder.Options;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace OData.QueryBuilder.Builders
 {
@@ -11,18 +12,18 @@ namespace OData.QueryBuilder.Builders
     {
         internal readonly VisitorExpression _visitorExpression;
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        private readonly string _baseUrl;
+        private readonly StringBuilder _stringBuilder;
 
         public ODataQueryBuilder(Uri baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
         {
-            _baseUrl = $"{baseUrl.OriginalString.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
+            _stringBuilder =new StringBuilder($"{baseUrl.OriginalString.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}");
             _odataQueryBuilderOptions = odataQueryBuilderOptions ?? new ODataQueryBuilderOptions();
             _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
         }
 
         public ODataQueryBuilder(string baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
         {
-            _baseUrl = $"{baseUrl.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}";
+            _stringBuilder = new StringBuilder($"{baseUrl.TrimEnd(QuerySeparators.SlashChar)}{QuerySeparators.SlashString}");
             _odataQueryBuilderOptions = odataQueryBuilderOptions ?? new ODataQueryBuilderOptions();
             _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
         }
@@ -31,7 +32,9 @@ namespace OData.QueryBuilder.Builders
         {
             var query = _visitorExpression.ToString(entityResource.Body);
 
-            return new ODataOption<TEntity>($"{_baseUrl}{query}", _odataQueryBuilderOptions);
+            _stringBuilder.Append(query);
+
+            return new ODataOption<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }
     }
 }

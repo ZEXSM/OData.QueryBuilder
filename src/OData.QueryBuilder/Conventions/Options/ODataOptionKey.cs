@@ -8,9 +8,9 @@ using System.Text;
 
 namespace OData.QueryBuilder.Conventions.Options
 {
-    public class ODataOptionKey<TEntity> : ODataQuery<TEntity>, IODataOptionKey<TEntity>
+    internal class ODataOptionKey<TEntity> : ODataQuery<TEntity>, IODataOptionKey<TEntity>
     {
-        internal readonly VisitorExpression _visitorExpression;
+        private readonly VisitorExpression _visitorExpression;
 
         public ODataOptionKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions) =>
@@ -25,9 +25,9 @@ namespace OData.QueryBuilder.Conventions.Options
             return this;
         }
 
-        public IODataOptionKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> actionEntityExpandNested)
+        public IODataOptionKey<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> actionEntityExpandNested)
         {
-            var builder = new ODataQueryNestedBuilder<TEntity>(_odataQueryBuilderOptions);
+            var builder = new ODataQueryExpandNestedBuilder<TEntity>(_odataQueryBuilderOptions);
 
             actionEntityExpandNested(builder);
 

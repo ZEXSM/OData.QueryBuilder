@@ -7,29 +7,29 @@ using System.Text;
 
 namespace OData.QueryBuilder.Builders
 {
-    public class ODataQueryNestedBuilder<TEntity> : IODataQueryNestedBuilder<TEntity>
+    internal class ODataQueryExpandNestedBuilder<TEntity> : IODataQueryExpandNestedBuilder<TEntity>
     {
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly StringBuilder _stringBuilder;
-        private ODataQueryNested _odataQueryNested;
-        internal readonly VisitorExpression _visitorExpression;
+        private ODataOptionNestedBase _odataOptionNestedBase;
+        private readonly VisitorExpression _visitorExpression;
 
-        public ODataQueryNestedBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public string Query => $"{_stringBuilder}({_odataOptionNestedBase.Query})";
+
+        public ODataQueryExpandNestedBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _stringBuilder = new StringBuilder();
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
             _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
         }
 
-        public string Query => $"{_stringBuilder}({_odataQueryNested.Query})";
-
         public IODataOptionNested<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)
         {
-            if (!string.IsNullOrEmpty(_odataQueryNested?.Query))
+            if (!string.IsNullOrEmpty(_odataOptionNestedBase?.Query))
             {
                 var query = _visitorExpression.ToString(nestedEntityExpand.Body);
 
-                _stringBuilder.Append($"({_odataQueryNested.Query}),{query}");
+                _stringBuilder.Append($"({_odataOptionNestedBase.Query}),{query}");
             }
             else
             {
@@ -38,9 +38,9 @@ namespace OData.QueryBuilder.Builders
                 _stringBuilder.Append(query);
             }
 
-            _odataQueryNested = new ODataOptionNested<TNestedEntity>(_odataQueryBuilderOptions);
+            _odataOptionNestedBase = new ODataOptionNested<TNestedEntity>(_odataQueryBuilderOptions);
 
-            return _odataQueryNested as ODataOptionNested<TNestedEntity>;
+            return _odataOptionNestedBase as ODataOptionNested<TNestedEntity>;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace OData.QueryBuilder.Conventions.Options
     {
         IODataOptionKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 
-        IODataOptionKey<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested);
+        IODataOptionKey<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> entityExpandNested);
 
         IODataOptionKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect);
     }

@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         IODataOptionList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 
-        IODataOptionList<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested);
+        IODataOptionList<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> entityExpandNested);
 
         IODataOptionList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect);
 

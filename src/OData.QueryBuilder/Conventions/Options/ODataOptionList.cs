@@ -10,9 +10,9 @@ using System.Text;
 
 namespace OData.QueryBuilder.Conventions.Options
 {
-    public class ODataOptionList<TEntity> : ODataQuery<TEntity>, IODataOptionList<TEntity>
+    internal class ODataOptionList<TEntity> : ODataQuery<TEntity>, IODataOptionList<TEntity>
     {
-        internal readonly VisitorExpression _visitorExpression;
+        private readonly VisitorExpression _visitorExpression;
 
         public ODataOptionList(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions) =>
@@ -54,9 +54,10 @@ namespace OData.QueryBuilder.Conventions.Options
             return this;
         }
 
-        public IODataOptionList<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> entityExpandNested)
+        public IODataOptionList<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> entityExpandNested)
         {
-            var builder = new ODataQueryNestedBuilder<TEntity>(_odataQueryBuilderOptions);
+            var builder = new ODataQueryExpandNestedBuilder<TEntity>(_odataQueryBuilderOptions);
+
             entityExpandNested(builder);
 
             _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{builder.Query}{QuerySeparators.MainString}");

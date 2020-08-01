@@ -4,14 +4,14 @@ using System.Text;
 
 namespace OData.QueryBuilder.Conventions.Options
 {
-    public class ODataOption<TEntity> : IODataOption<TEntity>
+    internal class ODataOption<TEntity> : IODataOption<TEntity>
     {
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly StringBuilder _stringBuilder;
 
-        public ODataOption(string resourceUrl, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataOption(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
-            _stringBuilder = new StringBuilder(resourceUrl);
+            _stringBuilder = stringBuilder;
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 

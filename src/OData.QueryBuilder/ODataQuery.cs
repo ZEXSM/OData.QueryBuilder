@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OData.QueryBuilder
 {
-    public class ODataQuery<TEntity> : IODataQuery
+    internal class ODataQuery<TEntity> : IODataQuery
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         protected readonly StringBuilder _stringBuilder;

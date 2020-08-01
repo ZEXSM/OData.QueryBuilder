@@ -8,13 +8,15 @@ using System.Text;
 
 namespace OData.QueryBuilder.Conventions.Options.Nested
 {
-    public class ODataOptionNested<TEntity> : ODataQueryNested, IODataOptionNested<TEntity>
+    internal class ODataOptionNested<TEntity> : ODataOptionNestedBase, IODataOptionNested<TEntity>
     {
-        internal readonly VisitorExpression _visitorExpression;
+        private readonly VisitorExpression _visitorExpression;
 
         public ODataOptionNested(ODataQueryBuilderOptions odataQueryBuilderOptions)
-            : base(new StringBuilder(), odataQueryBuilderOptions) =>
+            : base(new StringBuilder(), odataQueryBuilderOptions)
+        {
             _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
+        }
 
         public IODataOptionNested<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand)
         {
@@ -25,9 +27,9 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
             return this;
         }
 
-        public IODataOptionNested<TEntity> Expand(Action<IODataQueryNestedBuilder<TEntity>> actionEntityExpandNested)
+        public IODataOptionNested<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> actionEntityExpandNested)
         {
-            var builder = new ODataQueryNestedBuilder<TEntity>(_odataQueryBuilderOptions);
+            var builder = new ODataQueryExpandNestedBuilder<TEntity>(_odataQueryBuilderOptions);
 
             actionEntityExpandNested(builder);
 

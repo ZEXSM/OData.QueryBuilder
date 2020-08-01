@@ -1,6 +1,6 @@
-﻿using OData.QueryBuilder.Builders;
-using OData.QueryBuilder.Conventions.Functions;
+﻿using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Conventions.Operators;
+using OData.QueryBuilder.Resources;
 using System;
 using System.Linq.Expressions;
 
@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         IODataOptionList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 
-        IODataOptionList<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> entityExpandNested);
+        IODataOptionList<TEntity> Expand(Action<IODataQueryExpandNestedResource<TEntity>> entityExpandNested);
 
         IODataOptionList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect);
 

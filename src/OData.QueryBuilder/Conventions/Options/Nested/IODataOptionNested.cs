@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Builders;
+﻿using OData.QueryBuilder.Resources;
 using System;
 using System.Linq.Expressions;
 
@@ -6,7 +6,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 {
     public interface IODataOptionNested<TEntity>
     {
-        IODataOptionNested<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> entityExpandNested);
+        IODataOptionNested<TEntity> Expand(Action<IODataQueryExpandNestedResource<TEntity>> entityExpandNested);
 
         IODataOptionNested<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand);
 

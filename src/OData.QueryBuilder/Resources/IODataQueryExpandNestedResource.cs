@@ -2,9 +2,9 @@
 using System;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.Builders
+namespace OData.QueryBuilder.Resources
 {
-    public interface IODataQueryExpandNestedBuilder<TEntity>
+    public interface IODataQueryExpandNestedResource<TEntity>
     {
         IODataOptionNested<TExpandNestedEntity> For<TExpandNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand);
     }

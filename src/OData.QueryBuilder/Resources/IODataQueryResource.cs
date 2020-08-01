@@ -2,9 +2,9 @@
 using System;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.Builders
+namespace OData.QueryBuilder.Resources
 {
-    public interface IODataQueryBuilder<TResource>
+    public interface IODataQueryResource<TResource>
     {
         IODataOption<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource);
     }

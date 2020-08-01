@@ -1,6 +1,6 @@
-﻿using OData.QueryBuilder.Builders;
-using OData.QueryBuilder.Conventions.Constants;
+﻿using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Options;
+using OData.QueryBuilder.Resources;
 using OData.QueryBuilder.Visitors;
 using System;
 using System.Linq.Expressions;
@@ -25,9 +25,9 @@ namespace OData.QueryBuilder.Conventions.Options
             return this;
         }
 
-        public IODataOptionKey<TEntity> Expand(Action<IODataQueryExpandNestedBuilder<TEntity>> actionEntityExpandNested)
+        public IODataOptionKey<TEntity> Expand(Action<IODataQueryExpandNestedResource<TEntity>> actionEntityExpandNested)
         {
-            var builder = new ODataQueryExpandNestedBuilder<TEntity>(_odataQueryBuilderOptions);
+            var builder = new ODataQueryExpandNestedResource<TEntity>(_odataQueryBuilderOptions);
 
             actionEntityExpandNested(builder);
 

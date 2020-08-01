@@ -5,9 +5,9 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Builders
+namespace OData.QueryBuilder.Resources
 {
-    internal class ODataQueryExpandNestedBuilder<TEntity> : IODataQueryExpandNestedBuilder<TEntity>
+    internal class ODataQueryExpandNestedResource<TEntity> : IODataQueryExpandNestedResource<TEntity>
     {
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly StringBuilder _stringBuilder;
@@ -16,7 +16,7 @@ namespace OData.QueryBuilder.Builders
 
         public string Query => $"{_stringBuilder}({_odataOptionNestedBase.Query})";
 
-        public ODataQueryExpandNestedBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataQueryExpandNestedResource(ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _stringBuilder = new StringBuilder();
             _odataQueryBuilderOptions = odataQueryBuilderOptions;

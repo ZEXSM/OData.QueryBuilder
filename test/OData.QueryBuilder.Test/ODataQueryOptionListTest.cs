@@ -196,6 +196,19 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3' or ODataKind/ODataCode/Code eq '5' and ODataKind/ODataCode/Code eq 'testCode'");
         }
 
+        [Fact(DisplayName = "Filter const string with ampersand => Success")]
+        public void ODataQueryBuilderList_Filter_Escaped_Ampersand_String_Success()
+        {
+            var constValue = "3 & 4";
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.ODataKind.ODataCode.Code == constValue)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4'");
+        }
+
         [Fact(DisplayName = "Filter  operators All/Any => Success")]
         public void ODataQueryBuilderList_Filter_All_Any_Success()
         {

@@ -29,31 +29,42 @@ namespace OData.QueryBuilder.Extensions
 
         public static string ConvertToString(object @object)
         {
+            string toReturn;
+
             switch (@object)
             {
                 case null:
                     return default;
                 case string @string:
-                    return $"'{@string}'";
+                    toReturn = $"'{@string}'";
+                    break;
                 case bool @bool:
-                    return $"{@bool}".ToLower();
+                    toReturn = $"{@bool}".ToLower();
+                    break;
                 case int @int:
-                    return $"{@int}";
+                    toReturn = $"{@int}";
+                    break;
                 case DateTime dateTime:
-                    return $"{dateTime:s}Z";
+                    toReturn = $"{dateTime:s}Z";
+                    break;
                 case DateTimeOffset dateTimeOffset:
-                    return $"{dateTimeOffset:s}Z";
+                    toReturn = $"{dateTimeOffset:s}Z";
+                    break;
                 case IEnumerable<int> intValues:
                     var intValuesString = string.Join(QuerySeparators.CommaString, intValues);
 
-                    return !string.IsNullOrEmpty(intValuesString) ? intValuesString : string.Empty;
+                    toReturn = !string.IsNullOrEmpty(intValuesString) ? intValuesString : string.Empty;
+                    break;
                 case IEnumerable<string> stringValues:
                     var stringValuesString = string.Join($"'{QuerySeparators.CommaString}'", stringValues);
 
-                    return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : string.Empty;
+                    toReturn = !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : string.Empty;
+                    break;
                 default:
                     return $"{@object}";
             }
+
+            return toReturn.Replace("&", "%26");
         }
     }
 }

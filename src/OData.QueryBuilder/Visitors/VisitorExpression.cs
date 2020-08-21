@@ -51,8 +51,7 @@ namespace OData.QueryBuilder.Visitors
                 CreateResourcePath(memberExpression) : ReflectionExtensions.ConvertToString(GetValueOfMemberExpression(memberExpression));
 
         protected virtual string VisitConstantExpression(ConstantExpression constantExpression) =>
-            constantExpression.Value == default ?
-                "null" : ReflectionExtensions.ConvertToString(constantExpression.Value);
+                ReflectionExtensions.ConvertToString(constantExpression.Value);
 
         protected virtual string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
         {

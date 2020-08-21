@@ -3,6 +3,6 @@
     internal static class StringExtensions
     {
         public static bool IsNullOrQuotes(this string value) =>
-            string.IsNullOrEmpty(value) || value == "''";
+            string.IsNullOrEmpty(value) || value == "null" || value == "''";
     }
 }

@@ -32,7 +32,7 @@ namespace OData.QueryBuilder.Extensions
             switch (@object)
             {
                 case null:
-                    return default;
+                    return "null";
                 case string @string:
                     return $"'{@string}'";
                 case bool @bool:

@@ -7,22 +7,12 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ReflectionExtensions
     {
-        public static object GetValue(this MemberInfo memberInfo, object obj = default)
+        public static object GetValue(this MemberInfo memberInfo, object obj = default) => memberInfo switch
         {
-            try
-            {
-                return memberInfo switch
-                {
-                    FieldInfo fieldInfo => fieldInfo.GetValue(obj),
-                    PropertyInfo propertyInfo => propertyInfo.GetValue(obj, default),
-                    _ => default,
-                };
-            }
-            catch (Exception)
-            {
-                return default;
-            }
-        }
+            FieldInfo fieldInfo => fieldInfo.GetValue(obj),
+            PropertyInfo propertyInfo => propertyInfo.GetValue(obj, default),
+            _ => default,
+        };
 
         public static bool IsNullableType(this Type type) =>
             Nullable.GetUnderlyingType(type) != default;
@@ -32,7 +22,7 @@ namespace OData.QueryBuilder.Extensions
             switch (@object)
             {
                 case null:
-                    return default;
+                    return "null";
                 case string @string:
                     return $"'{@string}'";
                 case bool @bool:

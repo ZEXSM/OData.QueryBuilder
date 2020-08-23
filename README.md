@@ -16,11 +16,12 @@ The library primarily targets OData Version 4.01 and provides linq syntax for cr
   * functions
     * date
         * `date`
-    * string
+    * string and collection
         * `contains`
         * `substringof` (deprecated)
         * `toupper`
         * `tolower`
+        * `concat`
 
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:

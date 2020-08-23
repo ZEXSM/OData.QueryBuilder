@@ -259,6 +259,20 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and 3 le ODataKind/ODataCode/IdCode or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$skip=1&$top=1&$count=true");
         }
 
+        [Fact(DisplayName = "Filter nullable bool eq null => Success")]
+        public void ODataQueryBuilderList_filter_nullable_bool_eq_null_success()
+        {
+            var constValue = default(bool?);
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IsOpen == constValue)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsOpen eq null");
+        }
+
         [Fact(DisplayName = "Function Date => Success")]
         public void ODataQueryBuilderList_Function_Date_Success()
         {

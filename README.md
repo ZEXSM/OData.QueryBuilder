@@ -1,5 +1,5 @@
 # OData.QueryBuilder
-Library provides linq syntax and allows you to build OData queries based on the data model
+The library primarily targets OData Version 4.01 and provides linq syntax for creating OData queries based on a data model.
 
 [![Build Status](https://travis-ci.com/ZEXSM/OData.QueryBuilder.svg?branch=master)](https://travis-ci.com/ZEXSM/OData.QueryBuilder)
 [![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)
@@ -8,20 +8,29 @@ Library provides linq syntax and allows you to build OData queries based on the 
 ## Benefits
 * Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
 * Support:
-  * nested `OData` extenders with a choice of filtering
-  * operators `all`, `any`, `in`
-  * date functions `date`
-  * string functions `contains`, `substringof`, `toupper`, `tolower`
+  * nested extenders with a choice of filtering
+  * operators
+    * `all`
+    * `any`
+    * `in`
+  * functions
+    * date
+        * `date`
+    * string
+        * `contains`
+        * `substringof` (deprecated)
+        * `toupper`
+        * `tolower`
 
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:
 ```
-Install-Package OData.QueryBuilder -Version 1.0.0
+Install-Package OData.QueryBuilder
 ```
 
 To add a link to the main dotnet project, run the following command line:
 ```
-dotnet add -v 1.0.0 OData.QueryBuilder
+dotnet add package OData.QueryBuilder
 ```
 
 ## Usage
@@ -31,13 +40,13 @@ dotnet add -v 1.0.0 OData.QueryBuilder
     As soon as possible, create a new instance of the OData.QueryBuilder object indicating the data models and the base path:
 
     ```csharp
-    var odataQueryBuilder = new ODataQueryBuilder<Your entity model>(<base_url>);
+    var odataQueryBuilder = new ODataQueryBuilder<Your ODataContainerModel>(<Your base url>);
     ```
 
 2. Specify the resource for which the request will be built
 
     ```csharp
-    odataQueryBuilder.For<Your data model>(s => s.<Your resource model>)
+    odataQueryBuilder.For<Your ODataEntityModel>(s => s.ODataEntity)
     ```
 
 3. Select request type
@@ -138,7 +147,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > $filter=IdRule ne null and IdRule eq null 
 ```csharp
-.Filter(s => s.ODataKind.OpenDate == DateTime.Today or s.ODataKind.OpenDate == new DateTime(2019, 7, 9)) or s.ODataKind.OpenDate == DateTime.Now)
+.Filter(s => s.ODataKind.OpenDate == DateTime.Today || s.ODataKind.OpenDate == new DateTime(2019, 7, 9)) || s.ODataKind.OpenDate == DateTime.Now)
 ```
 > $filter=ODataKind/OpenDate eq 2019-02-09T00:00:00Z or ODataKind/OpenDate eq 2019-02-09T00:00:00Z or ODataKind/OpenDate eq 2019-02-09T15:10:20Z
 ```csharp
@@ -294,7 +303,7 @@ var builder = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata", new
 var uri = builder
     .For<ODataTypeEntity>(s => s.ODataType)
     .ByList()
-    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new string[0]) or o.In(s.ODataKind.ODataCode.Code, null)
+    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new string[0]) || o.In(s.ODataKind.ODataCode.Code, null)
         && f.Contains(s.ODataKind.ODataCode.Code, default(string)) 
         && o.In(s.IdType, new[] { 123, 512 }))
     .ToUri()

@@ -10,18 +10,18 @@ The library primarily targets OData Version 4.01 and provides linq syntax for cr
 * Support:
   * nested extenders with a choice of filtering
   * operators
-    * `all`
-    * `any`
-    * `in`
+    * [`in`](#in)
+    * [`any`](#any)
+    * [`all`](#all)
   * functions
     * date
-        * `date`
+        * [`date`](#date)
     * string and collection
-        * `contains`
-        * `substringof` (deprecated)
-        * `toupper`
-        * `tolower`
-        * `concat`
+        * [`contains`](#contains)
+        * [`substringof`](#substringof)
+        * [`toupper`](#toupper)
+        * [`tolower`](#tolower)
+        * [`concat`](#concat)
 
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:
@@ -199,21 +199,21 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 
 ## Usage operators
 
-#### in
+#### <a name="in"/> in
 
 ```csharp
 .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new[] { "123", "512" }) && o.In(s.IdType, new[] { 123, 512 }))
 ```
 > $filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)
 
-#### any
+#### <a name="any"/> any
 
 ```csharp
 .Filter((s, f, o) => o.Any(s.ODataKind.ODataCodes, v => v.IdCode == 1)
 ```
 > $filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1)
 
-#### all
+#### <a name="all"/> all
 
 ```csharp
 .Filter((s, f, o) => o.All(s.ODataKind.ODataCodes, v => v.IdActive))
@@ -222,44 +222,44 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 
 ## Usage date functions
 
-#### date
+#### <a name="date"/> date
 
 ```csharp
 .Filter((s, f) => f.Date(s.Open) == DateTime.Today)
 ```
 > $filter=date(Open) eq 2019-02-09T00:00:00Z
 
-## Usage string functions
+## Usage string and collections functions
 
-#### contains
+#### <a name="contains"/> contains
 
 ```csharp
 .Filter((s, f) => f.Contains(s.ODataKind.ODataCode.Code, "W"))
 ```
 > $filter=contains(ODataKind/ODataCode/Code,'W')
 
-#### substringof
+#### <a name="substringof"/> substringof
 
 ```csharp
 .Filter((s, f) => f.SubstringOf("W", s.ODataKind.ODataCode.Code))
 ```
 > $filter=substringof('W',ODataKind/ODataCode/Code)
 
-#### toupper
+#### <a name="toupper"/> toupper
 
 ```csharp
 .Filter((s, f) => f.ToUpper(s.ODataKind.ODataCode.Code) == "TEST_CODE")
 ```
 > $filter=toupper(ODataKind/ODataCode/Code) eq 'TEST_CODE'
 
-#### tolower
+#### <a name="tolower"/> tolower
 
 ```csharp
 .Filter((s, f) => f.ToLower(s.ODataKind.ODataCode.Code) == "test_code")
 ```
 > $filter=tolower(ODataKind/ODataCode/Code) eq 'test_code'
 
-#### concat
+#### <a name="concat"/> concat
 
 ```csharp
 .Filter((s, f) => f.Concat(s.ODataKind.ODataCode.Code, "_1") == "test_code_1")

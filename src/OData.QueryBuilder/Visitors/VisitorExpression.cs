@@ -149,6 +149,18 @@ namespace OData.QueryBuilder.Visitors
                     var dateTimeOffset = (DateTimeOffset)GetValueOfExpression(methodCallExpression.Arguments[0]);
 
                     return dateTimeOffset.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
+                case nameof(IConvertFunction.ConvertStringToEncodeString):
+                    var @string = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
+
+                    return @string.ReplaceWithStringBuilder(new[]
+                    {
+                        // Must be first
+                        Tuple.Create("%", "%25"),
+                        Tuple.Create("/", "%2F"),
+                        Tuple.Create("?", "%3F"),
+                        Tuple.Create("#", "%23"),
+                        Tuple.Create("&", "%26")
+                    });
                 case nameof(ToString):
                     return VisitExpression(methodCallExpression.Object);
                 default:

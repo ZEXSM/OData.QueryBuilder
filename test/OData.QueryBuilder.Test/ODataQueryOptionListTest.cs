@@ -169,6 +169,19 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
+        [Fact(DisplayName = "Filter string with ConvertStringToEncodeString => Success")]
+        public void ODataQueryBuilderList_Filter_With_ConvertStringToEncodeString_Success()
+        {
+            var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ConvertStringToEncodeString(constValue))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2F 7 %3F 8 %25 9 %23 1'");
+        }
+
         [Fact(DisplayName = "Filter simple const int=> Success")]
         public void ODataQueryBuilderList_Filter_Simple_Const_Int_Success()
         {

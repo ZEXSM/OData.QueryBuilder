@@ -4,6 +4,7 @@ using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Visitors
@@ -149,18 +150,11 @@ namespace OData.QueryBuilder.Visitors
                     var dateTimeOffset = (DateTimeOffset)GetValueOfExpression(methodCallExpression.Arguments[0]);
 
                     return dateTimeOffset.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
-                case nameof(IConvertFunction.ConvertStringToEncodeString):
-                    var @string = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
+                case nameof(IReplaceFunction.ReplaceCharacters):
+                    var @symbol0 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
+                    var @symbol1 = GetValueOfExpression(methodCallExpression.Arguments[1]) as IDictionary<string, string>;
 
-                    return @string.ReplaceWithStringBuilder(new[]
-                    {
-                        // Must be first
-                        Tuple.Create("%", "%25"),
-                        Tuple.Create("/", "%2F"),
-                        Tuple.Create("?", "%3F"),
-                        Tuple.Create("#", "%23"),
-                        Tuple.Create("&", "%26")
-                    });
+                    return @symbol0.ReplaceWithStringBuilder(@symbol1);
                 case nameof(ToString):
                     return VisitExpression(methodCallExpression.Object);
                 default:

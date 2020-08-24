@@ -9,11 +9,5 @@ namespace OData.QueryBuilder.Conventions.Functions
         DateTime ConvertDateTimeToString(DateTime value, string format);
 
         DateTimeOffset ConvertDateTimeOffsetToString(DateTimeOffset value, string format);
-
-        /// <summary>
-        /// Converting a string value to an escaped one.
-        /// </summary>
-        /// <remarks>Only %, /,?, #, & сharacters are escaped.</remarks>
-        string ConvertStringToEncodeString(string value);
     }
 }

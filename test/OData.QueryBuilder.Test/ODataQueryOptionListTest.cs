@@ -169,17 +169,27 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
-        [Fact(DisplayName = "Filter string with ConvertStringToEncodeString => Success")]
+        [Fact(DisplayName = "Filter string with ConvertSymbolToEncodeSymbol => Success")]
         public void ODataQueryBuilderList_Filter_With_ConvertStringToEncodeString_Success()
         {
+            var dictionary = new Dictionary<string, string>
+            {
+                { "%", "%25" },
+                { "/", "%2f" },
+                { "?", "%3f" },
+                { "#", "%23" },
+                { "&", "%26" }
+            };
+
             var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ConvertStringToEncodeString(constValue))
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(constValue, dictionary))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2F 7 %3F 8 %25 9 %23 1'");
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
         }
 
         [Fact(DisplayName = "Filter simple const int=> Success")]

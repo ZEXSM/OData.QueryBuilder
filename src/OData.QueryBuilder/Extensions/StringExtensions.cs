@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace OData.QueryBuilder.Extensions
@@ -9,13 +8,13 @@ namespace OData.QueryBuilder.Extensions
         public static bool IsNullOrQuotes(this string value) =>
             string.IsNullOrEmpty(value) || value == "null" || value == "''";
 
-        public static string ReplaceWithStringBuilder(this string value, IEnumerable<Tuple<string, string>> tuples)
+        public static string ReplaceWithStringBuilder(this string value, IDictionary<string, string> keyValuePairs)
         {
             var stringBuilder = new StringBuilder(value);
 
-            foreach (var (oldChar, newChar) in tuples)
+            foreach (var keyValuePair in keyValuePairs)
             {
-                stringBuilder.Replace(oldChar, newChar);
+                stringBuilder.Replace(keyValuePair.Key, keyValuePair.Value);
             }
 
             return stringBuilder.ToString();

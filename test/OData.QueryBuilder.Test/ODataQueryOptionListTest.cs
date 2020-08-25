@@ -169,8 +169,8 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
-        [Fact(DisplayName = "Filter string with ConvertSymbolToEncodeSymbol => Success")]
-        public void ODataQueryBuilderList_Filter_With_ConvertStringToEncodeString_Success()
+        [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Success()
         {
             var dictionary = new Dictionary<string, string>
             {
@@ -190,6 +190,22 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
+        }
+
+        [Fact(DisplayName = "Filter string with ReplaceCharacters new Dictionary => Success")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_new_dictionary_Success()
+        {
+            var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
+                    constValue,
+                    new Dictionary<string, string> { { "&", "%26" } }))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 / 7 ? 8 % 9 # 1'");
         }
 
         [Fact(DisplayName = "Filter simple const int=> Success")]

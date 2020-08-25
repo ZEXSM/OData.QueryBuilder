@@ -42,7 +42,7 @@ namespace OData.QueryBuilder.Extensions
 
                     return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : string.Empty;
                 default:
-                    return $"{@object}";
+                    return $"'{@object}'";
             }
         }
     }

@@ -169,6 +169,19 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
+
+        [Fact(DisplayName = "Filter call ToString => Success")]
+        public void ODataQueryBuilderList_Filter_Call_ToString_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.TypeCode == 44.ToString())
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=TypeCode eq '44'");
+        }
+
         [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
         public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Success()
         {

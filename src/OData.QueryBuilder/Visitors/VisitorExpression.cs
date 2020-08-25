@@ -161,7 +161,7 @@ namespace OData.QueryBuilder.Visitors
 
                     return @symbol0.ReplaceWithStringBuilder(@symbol1 as IDictionary<string, string>);
                 case nameof(ToString):
-                    return VisitExpression(methodCallExpression.Object);
+                    return ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Object).ToString());
                 default:
                     return default;
             }

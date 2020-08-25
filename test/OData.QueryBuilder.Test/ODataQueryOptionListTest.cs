@@ -172,7 +172,7 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
         public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Success()
         {
-            var dictionary = new Dictionary<string, string>
+            var dictionary = new Dictionary<string, string>(0)
             {
                 { "%", "%25" },
                 { "/", "%2f" },

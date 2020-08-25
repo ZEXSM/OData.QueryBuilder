@@ -154,17 +154,12 @@ namespace OData.QueryBuilder.Visitors
                     var @symbol0 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
                     var @symbol1 = GetValueOfExpression(methodCallExpression.Arguments[1]);
 
-                    if (@symbol0 == default)
-                    {
-                        throw new ArgumentException("Value is null");
-                    }
-
-                    if (!(@symbol1 is IDictionary<string, string> keyValuePairs))
+                    if (@symbol1 == default)
                     {
                         throw new ArgumentException("KeyValuePairs is null");
                     }
 
-                    return @symbol0.ReplaceWithStringBuilder(keyValuePairs);
+                    return @symbol0.ReplaceWithStringBuilder(@symbol1 as IDictionary<string, string>);
                 case nameof(ToString):
                     return VisitExpression(methodCallExpression.Object);
                 default:

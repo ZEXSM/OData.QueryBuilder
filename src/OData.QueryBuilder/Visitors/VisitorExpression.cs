@@ -43,6 +43,11 @@ namespace OData.QueryBuilder.Visitors
                 return left;
             }
 
+            if (_odataQueryBuilderOptions.UseParenthesis)
+            {
+                return $"({left} {binaryExpression.NodeType.ToODataQueryOperator()} {right})";
+            }
+
             return $"{left} {binaryExpression.NodeType.ToODataQueryOperator()} {right}";
         }
 

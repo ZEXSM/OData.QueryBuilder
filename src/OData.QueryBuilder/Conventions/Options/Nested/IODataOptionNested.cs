@@ -10,7 +10,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
         IODataOptionNested<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand);
 
-        IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter);
+        IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter, bool useParenthesis = false);
 
         IODataOptionNested<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect);
 

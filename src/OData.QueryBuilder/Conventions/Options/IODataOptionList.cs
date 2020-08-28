@@ -8,11 +8,11 @@ namespace OData.QueryBuilder.Conventions.Options
 {
     public interface IODataOptionList<TEntity> : IODataQuery
     {
-        IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter);
+        IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter, bool useParenthesis = false);
 
-        IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter);
+        IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter, bool useParenthesis = false);
 
-        IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter);
+        IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter, bool useParenthesis = false);
 
         IODataOptionList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand);
 

@@ -12,6 +12,9 @@ namespace OData.QueryBuilder.Visitors
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
 
+        private bool _useParenthesis;
+        private ExpressionType? _expressionType;
+
         public VisitorExpression(ODataQueryBuilderOptions odataQueryBuilderOptions) =>
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
 
@@ -30,6 +33,8 @@ namespace OData.QueryBuilder.Visitors
 
         protected virtual string VisitBinaryExpression(BinaryExpression binaryExpression)
         {
+            var hasParenthesis = _useParenthesis && HasParenthesis(binaryExpression.NodeType);
+
             var left = VisitExpression(binaryExpression.Left);
             var right = VisitExpression(binaryExpression.Right);
 
@@ -43,12 +48,10 @@ namespace OData.QueryBuilder.Visitors
                 return left;
             }
 
-            if (_odataQueryBuilderOptions.UseParenthesis)
-            {
-                return $"({left} {binaryExpression.NodeType.ToODataQueryOperator()} {right})";
-            }
-
-            return $"{left} {binaryExpression.NodeType.ToODataQueryOperator()} {right}";
+            return hasParenthesis ?
+                $"({left} {binaryExpression.NodeType.ToODataQueryOperator()} {right})"
+                :
+                $"{left} {binaryExpression.NodeType.ToODataQueryOperator()} {right}";
         }
 
         protected virtual string VisitMemberExpression(MemberExpression memberExpression) =>
@@ -259,6 +262,27 @@ namespace OData.QueryBuilder.Visitors
                 name : $"{name}/{memberExpression.Member.Name}";
         }
 
-        public string ToString(Expression expression) => VisitExpression(expression);
+        private bool HasParenthesis(ExpressionType expressionType)
+        {
+            var hasParenthesis = _expressionType.HasValue && expressionType switch
+            {
+                ExpressionType.And => true,
+                ExpressionType.AndAlso => true,
+                ExpressionType.Or => true,
+                ExpressionType.OrElse => true,
+                _ => false,
+            };
+
+            _expressionType = expressionType;
+
+            return hasParenthesis;
+        }
+
+        public string ToString(Expression expression, bool useParenthesis = false)
+        {
+            _useParenthesis = useParenthesis;
+
+            return VisitExpression(expression);
+        }
     }
 }

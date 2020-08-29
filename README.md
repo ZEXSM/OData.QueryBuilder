@@ -266,7 +266,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > $filter=concat(ODataKind/ODataCode/Code, '_1') eq 'test_code_1'
 
-## Usage convert functions
+## Usage other functions
 
 #### ConvertEnumToString
 ```csharp
@@ -285,6 +285,16 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Filter((s, f) => s.ODataKind.OpenDate == f.ConvertDateTimeToString(new DateTimeOffset(new DateTime(2019, 2, 9)), "yyyy-MM-dd"))
 ```
 > $filter=ODataKind/OpenDate eq 2019-02-09
+
+#### ReplaceCharacters
+```csharp
+var constValue = "3 & 4";
+...
+.Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
+    constValue,
+    new Dictionary<string, string> { { "&", "%26" } }))
+```
+> $filter=ODataKind/ODataCode/Code eq '3 %26 4'
 
 ## Suppress exceptions
 
@@ -310,4 +320,3 @@ var uri = builder
     .ToUri()
 ```
 > http://mock/odata/ODataType?$filter=IdType in (123,512)
-```

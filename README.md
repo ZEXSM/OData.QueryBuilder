@@ -160,7 +160,7 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 ```
 > $filter=ODataKind/Color eq 2
 
-:info: *Use parenthesis in filter*
+:information_source: *Use parenthesis in filter*
 ```csharp
 var constStrIds = new[] { "123", "512" };
 var constValue = 3;

@@ -4,10 +4,10 @@ namespace OData.QueryBuilder.Conventions.Functions
 {
     public interface IConvertFunction
     {
-        T ConvertEnumToString<T>(T type) where T : Enum;
+        T ConvertEnumToString<T>(T value) where T : Enum;
 
-        DateTime ConvertDateTimeToString(DateTime dateTime, string format);
+        DateTime ConvertDateTimeToString(DateTime value, string format);
 
-        DateTimeOffset ConvertDateTimeOffsetToString(DateTimeOffset dateTimeOffset, string format);
+        DateTimeOffset ConvertDateTimeOffsetToString(DateTimeOffset value, string format);
     }
 }

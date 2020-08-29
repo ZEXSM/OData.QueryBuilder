@@ -169,6 +169,90 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
+
+        [Fact(DisplayName = "Filter call ToString => Success")]
+        public void ODataQueryBuilderList_Filter_Call_ToString_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.TypeCode == 44.ToString())
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=TypeCode eq '44'");
+        }
+
+        [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Success()
+        {
+            var dictionary = new Dictionary<string, string>(0)
+            {
+                { "%", "%25" },
+                { "/", "%2f" },
+                { "?", "%3f" },
+                { "#", "%23" },
+                { "&", "%26" }
+            };
+
+            var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(constValue, dictionary))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
+        }
+
+        [Fact(DisplayName = "Filter string with ReplaceCharacters new Dictionary => Success")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_new_dictionary_Success()
+        {
+            var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
+                    constValue,
+                    new Dictionary<string, string> { { "&", "%26" } }))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 / 7 ? 8 % 9 # 1'");
+        }
+
+        [Fact(DisplayName = "Filter string with ReplaceCharacters Value => ArgumentException")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Value_ArgumentException()
+        {
+            var constValue = default(string);
+
+            var uri = _odataQueryBuilderDefault
+                           .For<ODataTypeEntity>(s => s.ODataType)
+                           .ByList()
+                           .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
+                               constValue,
+                               new Dictionary<string, string> { { "&", "%26" } }))
+                           .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq null");
+        }
+
+        [Fact(DisplayName = "Filter string with ReplaceCharacters KeyValuePairs => ArgumentException")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_KeyValuePairs_ArgumentException()
+        {
+            var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+
+            _odataQueryBuilderDefault
+                .Invoking((r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                        .ByList()
+                            .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
+                                constValue,
+                                null))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("KeyValuePairs is null");
+        }
+
         [Fact(DisplayName = "Filter simple const int=> Success")]
         public void ODataQueryBuilderList_Filter_Simple_Const_Int_Success()
         {

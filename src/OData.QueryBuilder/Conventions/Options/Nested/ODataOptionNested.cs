@@ -38,9 +38,9 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
             return this;
         }
 
-        public IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter)
+        public IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityNestedFilter.Body);
+            var query = _visitorExpression.ToString(entityNestedFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
 

@@ -842,8 +842,8 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and IsOpen eq false and IsOpen eq true and ODataKind/ODataCode/IdActive eq false");
         }
 
-        [Fact(DisplayName = "Filter brackets => Success")]
-        public void ODataQueryBuilderList_Filter_Brackets_Success()
+        [Fact(DisplayName = "Filter support parentheses => Success")]
+        public void ODataQueryBuilderList_Filter_support_parentheses_Success()
         {
             var constStrIds = new[] { "123", "512" };
             var constValue = 3;
@@ -855,10 +855,14 @@ namespace OData.QueryBuilder.Test
                     && s.IsActive
                     && (f.Date(s.EndDate.Value) == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
                     && (f.Date((DateTimeOffset)s.BeginDate) != default(DateTime?) || f.Date((DateTime)s.BeginDate) <= DateTime.Now)
-                    && o.In(s.ODataKind.ODataCode.Code, constStrIds))
+                    && o.In(s.ODataKind.ODataCode.Code, constStrIds), useParenthesis: true)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=IdRule eq 3 and IsActive and date(EndDate) eq null or EndDate gt {DateTime.Today:s}Z and date(BeginDate) ne null or date(BeginDate) le {DateTime.Now:s}Z and ODataKind/ODataCode/Code in ('123','512')");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=(((IdRule eq 3" +
+                $" and IsActive)" +
+                $" and (date(EndDate) eq null or EndDate gt {DateTime.Today:s}Z))" +
+                $" and (date(BeginDate) ne null or date(BeginDate) le {DateTime.Now:s}Z))" +
+                $" and ODataKind/ODataCode/Code in ('123','512')");
         }
 
         [Theory(DisplayName = "Count value => Success")]

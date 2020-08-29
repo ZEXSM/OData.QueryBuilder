@@ -159,6 +159,20 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
 .Filter(s => s.ODataKind.Color == ColorEnum.Blue)
 ```
 > $filter=ODataKind/Color eq 2
+
+:information_source: *Use parenthesis in filter*
+```csharp
+var constStrIds = new[] { "123", "512" };
+var constValue = 3;
+...
+.Filter((s, f, o) => s.IdRule == constValue
+    && s.IsActive
+    && (f.Date(s.EndDate.Value) == default(DateTimeOffset?) || s.EndDate > DateTime.Today)
+    && (f.Date((DateTimeOffset)s.BeginDate) != default(DateTime?) || f.Date((DateTime)s.BeginDate) <= DateTime.Now)
+    && o.In(s.ODataKind.ODataCode.Code, constStrIds), useParenthesis: true)
+```
+
+> $filter=(((IdRule eq 3 and IsActive) and (date(EndDate) eq null or EndDate gt 2020-08-29T00:00:00Z)) and (date(BeginDate) ne null or date(BeginDate) le 2020-08-29T18:09:15Z)) and ODataKind/ODataCode/Code in ('123','512')
 #### <a name="orderby"/> orderby
 ```csharp
 .OrderBy(s => s.IdType)

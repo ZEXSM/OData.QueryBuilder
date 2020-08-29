@@ -18,27 +18,27 @@ namespace OData.QueryBuilder.Conventions.Options
             : base(stringBuilder, odataQueryBuilderOptions) =>
             _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
 
-        public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter)
+        public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityFilter.Body);
+            var query = _visitorExpression.ToString(entityFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
             return this;
         }
 
-        public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter)
+        public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityFilter.Body);
+            var query = _visitorExpression.ToString(entityFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
             return this;
         }
 
-        public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter)
+        public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityFilter.Body);
+            var query = _visitorExpression.ToString(entityFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 

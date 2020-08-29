@@ -4,6 +4,7 @@ using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Visitors
@@ -157,8 +158,18 @@ namespace OData.QueryBuilder.Visitors
                     var dateTimeOffset = (DateTimeOffset)GetValueOfExpression(methodCallExpression.Arguments[0]);
 
                     return dateTimeOffset.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
+                case nameof(IReplaceFunction.ReplaceCharacters):
+                    var @symbol0 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
+                    var @symbol1 = GetValueOfExpression(methodCallExpression.Arguments[1]);
+
+                    if (@symbol1 == default)
+                    {
+                        throw new ArgumentException("KeyValuePairs is null");
+                    }
+
+                    return @symbol0.ReplaceWithStringBuilder(@symbol1 as IDictionary<string, string>);
                 case nameof(ToString):
-                    return VisitExpression(methodCallExpression.Object);
+                    return ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Object).ToString());
                 default:
                     return default;
             }
@@ -229,6 +240,7 @@ namespace OData.QueryBuilder.Visitors
         {
             MemberExpression memberExpression => GetValueOfMemberExpression(memberExpression),
             ConstantExpression constantExpression => GetValueOfConstantExpression(constantExpression),
+            ListInitExpression listInitExpression => GetValueOfListInitExpression(listInitExpression),
             _ => default,
         };
 
@@ -241,6 +253,32 @@ namespace OData.QueryBuilder.Visitors
             MemberExpression memberExpression => expression.Member.GetValue(GetValueOfMemberExpression(memberExpression)),
             _ => expression.Member.GetValue(),
         };
+
+        protected object GetValueOfListInitExpression(ListInitExpression listInitExpression)
+        {
+            var arguments = new object[listInitExpression.NewExpression.Arguments.Count];
+
+            for (var i = 0; i < listInitExpression.NewExpression.Arguments.Count; i++)
+            {
+                arguments[i] = GetValueOfExpression(listInitExpression.NewExpression.Arguments[i]);
+            }
+
+            var listInit = listInitExpression.NewExpression.Constructor.Invoke(arguments);
+
+            foreach (var elementInit in listInitExpression.Initializers)
+            {
+                var parameters = new object[elementInit.Arguments.Count];
+
+                for (var index = 0; index < elementInit.Arguments.Count; index++)
+                {
+                    parameters[index] = GetValueOfExpression(elementInit.Arguments[index]);
+                }
+
+                listInit.GetType().GetMethod(nameof(List<ListInitExpression>.Add)).Invoke(listInit, parameters);
+            }
+
+            return listInit;
+        }
 
         protected bool IsResourceOfMemberExpression(MemberExpression memberExpression) => memberExpression.Expression switch
         {

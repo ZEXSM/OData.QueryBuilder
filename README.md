@@ -18,7 +18,7 @@ The library primarily targets OData Version 4.01 and provides linq syntax for cr
         * [`date`](#date)
     * string and collection
         * [`contains`](#contains)
-        * [`substringof`](#substringof)
+        * [`substringof (deprecated)`](#substringof)
         * [`toupper`](#toupper)
         * [`tolower`](#tolower)
         * [`concat`](#concat)

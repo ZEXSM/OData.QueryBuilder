@@ -53,6 +53,21 @@ namespace OData.QueryBuilder.Test
                 })
                 .ToUri();
 
+            uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(ff => ff.For<ODataCodeEntity>(s => s.ODataCode).Select(s => s.IdCode))
+                        .Select(s => s.IdKind);
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind);
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind);
+                })
+                .ToUri();
+
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKind($expand=ODataCode($select=IdCode);$select=IdKind),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)");
         }
 

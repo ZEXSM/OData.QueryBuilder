@@ -11,22 +11,20 @@ namespace OData.QueryBuilder.Resources
     {
         private readonly VisitorExpression _visitorExpression;
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        private readonly StringBuilder _stringBuilder;
+        private readonly string _resourse;
 
-        public ODataQueryResource(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataQueryResource(string resourse, ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
-            _stringBuilder = stringBuilder;
+            _resourse = resourse;
         }
 
         public IODataOption<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
         {
             var query = _visitorExpression.ToString(entityResource.Body);
 
-            _stringBuilder.Append(query);
-
-            return new ODataOption<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+            return new ODataOption<TEntity>(new StringBuilder($"{_resourse}{query}"), _odataQueryBuilderOptions);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OData.QueryBuilder.Test.Fakes
 {
@@ -29,6 +30,8 @@ namespace OData.QueryBuilder.Test.Fakes
         public ODataKindEntity ODataKindNew { get; set; }
 
         public string[] Tags { get; set; }
+
+        public List<string> Labels { get; set; }
     }
 }
 

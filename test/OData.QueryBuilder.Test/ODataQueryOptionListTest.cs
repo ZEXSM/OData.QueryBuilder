@@ -320,6 +320,18 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any with or => Success")]
+        public void ODataQueryBuilderList_Filter_Any_with_or_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.Any(s.Labels, label => label == "lb1" || label == "lb2"))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Labels/any(label:label eq 'lb1' or label eq 'lb2')");
+        }
+
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {

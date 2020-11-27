@@ -241,6 +241,7 @@ namespace OData.QueryBuilder.Visitors
             MemberExpression memberExpression => GetValueOfMemberExpression(memberExpression),
             ConstantExpression constantExpression => GetValueOfConstantExpression(constantExpression),
             ListInitExpression listInitExpression => GetValueOfListInitExpression(listInitExpression),
+            NewArrayExpression newArrayExpression => GetValueOfNewArrayExpression(newArrayExpression),
             _ => default,
         };
 
@@ -278,6 +279,18 @@ namespace OData.QueryBuilder.Visitors
             }
 
             return listInit;
+        }
+
+        protected object GetValueOfNewArrayExpression(NewArrayExpression newArrayExpression)
+        {
+            var array = Array.CreateInstance(newArrayExpression.Type.GetElementType(), newArrayExpression.Expressions.Count);
+
+            for (var i = 0; i < newArrayExpression.Expressions.Count; i++)
+            {
+                array.SetValue(GetValueOfExpression(newArrayExpression.Expressions[i]), i);
+            }
+
+            return array;
         }
 
         protected bool IsResourceOfMemberExpression(MemberExpression memberExpression) => memberExpression.Expression switch

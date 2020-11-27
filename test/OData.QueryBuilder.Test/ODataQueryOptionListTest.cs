@@ -851,6 +851,18 @@ namespace OData.QueryBuilder.Test
                 .Should().Throw<ArgumentException>().WithMessage("Enumeration is empty or null");
         }
 
+        [Fact(DisplayName = "Filter In operator with new => Success")]
+        public void ODataQueryBuilderList_Filter_In_with_new_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new[] { "123", "512" }) && o.In(s.IdType, new[] { 123, 512 }))
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)");
+        }
+
         [Fact(DisplayName = "Filter boolean values => Success")]
         public void ODataQueryBuilderList_Filter_Boolean_Values_Success()
         {

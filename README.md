@@ -302,13 +302,26 @@ var constValue = 3;
 
 #### ReplaceCharacters
 ```csharp
+var dictionary = new Dictionary<string, string> { { "&", "%26" } });
 var constValue = "3 & 4";
 ...
 .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
     constValue,
-    new Dictionary<string, string> { { "&", "%26" } }))
+    dictionary)
 ```
 > $filter=ODataKind/ODataCode/Code eq '3 %26 4'
+
+```csharp
+var strings = new string[] {
+    "test\\YUYYUT",
+    "test1\\YUYY123"
+};
+...
+.Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, f.ReplaceCharacters(
+    strings,
+    new Dictionary<string, string>() { { @"\", "%5C" } })))
+```
+> $filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')
 
 ## Suppress exceptions
 

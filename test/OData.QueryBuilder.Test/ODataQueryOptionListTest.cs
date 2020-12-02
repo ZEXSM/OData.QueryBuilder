@@ -198,9 +198,9 @@ namespace OData.QueryBuilder.Test
         }
 
         [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
-        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Success()
+        public void ODataQueryBuilderList_Filter_string_with_ReplaceCharacters_Success()
         {
-            var dictionary = new Dictionary<string, string>(0)
+            var dictionary = new Dictionary<string, string>()
             {
                 { "%", "%25" },
                 { "/", "%2f" },
@@ -218,6 +218,23 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
+        }
+
+        [Fact(DisplayName = "Filter enumerable string with ReplaceCharacters => Success")]
+        public void ODataQueryBuilderList_Filter_enumerable_string_with_ReplaceCharacters_Success()
+        {
+            var strings = new string[] {
+                @"test\\YUYYUT",
+                @"test1\\YUYY123"
+            };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, f.ReplaceCharacters(strings, new Dictionary<string, string>() { { @"\", "%5C" } })))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')");
         }
 
         [Fact(DisplayName = "Filter string with ReplaceCharacters new Dictionary => Success")]

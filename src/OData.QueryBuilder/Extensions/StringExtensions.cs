@@ -19,5 +19,17 @@ namespace OData.QueryBuilder.Extensions
 
             return stringBuilder.ToString();
         }
+
+        public static IEnumerable<string> ReplaceWithStringBuilder(this IEnumerable<string> values, IDictionary<string, string> keyValuePairs)
+        {
+            var replaceValues = new List<string>();
+
+            foreach (var value in values)
+            {
+                replaceValues.Add(value.ReplaceWithStringBuilder(keyValuePairs));
+            }
+
+            return replaceValues;
+        }
     }
 }

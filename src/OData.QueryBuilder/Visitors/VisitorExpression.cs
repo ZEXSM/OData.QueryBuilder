@@ -242,6 +242,7 @@ namespace OData.QueryBuilder.Visitors
             ConstantExpression constantExpression => GetValueOfConstantExpression(constantExpression),
             ListInitExpression listInitExpression => GetValueOfListInitExpression(listInitExpression),
             NewArrayExpression newArrayExpression => GetValueOfNewArrayExpression(newArrayExpression),
+            MethodCallExpression methodCallExpression => GetValueOfMethodCallExpression(methodCallExpression),
             _ => default,
         };
 
@@ -291,6 +292,25 @@ namespace OData.QueryBuilder.Visitors
             }
 
             return array;
+        }
+
+        protected object GetValueOfMethodCallExpression(MethodCallExpression methodCallExpression)
+        {
+            switch (methodCallExpression.Method.Name)
+            {
+                case nameof(IReplaceFunction.ReplaceCharacters):
+                    var @symbol0 = GetValueOfExpression(methodCallExpression.Arguments[0]) as IEnumerable<string>;
+                    var @symbol1 = GetValueOfExpression(methodCallExpression.Arguments[1]) as IDictionary<string, string>;
+
+                    if (@symbol1 == default)
+                    {
+                        throw new ArgumentException("KeyValuePairs is null");
+                    }
+
+                    return @symbol0?.ReplaceWithStringBuilder(@symbol1);
+                default:
+                    return default;
+            }
         }
 
         protected bool IsResourceOfMemberExpression(MemberExpression memberExpression) => memberExpression.Expression switch

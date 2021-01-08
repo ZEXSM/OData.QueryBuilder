@@ -219,7 +219,7 @@ namespace OData.QueryBuilder.Visitors
         protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression)
         {
             var parameterName = lambdaExpression.Parameters[0].Name;
-            var filter = new QueryLambdaExpressionVisitor(_odataQueryBuilderOptions).ToString(lambdaExpression.Body);
+            var filter = new QueryLambdaExpressionVisitor(_odataQueryBuilderOptions).ToString(lambdaExpression.Body, _useParenthesis);
 
             return $"{parameterName}:{filter}";
         }

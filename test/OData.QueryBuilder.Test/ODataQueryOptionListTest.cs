@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Fakes;
 using OData.QueryBuilder.Options;
-using OData.QueryBuilder.Test.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -347,6 +347,18 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Labels/any(label:label eq 'lb1' or label eq 'lb2')");
+        }
+
+        [Fact(DisplayName = "Filter  operators Any with func => Success")]
+        public void ODataQueryBuilderList_Filter_Any_With_Func_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.Any(s.ODataKind.ODataCodes, v => f.Date(v.Created) == new DateTime(2019, 2, 9)))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:date(v/Created) eq 2019-02-09T00:00:00Z)");
         }
 
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]

@@ -1,4 +1,6 @@
-﻿namespace OData.QueryBuilder.Test.Fakes
+﻿using System;
+
+namespace OData.QueryBuilder.Fakes
 {
     public class ODataCodeEntity
     {
@@ -7,5 +9,7 @@
         public string Code { get; set; }
 
         public bool IdActive { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

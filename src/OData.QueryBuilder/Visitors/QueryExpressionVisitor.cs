@@ -9,17 +9,21 @@ using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Visitors
 {
-    internal class VisitorExpression
+    internal class QueryExpressionVisitor
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
+        protected readonly ValueExpression _valueExpression;
 
         private bool _useParenthesis;
         private ExpressionType? _expressionType;
 
-        public VisitorExpression(ODataQueryBuilderOptions odataQueryBuilderOptions) =>
+        public QueryExpressionVisitor(ODataQueryBuilderOptions odataQueryBuilderOptions)
+        {
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
+            _valueExpression = new ValueExpression();
+        }
 
-        protected virtual string VisitExpression(Expression expression) => expression switch
+        public virtual string VisitExpression(Expression expression) => expression switch
         {
             BinaryExpression binaryExpression => VisitBinaryExpression(binaryExpression),
             MemberExpression memberExpression => VisitMemberExpression(memberExpression),
@@ -57,10 +61,10 @@ namespace OData.QueryBuilder.Visitors
 
         protected virtual string VisitMemberExpression(MemberExpression memberExpression) =>
             IsResourceOfMemberExpression(memberExpression) ?
-                CreateResourcePath(memberExpression) : ReflectionExtensions.ConvertToString(GetValueOfMemberExpression(memberExpression));
+                CreateResourcePath(memberExpression) : _valueExpression.GetValue(memberExpression).ObjectToString();
 
         protected virtual string VisitConstantExpression(ConstantExpression constantExpression) =>
-                ReflectionExtensions.ConvertToString(constantExpression.Value);
+                constantExpression.Value.ObjectToString();
 
         protected virtual string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
         {
@@ -68,7 +72,7 @@ namespace OData.QueryBuilder.Visitors
             {
                 case nameof(IODataOperator.In):
                     var in0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var in1 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[1]));
+                    var in1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ObjectToString();
 
                     if (in1.IsNullOrQuotes())
                     {
@@ -80,23 +84,23 @@ namespace OData.QueryBuilder.Visitors
                         return default;
                     }
 
-                    return $"{in0} {nameof(IODataOperator.In).ToLower()} ({in1})";
+                    return $"{in0} {nameof(IODataOperator.In).ToLowerInvariant()} ({in1})";
                 case nameof(IODataOperator.All):
                     var all0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var all1 = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{all0}/{nameof(IODataOperator.All).ToLower()}({all1})";
+                    return $"{all0}/{nameof(IODataOperator.All).ToLowerInvariant()}({all1})";
                 case nameof(IODataOperator.Any):
                     var any0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var any1 = VisitExpression(methodCallExpression.Arguments[1]);
 
-                    return $"{any0}/{nameof(IODataOperator.Any).ToLower()}({any1})";
+                    return $"{any0}/{nameof(IODataOperator.Any).ToLowerInvariant()}({any1})";
                 case nameof(IODataFunction.Date):
                     var date0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{nameof(IODataFunction.Date).ToLower()}({date0})";
+                    return $"{nameof(IODataFunction.Date).ToLowerInvariant()}({date0})";
                 case nameof(IODataFunction.SubstringOf):
-                    var substringOf0 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
+                    var substringOf0 = _valueExpression.GetValue(methodCallExpression.Arguments[0]).ObjectToString();
                     var substringOf1 = VisitExpression(methodCallExpression.Arguments[1]);
 
                     if (substringOf0.IsNullOrQuotes())
@@ -109,10 +113,10 @@ namespace OData.QueryBuilder.Visitors
                         return default;
                     }
 
-                    return $"{nameof(IODataFunction.SubstringOf).ToLower()}({substringOf0},{substringOf1})";
+                    return $"{nameof(IODataFunction.SubstringOf).ToLowerInvariant()}({substringOf0},{substringOf1})";
                 case nameof(IODataFunction.Contains):
                     var contains0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var contains1 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[1]));
+                    var contains1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ObjectToString();
 
                     if (contains1.IsNullOrQuotes())
                     {
@@ -124,7 +128,7 @@ namespace OData.QueryBuilder.Visitors
                         return default;
                     }
 
-                    return $"{nameof(IODataFunction.Contains).ToLower()}({contains0},{contains1})";
+                    return $"{nameof(IODataFunction.Contains).ToLowerInvariant()}({contains0},{contains1})";
                 case nameof(IODataFunction.Concat):
                     var concat0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var concat1 = VisitExpression(methodCallExpression.Arguments[1]);
@@ -139,28 +143,28 @@ namespace OData.QueryBuilder.Visitors
                         return default;
                     }
 
-                    return $"{nameof(IODataFunction.Concat).ToLower()}({concat0},{concat1})";
+                    return $"{nameof(IODataFunction.Concat).ToLowerInvariant()}({concat0},{concat1})";
                 case nameof(IODataStringAndCollectionFunction.ToUpper):
                     var toUpper0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{nameof(IODataFunction.ToUpper).ToLower()}({toUpper0})";
+                    return $"{nameof(IODataFunction.ToUpper).ToLowerInvariant()}({toUpper0})";
                 case nameof(IODataStringAndCollectionFunction.ToLower):
                     var toLower0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{nameof(IODataFunction.ToLower).ToLower()}({toLower0})";
+                    return $"{nameof(IODataFunction.ToLower).ToLowerInvariant()}({toLower0})";
                 case nameof(IConvertFunction.ConvertEnumToString):
-                    return $"'{GetValueOfExpression(methodCallExpression.Arguments[0])}'";
+                    return $"'{_valueExpression.GetValue(methodCallExpression.Arguments[0])}'";
                 case nameof(IConvertFunction.ConvertDateTimeToString):
-                    var dateTime = (DateTime)GetValueOfExpression(methodCallExpression.Arguments[0]);
+                    var dateTime = (DateTime)_valueExpression.GetValue(methodCallExpression.Arguments[0]);
 
-                    return dateTime.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
+                    return dateTime.ToString((string)_valueExpression.GetValue(methodCallExpression.Arguments[1]));
                 case nameof(IConvertFunction.ConvertDateTimeOffsetToString):
-                    var dateTimeOffset = (DateTimeOffset)GetValueOfExpression(methodCallExpression.Arguments[0]);
+                    var dateTimeOffset = (DateTimeOffset)_valueExpression.GetValue(methodCallExpression.Arguments[0]);
 
-                    return dateTimeOffset.ToString((string)GetValueOfExpression(methodCallExpression.Arguments[1]));
+                    return dateTimeOffset.ToString((string)_valueExpression.GetValue(methodCallExpression.Arguments[1]));
                 case nameof(IReplaceFunction.ReplaceCharacters):
-                    var @symbol0 = ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Arguments[0]));
-                    var @symbol1 = GetValueOfExpression(methodCallExpression.Arguments[1]);
+                    var @symbol0 = _valueExpression.GetValue(methodCallExpression.Arguments[0]).ObjectToString();
+                    var @symbol1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]);
 
                     if (@symbol1 == default)
                     {
@@ -169,7 +173,7 @@ namespace OData.QueryBuilder.Visitors
 
                     return @symbol0.ReplaceWithStringBuilder(@symbol1 as IDictionary<string, string>);
                 case nameof(ToString):
-                    return ReflectionExtensions.ConvertToString(GetValueOfExpression(methodCallExpression.Object).ToString());
+                    return _valueExpression.GetValue(methodCallExpression.Object).ToString().ObjectToString();
                 default:
                     return default;
             }
@@ -183,12 +187,12 @@ namespace OData.QueryBuilder.Visitors
 
                 for (var i = 0; i < newExpression.Arguments.Count; i++)
                 {
-                    arguments[i] = GetValueOfExpression(newExpression.Arguments[i]);
+                    arguments[i] = _valueExpression.GetValue(newExpression.Arguments[i]);
                 }
 
                 if (newExpression.Type == typeof(DateTime) || newExpression.Type == typeof(DateTimeOffset))
                 {
-                    return ReflectionExtensions.ConvertToString(newExpression.Constructor.Invoke(arguments));
+                    return newExpression.Constructor.Invoke(arguments).ObjectToString();
                 }
 
                 return default;
@@ -214,104 +218,14 @@ namespace OData.QueryBuilder.Visitors
 
         protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression)
         {
-            var parameter = VisitParameterExpression(lambdaExpression.Parameters[0]);
-            var filter = VisitExpression(lambdaExpression.Body);
+            var parameterName = lambdaExpression.Parameters[0].Name;
+            var filter = new QueryLambdaExpressionVisitor(_odataQueryBuilderOptions).ToString(lambdaExpression.Body);
 
-            if (parameter == null)
-            {
-                parameter = lambdaExpression.Parameters[0].Name;
-                return $"{parameter}:{parameter}/{filter}";
-            }
-
-            return $"{parameter}:{filter}";
+            return $"{parameterName}:{filter}";
         }
 
-        protected virtual string VisitParameterExpression(ParameterExpression parameterExpression)
-        {
-            if (parameterExpression.Type == typeof(int) || parameterExpression.Type == typeof(string))
-            {
-                return parameterExpression.Name;
-            }
-
-            return default;
-        }
-
-        protected object GetValueOfExpression(Expression expression) => expression switch
-        {
-            MemberExpression memberExpression => GetValueOfMemberExpression(memberExpression),
-            ConstantExpression constantExpression => GetValueOfConstantExpression(constantExpression),
-            ListInitExpression listInitExpression => GetValueOfListInitExpression(listInitExpression),
-            NewArrayExpression newArrayExpression => GetValueOfNewArrayExpression(newArrayExpression),
-            MethodCallExpression methodCallExpression => GetValueOfMethodCallExpression(methodCallExpression),
-            _ => default,
-        };
-
-        protected object GetValueOfConstantExpression(ConstantExpression constantExpression) =>
-            constantExpression.Value;
-
-        protected object GetValueOfMemberExpression(MemberExpression expression) => expression.Expression switch
-        {
-            ConstantExpression constantExpression => expression.Member.GetValue(constantExpression.Value),
-            MemberExpression memberExpression => expression.Member.GetValue(GetValueOfMemberExpression(memberExpression)),
-            _ => expression.Member.GetValue(),
-        };
-
-        protected object GetValueOfListInitExpression(ListInitExpression listInitExpression)
-        {
-            var arguments = new object[listInitExpression.NewExpression.Arguments.Count];
-
-            for (var i = 0; i < listInitExpression.NewExpression.Arguments.Count; i++)
-            {
-                arguments[i] = GetValueOfExpression(listInitExpression.NewExpression.Arguments[i]);
-            }
-
-            var listInit = listInitExpression.NewExpression.Constructor.Invoke(arguments);
-
-            foreach (var elementInit in listInitExpression.Initializers)
-            {
-                var parameters = new object[elementInit.Arguments.Count];
-
-                for (var index = 0; index < elementInit.Arguments.Count; index++)
-                {
-                    parameters[index] = GetValueOfExpression(elementInit.Arguments[index]);
-                }
-
-                listInit.GetType().GetMethod(nameof(List<ListInitExpression>.Add)).Invoke(listInit, parameters);
-            }
-
-            return listInit;
-        }
-
-        protected object GetValueOfNewArrayExpression(NewArrayExpression newArrayExpression)
-        {
-            var array = Array.CreateInstance(newArrayExpression.Type.GetElementType(), newArrayExpression.Expressions.Count);
-
-            for (var i = 0; i < newArrayExpression.Expressions.Count; i++)
-            {
-                array.SetValue(GetValueOfExpression(newArrayExpression.Expressions[i]), i);
-            }
-
-            return array;
-        }
-
-        protected object GetValueOfMethodCallExpression(MethodCallExpression methodCallExpression)
-        {
-            switch (methodCallExpression.Method.Name)
-            {
-                case nameof(IReplaceFunction.ReplaceCharacters):
-                    var @symbol0 = GetValueOfExpression(methodCallExpression.Arguments[0]) as IEnumerable<string>;
-                    var @symbol1 = GetValueOfExpression(methodCallExpression.Arguments[1]) as IDictionary<string, string>;
-
-                    if (@symbol1 == default)
-                    {
-                        throw new ArgumentException("KeyValuePairs is null");
-                    }
-
-                    return @symbol0?.ReplaceWithStringBuilder(@symbol1);
-                default:
-                    return default;
-            }
-        }
+        protected virtual string VisitParameterExpression(ParameterExpression parameterExpression) =>
+            default;
 
         protected bool IsResourceOfMemberExpression(MemberExpression memberExpression) => memberExpression.Expression switch
         {
@@ -349,7 +263,7 @@ namespace OData.QueryBuilder.Visitors
             return hasParenthesis;
         }
 
-        public string ToString(Expression expression, bool useParenthesis = false)
+        public virtual string ToString(Expression expression, bool useParenthesis = false)
         {
             _useParenthesis = useParenthesis;
 

@@ -12,15 +12,15 @@ namespace OData.QueryBuilder.Conventions.Options
 {
     internal class ODataOptionList<TEntity> : ODataQuery<TEntity>, IODataOptionList<TEntity>
     {
-        private readonly VisitorExpression _visitorExpression;
+        private readonly QueryExpressionVisitor _queryExpressionVisitor;
 
         public ODataOptionList(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions) =>
-            _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
+            _queryExpressionVisitor = new QueryExpressionVisitor(odataQueryBuilderOptions);
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, bool>> entityFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityFilter.Body, useParenthesis);
+            var query = _queryExpressionVisitor.ToString(entityFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -29,7 +29,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityFilter.Body, useParenthesis);
+            var query = _queryExpressionVisitor.ToString(entityFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -38,7 +38,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter, bool useParenthesis = false)
         {
-            var query = _visitorExpression.ToString(entityFilter.Body, useParenthesis);
+            var query = _queryExpressionVisitor.ToString(entityFilter.Body, useParenthesis);
 
             _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -47,7 +47,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var query = _visitorExpression.ToString(entityExpand.Body);
+            var query = _queryExpressionVisitor.ToString(entityExpand.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -67,7 +67,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var query = _visitorExpression.ToString(entitySelect.Body);
+            var query = _queryExpressionVisitor.ToString(entitySelect.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -76,7 +76,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy)
         {
-            var query = _visitorExpression.ToString(entityOrderBy.Body);
+            var query = _queryExpressionVisitor.ToString(entityOrderBy.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Asc}{QuerySeparators.MainString}");
 
@@ -85,7 +85,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
-            var query = _visitorExpression.ToString(entityOrderByDescending.Body);
+            var query = _queryExpressionVisitor.ToString(entityOrderByDescending.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Desc}{QuerySeparators.MainString}");
 
@@ -108,7 +108,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionList<TEntity> Count(bool value = true)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSignString}{value.ToString().ToLower()}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSignString}{value.ToString().ToLowerInvariant()}{QuerySeparators.MainString}");
 
             return this;
         }

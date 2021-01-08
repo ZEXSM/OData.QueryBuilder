@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OData.QueryBuilder.Test.Fakes
+namespace OData.QueryBuilder.Fakes
 {
     public class ODataTypeEntity
     {

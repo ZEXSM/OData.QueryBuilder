@@ -17,7 +17,7 @@ namespace OData.QueryBuilder.Extensions
         public static bool IsNullableType(this Type type) =>
             Nullable.GetUnderlyingType(type) != default;
 
-        public static string ConvertToString(object @object)
+        public static string ObjectToString(this object @object)
         {
             switch (@object)
             {
@@ -26,7 +26,7 @@ namespace OData.QueryBuilder.Extensions
                 case string @string:
                     return $"'{@string}'";
                 case bool @bool:
-                    return $"{@bool}".ToLower();
+                    return $"{@bool}".ToLowerInvariant();
                 case int @int:
                     return $"{@int}";
                 case DateTime dateTime:

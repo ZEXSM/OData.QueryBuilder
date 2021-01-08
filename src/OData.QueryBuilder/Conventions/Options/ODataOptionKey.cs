@@ -10,15 +10,15 @@ namespace OData.QueryBuilder.Conventions.Options
 {
     internal class ODataOptionKey<TEntity> : ODataQuery<TEntity>, IODataOptionKey<TEntity>
     {
-        private readonly VisitorExpression _visitorExpression;
+        private readonly QueryExpressionVisitor _queryExpressionVisitor;
 
         public ODataOptionKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions) =>
-            _visitorExpression = new VisitorExpression(odataQueryBuilderOptions);
+            _queryExpressionVisitor = new QueryExpressionVisitor(odataQueryBuilderOptions);
 
         public IODataOptionKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
-            var query = _visitorExpression.ToString(entityExpand.Body);
+            var query = _queryExpressionVisitor.ToString(entityExpand.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 
@@ -38,7 +38,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
-            var query = _visitorExpression.ToString(entitySelect.Body);
+            var query = _queryExpressionVisitor.ToString(entitySelect.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
 

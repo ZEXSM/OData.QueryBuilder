@@ -12,7 +12,7 @@ namespace OData.QueryBuilder.Resources
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly StringBuilder _stringBuilder;
         private ODataOptionNestedBase _odataOptionNestedBase;
-        private readonly VisitorExpression _visitorExpression;
+        private readonly QueryExpressionVisitor _visitorExpression;
 
         public string Query => $"{_stringBuilder}({_odataOptionNestedBase.Query})";
 
@@ -20,7 +20,7 @@ namespace OData.QueryBuilder.Resources
         {
             _stringBuilder = new StringBuilder();
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
-            _visitorExpression = new VisitorExpression(_odataQueryBuilderOptions);
+            _visitorExpression = new QueryExpressionVisitor(_odataQueryBuilderOptions);
         }
 
         public IODataOptionNested<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedEntityExpand)

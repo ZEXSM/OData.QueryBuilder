@@ -11,5 +11,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\OData.QueryBuilder\OData.QueryBuilder.csproj" />
+    <ProjectReference Include="..\OData.QueryBuilder.Fakes\OData.QueryBuilder.Fakes.csproj" />
   </ItemGroup>
 </Project>

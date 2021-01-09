@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Expressions.Visitors
 {
-    [ExcludeFromCodeCoverage]
     internal class ODataExpressionVisitor
     {
         public ODataExpressionVisitor()

@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Extensions
 {
-    [ExcludeFromCodeCoverage]
     internal static class ExpressionTypeExtensions
     {
         public static string ToODataOperator(this ExpressionType expressionType) => expressionType switch

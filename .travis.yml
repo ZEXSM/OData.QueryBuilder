@@ -16,7 +16,7 @@ script:
 after_success:
     - cd src/OData.QueryBuilder && dotnet minicover instrument --workdir ../../coverage --parentdir ../ --assemblies test/**/bin/$CONFIGURATION/**/*.dll --sources src/**/*.cs && dotnet minicover reset --workdir ../../coverage && cd ../../
     - dotnet test --no-build ./test/OData.QueryBuilder.Test
-    - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --threshold 95 --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
+    - cd src/OData.QueryBuilder && dotnet minicover uninstrument --workdir ../../coverage && dotnet minicover report --workdir ../../coverage && dotnet minicover coverallsreport --threshold 90 --workdir ../../coverage --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID && cd ../../
 before_deploy: 
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE=$(git log -1 --pretty='%f')

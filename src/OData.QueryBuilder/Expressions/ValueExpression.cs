@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.Visitors
+namespace OData.QueryBuilder.Expressions
 {
     internal class ValueExpression
     {

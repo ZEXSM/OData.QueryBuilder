@@ -1,11 +1,11 @@
 ﻿using OData.QueryBuilder.Options;
 using System.Linq.Expressions;
 
-namespace OData.QueryBuilder.Visitors
+namespace OData.QueryBuilder.Expressions.Visitors
 {
-    internal class QueryLambdaExpressionVisitor : QueryExpressionVisitor
+    internal class ODataOptionFilterLambdaExpressionVisitor : ODataOptionFilterExpressionVisitor
     {
-        public QueryLambdaExpressionVisitor(ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataOptionFilterLambdaExpressionVisitor(ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(odataQueryBuilderOptions)
         {
         }

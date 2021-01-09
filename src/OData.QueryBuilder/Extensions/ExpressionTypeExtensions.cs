@@ -4,7 +4,7 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class ExpressionTypeExtensions
     {
-        public static string ToODataQueryOperator(this ExpressionType expressionType) =>
+        public static string ToODataOperator(this ExpressionType expressionType) =>
             expressionType switch
             {
                 ExpressionType.And => "and",

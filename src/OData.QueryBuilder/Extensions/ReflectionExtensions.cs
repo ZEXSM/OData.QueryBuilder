@@ -17,7 +17,7 @@ namespace OData.QueryBuilder.Extensions
         public static bool IsNullableType(this Type type) =>
             Nullable.GetUnderlyingType(type) != default;
 
-        public static string ObjectToString(this object @object)
+        public static string ToQuery(this object @object)
         {
             switch (@object)
             {

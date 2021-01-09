@@ -1,10 +1,10 @@
-﻿using OData.QueryBuilder.Conventions.Constants;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace OData.QueryBuilder.Extensions
 {
+    [ExcludeFromCodeCoverage]
     internal static class ReflectionExtensions
     {
         public static object GetValue(this MemberInfo memberInfo, object obj = default) => memberInfo switch

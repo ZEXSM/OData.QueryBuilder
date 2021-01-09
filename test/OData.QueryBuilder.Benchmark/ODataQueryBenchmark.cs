@@ -585,14 +585,14 @@ namespace OData.QueryBuilder.Benchmark
 
         [Benchmark]
         public Dictionary<string, string> ToDicionary() => _odataQueryBuilder
-                .For<ODataTypeEntity>(s => s.ODataType)
-                .ByList()
-                .Filter(s => s.IsActive
-                    && s.IsOpen == ODataQueryBuilderList_ToDicionary_ConstValue
-                    && s.IsOpen == true
-                    && s.ODataKind.ODataCode.IdActive == ODataQueryBuilderList_ToDicionary_NewObject.IsOpen)
-                .Skip(1)
-                .Top(10)
-                .ToDictionary();
+            .For<ODataTypeEntity>(s => s.ODataType)
+            .ByList()
+            .Filter(s => s.IsActive
+                && s.IsOpen == ODataQueryBuilderList_ToDicionary_ConstValue
+                && s.IsOpen == true
+                && s.ODataKind.ODataCode.IdActive == ODataQueryBuilderList_ToDicionary_NewObject.IsOpen)
+            .Skip(1)
+            .Top(10)
+            .ToDictionary();
     }
 }

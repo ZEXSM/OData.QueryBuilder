@@ -1,8 +1,10 @@
 ﻿using OData.QueryBuilder.Extensions;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Expressions.Visitors
 {
+    [ExcludeFromCodeCoverage]
     internal class ODataExpressionVisitor
     {
         public ODataExpressionVisitor()
@@ -34,8 +36,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
         protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression) => default;
 
-        protected virtual string VisitParameterExpression(ParameterExpression parameterExpression) =>
-            default;
+        protected virtual string VisitParameterExpression(ParameterExpression parameterExpression) => default;
 
         protected virtual string VisitMemberExpression(MemberExpression memberExpression)
         {

@@ -1,10 +1,12 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace OData.QueryBuilder.Extensions
 {
+    [ExcludeFromCodeCoverage]
     internal static class StringExtensions
     {
         public static bool IsNullOrQuotes(this string value) =>

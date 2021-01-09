@@ -8,6 +8,10 @@ namespace OData.QueryBuilder.Expressions
 {
     internal class ValueExpression
     {
+        public ValueExpression()
+        {
+        }
+
         public virtual object GetValue(Expression expression) => expression switch
         {
             MemberExpression memberExpression => GetValueOfMemberExpression(memberExpression),

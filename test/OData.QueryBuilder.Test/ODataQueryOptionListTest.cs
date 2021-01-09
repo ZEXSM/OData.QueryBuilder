@@ -253,8 +253,8 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 / 7 ? 8 % 9 # 1'");
         }
 
-        [Fact(DisplayName = "Filter string with ReplaceCharacters Value => ArgumentException")]
-        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Value_ArgumentException()
+        [Fact(DisplayName = "Filter string with ReplaceCharacters Value => Success")]
+        public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_Value_Success()
         {
             var constValue = default(string);
 

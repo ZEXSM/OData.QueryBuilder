@@ -44,4 +44,4 @@ deploy:
     on:
         branch: master
 after_deploy:
-    - dotnet nuget push ./bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE
+    - dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.$PACKAGE_VERSION.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE

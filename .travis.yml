@@ -19,9 +19,8 @@ after_success:
     - dotnet test --no-build ./test/OData.QueryBuilder.Test -c $CONFIGURATION -f netcoreapp3.1
     - dotnet minicover uninstrument
     - dotnet minicover report
-    - dotnet minicover coverallsreport --threshold 95 --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID
-    - dotnet minicover coverallsreport --help
-before_deploy: 
+    - dotnet minicover coverallsreport --root-path ../../ --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID
+before_deploy:
     - git checkout origin/master && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE=$(git log -1 --pretty='%f')
     - LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)

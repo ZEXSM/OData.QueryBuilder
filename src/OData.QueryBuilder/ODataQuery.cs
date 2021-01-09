@@ -20,13 +20,13 @@ namespace OData.QueryBuilder
         public Dictionary<string, string> ToDictionary()
         {
             var odataOperators = _stringBuilder.ToString()
-                .Split(new char[2] { QuerySeparators.BeginChar, QuerySeparators.MainChar }, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new char[2] { QuerySeparators.Begin, QuerySeparators.Main }, StringSplitOptions.RemoveEmptyEntries);
 
             var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
 
             for (var step = 1; step < odataOperators.Length; step++)
             {
-                var odataOperator = odataOperators[step].Split(QuerySeparators.EqualSignChar);
+                var odataOperator = odataOperators[step].Split(QuerySeparators.EqualSign);
 
                 dictionary.Add(odataOperator[0], odataOperator[1]);
             }
@@ -34,6 +34,6 @@ namespace OData.QueryBuilder
             return dictionary;
         }
 
-        public Uri ToUri() => new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.MainChar));
+        public Uri ToUri() => new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.Main));
     }
 }

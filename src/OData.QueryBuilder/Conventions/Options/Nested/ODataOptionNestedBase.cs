@@ -15,6 +15,6 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
-        public string Query => _stringBuilder.ToString().Trim(QuerySeparators.NestedChar);
+        public string Query => _stringBuilder.ToString().Trim(QuerySeparators.Nested);
     }
 }

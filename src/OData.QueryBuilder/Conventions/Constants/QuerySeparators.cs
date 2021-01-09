@@ -2,28 +2,18 @@
 {
     internal struct QuerySeparators
     {
-        public const string MainString = "&";
+        public const char Main = '&';
 
-        public const char MainChar = '&';
+        public const char Nested = ';';
 
-        public const string NestedString = ";";
+        public const char Begin = '?';
 
-        public const char NestedChar = ';';
+        public const char EqualSign = '=';
 
-        public const string BeginString = "?";
+        public const char Slash = '/';
 
-        public const char BeginChar = '?';
+        public const string Comma = ",";
 
-        public const string EqualSignString = "=";
-
-        public const char EqualSignChar = '=';
-
-        public const string SlashString = "/";
-
-        public const char SlashChar = '/';
-
-        public const string CommaString = ",";
-
-        public const char DotChar = '.';
+        public const char Dot = '.';
     }
 }

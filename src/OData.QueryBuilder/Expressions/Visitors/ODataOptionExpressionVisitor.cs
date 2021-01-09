@@ -28,7 +28,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 names[i] = newExpression.Members[i].Name;
             }
 
-            return string.Join(QuerySeparators.CommaString, names);
+            return string.Join(QuerySeparators.Comma, names);
         }
     }
 }

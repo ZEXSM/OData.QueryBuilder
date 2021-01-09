@@ -21,7 +21,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(entityFilter.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -30,7 +30,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(entityFilter.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -39,7 +39,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(entityFilter.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -48,7 +48,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(entityExpand.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -59,7 +59,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
             entityExpandNested(builder);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{builder.Query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{builder.Query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -68,7 +68,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionSelectExpressionVisitor().ToQuery(entitySelect.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -77,7 +77,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityOrderBy.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Asc}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Asc}{QuerySeparators.Main}");
 
             return this;
         }
@@ -86,28 +86,28 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityOrderByDescending.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Desc}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Desc}{QuerySeparators.Main}");
 
             return this;
         }
 
         public IODataOptionList<TEntity> Skip(int value)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Skip}{QuerySeparators.EqualSignString}{value}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Skip}{QuerySeparators.EqualSign}{value}{QuerySeparators.Main}");
 
             return this;
         }
 
         public IODataOptionList<TEntity> Top(int value)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSignString}{value}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSign}{value}{QuerySeparators.Main}");
 
             return this;
         }
 
         public IODataOptionList<TEntity> Count(bool value = true)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSignString}{value.ToString().ToLowerInvariant()}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSign}{value.ToString().ToLowerInvariant()}{QuerySeparators.Main}");
 
             return this;
         }

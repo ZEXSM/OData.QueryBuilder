@@ -19,7 +19,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(entityExpand.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -30,7 +30,7 @@ namespace OData.QueryBuilder.Conventions.Options
 
             actionEntityExpandNested(builder);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{builder.Query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{builder.Query}{QuerySeparators.Main}");
 
             return this;
         }
@@ -39,7 +39,7 @@ namespace OData.QueryBuilder.Conventions.Options
         {
             var query = new ODataOptionSelectExpressionVisitor().ToQuery(entitySelect.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.MainString}");
+            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }

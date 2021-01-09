@@ -19,7 +19,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(entityNestedExpand.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
@@ -30,7 +30,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
 
             actionEntityExpandNested(builder);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSignString}{builder.Query}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{builder.Query}{QuerySeparators.Nested}");
 
             return this;
         }
@@ -39,7 +39,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(entityNestedFilter.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
@@ -48,7 +48,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
         {
             var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityNestedOrderBy.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Asc}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Asc}{QuerySeparators.Nested}");
 
             return this;
         }
@@ -57,7 +57,7 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
         {
             var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityNestedOrderByDescending.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSignString}{query} {QuerySorts.Desc}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Desc}{QuerySeparators.Nested}");
 
             return this;
         }
@@ -66,14 +66,14 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
         {
             var query = new ODataOptionSelectExpressionVisitor().ToQuery(entityNestedSelect.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSignString}{query}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataOptionNested<TEntity> Top(int value)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSignString}{value}{QuerySeparators.NestedString}");
+            _stringBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSign}{value}{QuerySeparators.Nested}");
 
             return this;
         }

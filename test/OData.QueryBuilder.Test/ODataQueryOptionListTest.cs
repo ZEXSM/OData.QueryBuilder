@@ -231,7 +231,7 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, f.ReplaceCharacters(strings, new Dictionary<string, string>() { { @"\", "%5C" } })))
+                .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, f.ReplaceCharacters(strings, new Dictionary<string, string>(0) { { @"\", "%5C" } })))
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')");
@@ -259,12 +259,12 @@ namespace OData.QueryBuilder.Test
             var constValue = default(string);
 
             var uri = _odataQueryBuilderDefault
-                           .For<ODataTypeEntity>(s => s.ODataType)
-                           .ByList()
-                           .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
-                               constValue,
-                               new Dictionary<string, string> { { "&", "%26" } }))
-                           .ToUri();
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(
+                    constValue,
+                    new Dictionary<string, string> { { "&", "%26" } }))
+                .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq null");
         }

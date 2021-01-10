@@ -23,20 +23,28 @@ namespace OData.QueryBuilder.Expressions.Visitors
             _ => default,
         };
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitBinaryExpression(BinaryExpression binaryExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitConstantExpression(ConstantExpression constantExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitMethodCallExpression(MethodCallExpression methodCallExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitNewExpression(NewExpression newExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitUnaryExpression(UnaryExpression unaryExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitParameterExpression(ParameterExpression parameterExpression) => default;
 
+        [ExcludeFromCodeCoverage]
         protected virtual string VisitMemberExpression(MemberExpression memberExpression)
         {
             var memberName = VisitExpression(memberExpression.Expression);

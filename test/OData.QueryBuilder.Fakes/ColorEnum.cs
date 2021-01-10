@@ -1,4 +1,4 @@
-﻿namespace OData.QueryBuilder.Test.Fakes
+﻿namespace OData.QueryBuilder.Fakes
 {
     public enum ColorEnum
     {

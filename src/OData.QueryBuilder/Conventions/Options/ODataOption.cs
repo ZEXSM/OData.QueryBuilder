@@ -17,21 +17,21 @@ namespace OData.QueryBuilder.Conventions.Options
 
         public IODataOptionKey<TEntity> ByKey(int key)
         {
-            _stringBuilder.Append($"({key}){QuerySeparators.BeginString}");
+            _stringBuilder.Append($"({key}){QuerySeparators.Begin}");
 
             return new ODataOptionKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }
 
         public IODataOptionKey<TEntity> ByKey(string key)
         {
-            _stringBuilder.Append($"('{key}'){QuerySeparators.BeginString}");
+            _stringBuilder.Append($"('{key}'){QuerySeparators.Begin}");
 
             return new ODataOptionKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }
 
         public IODataOptionList<TEntity> ByList()
         {
-            _stringBuilder.Append(QuerySeparators.BeginString);
+            _stringBuilder.Append(QuerySeparators.Begin);
 
             return new ODataOptionList<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }

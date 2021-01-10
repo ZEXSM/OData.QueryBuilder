@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Fakes;
 using OData.QueryBuilder.Options;
-using OData.QueryBuilder.Test.Fakes;
 using System.Linq;
 using Xunit;
 

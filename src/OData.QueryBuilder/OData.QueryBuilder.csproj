@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>OData.QueryBuilder</PackageId>
     <PackageVersion>$(PackageVersion)</PackageVersion>

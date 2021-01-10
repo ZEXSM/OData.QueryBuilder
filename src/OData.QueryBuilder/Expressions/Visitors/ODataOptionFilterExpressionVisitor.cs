@@ -161,7 +161,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 case nameof(string.ToString):
                     return _valueExpression.GetValue(methodCallExpression.Object).ToString().ToQuery();
                 default:
-                    return default;
+                    throw new NotSupportedException($"Method {methodCallExpression.Method.Name} not supported");
             }
         }
 

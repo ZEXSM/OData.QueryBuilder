@@ -237,6 +237,37 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')");
         }
 
+        [Fact(DisplayName = "Filter call ReplaceCharacters in operator In => ArgumentException")]
+        public void ODataQueryBuilderList_Filter_call_ReplaceCharacters_in_operator_In_ArgumentException()
+        {
+            var strings = new string[] {
+                @"test\\YUYYUT",
+                @"test1\\YUYY123"
+            };
+
+            _odataQueryBuilderDefault
+                .Invoking((r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, f.ReplaceCharacters(strings, new Dictionary<string, string>(0))))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("KeyValuePairs is null");
+        }
+
+        private string[] GetStrings() => new[] { "123", "512" };
+
+        [Fact(DisplayName = "Filter call func in func => NotSupportedException")]
+        public void ODataQueryBuilderList_Filter_call_func_in_func_NotSupportedException()
+        {
+            _odataQueryBuilderDefault
+                .Invoking((r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, GetStrings()))
+                    .ToUri())
+                .Should().Throw<NotSupportedException>().WithMessage($"Method {nameof(GetStrings)} not supported");
+        }
+
         [Fact(DisplayName = "Filter string with ReplaceCharacters new Dictionary => Success")]
         public void ODataQueryBuilderList_Filter_With_ReplaceCharacters_new_dictionary_Success()
         {
@@ -960,7 +991,7 @@ namespace OData.QueryBuilder.Test
         }
 
         [Fact(DisplayName = "ToDicionary => Success")]
-        public void ToDicionaryTest()
+        public void ODataQueryBuilderList_ToDicionary()
         {
             var constValue = false;
             var newObject = new ODataTypeEntity { IsOpen = false };
@@ -986,8 +1017,8 @@ namespace OData.QueryBuilder.Test
             dictionary.Should().BeEquivalentTo(resultEquivalent);
         }
 
-        [Fact(DisplayName = "Filter Enum")]
-        public void FilterEnumTest()
+        [Fact(DisplayName = "Filter Enum => Success")]
+        public void ODataQueryBuilderList_Filter_Enum_Success()
         {
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -999,6 +1030,20 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/Color eq 'Blue' and ODataKind/Color eq 2&$skip=1&$top=10");
+        }
+
+        [Fact(DisplayName = "Filter method not supported => NotSupportedException")]
+        public void ODataQueryBuilderList_Filter_Method_Not_Supported_NotSupportedException()
+        {
+            var @string = "test";
+
+            _odataQueryBuilderDefault
+                .Invoking(c => c
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f) => @string.IndexOf("t") == 1)
+                    .ToUri())
+                .Should().Throw<NotSupportedException>().WithMessage($"Method {nameof(string.IndexOf)} not supported");
         }
     }
 }

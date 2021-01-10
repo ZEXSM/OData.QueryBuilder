@@ -85,7 +85,7 @@ namespace OData.QueryBuilder.Expressions
 
                     return @symbol0?.ReplaceWithStringBuilder(@symbol1);
                 default:
-                    return default;
+                    throw new NotSupportedException($"Method {methodCallExpression.Method.Name} not supported");
             }
         }
     }

@@ -106,6 +106,26 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$top=1;$orderby=EndDate asc)");
         }
 
+        [Fact(DisplayName = "Expand orderBy multiple sort => Success")]
+        public void ODataQueryBuilderList_Expand_OrderBy_Multiple_Sort_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind)
+                        .OrderBy((entity, sort) => sort
+                            .Ascending(entity.OpenDate)
+                            .Descending(entity.ODataCode.Code)
+                            .Ascending(entity.IdKind));
+                })
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=OpenDate asc,ODataCode/Code desc,IdKind asc)");
+        }
+
         [Fact(DisplayName = "Expand nested orderby desc => Success")]
         public void ODataQueryBuilderList_ExpandNested_OrderByDescending_Success()
         {
@@ -147,6 +167,36 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$orderby=IdType asc");
         }
 
+        [Fact(DisplayName = "Filter orderBy multiple sort => Success")]
+        public void ODataQueryBuilderList_Filter_OrderBy_Multiple_Sort_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .OrderBy((entity, sort) => sort
+                    .Ascending(entity.BeginDate)
+                    .Descending(entity.EndDate)
+                    .Ascending(entity.IdRule)
+                    .Ascending(entity.Sum)
+                    .Descending(entity.ODataKind.OpenDate))
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$orderby=BeginDate asc,EndDate desc,IdRule asc,Sum asc,ODataKind/OpenDate desc");
+        }
+
+        [Fact(DisplayName = "Filter orderBy multiple sort => NotSupportedException")]
+        public void ODataQueryBuilderList_Filter_OrderBy_Multiple_Sort_NotSupportedException()
+        {
+            var uri = _odataQueryBuilderDefault
+                .Invoking(i => i
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .OrderBy((entity, sort) => sort.Equals(1))
+                    .ToUri()
+                )
+                .Should().Throw<NotSupportedException>().WithMessage($"Method {nameof(string.Equals)} not supported");
+        }
+
         [Fact(DisplayName = "OrderByDescending simple => Success")]
         public void ODataQueryBuilderList_OrderByDescending_Simple_Success()
         {
@@ -183,7 +233,6 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
-
 
         [Fact(DisplayName = "Filter call ToString => Success")]
         public void ODataQueryBuilderList_Filter_Call_ToString_Success()

@@ -22,6 +22,7 @@ The library primarily targets OData Version 4.01 and provides linq syntax for cr
         * [`toupper`](#toupper)
         * [`tolower`](#tolower)
         * [`concat`](#concat)
+  * sorting by several fields with indication of direction
 
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:
@@ -182,6 +183,15 @@ var constValue = 3;
 .OrderBy(s => new { s.IdType, s.Sum })
 ```
 > $orderby=IdType,Sum asc
+```csharp
+.OrderBy((entity, sort) => sort
+    .Ascending(entity.BeginDate)
+    .Descending(entity.EndDate)
+    .Ascending(entity.IdRule)
+    .Ascending(entity.Sum)
+    .Descending(entity.ODataKind.OpenDate))
+```
+> $orderby=BeginDate asc,EndDate desc,IdRule asc,Sum asc,ODataKind/OpenDate desc
 #### <a name="orderbydesc"/> orderby desc
 ```csharp
 .OrderByDescending(s => s.IdType)

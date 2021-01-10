@@ -22,6 +22,8 @@ namespace OData.QueryBuilder.Conventions.Options
 
         IODataOptionList<TEntity> OrderBy(Expression<Func<TEntity, object>> entityOrderBy);
 
+        IODataOptionList<TEntity> OrderBy(Expression<Func<TEntity, ISortFunction, object>> entityOrderBy);
+
         IODataOptionList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending);
 
         IODataOptionList<TEntity> Top(int number);

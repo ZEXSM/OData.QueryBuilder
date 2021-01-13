@@ -82,6 +82,15 @@ namespace OData.QueryBuilder.Conventions.Options
             return this;
         }
 
+        public IODataOptionList<TEntity> OrderBy(Expression<Func<TEntity, ISortFunction, object>> entityOrderBy)
+        {
+            var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityOrderBy.Body);
+
+            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+
+            return this;
+        }
+
         public IODataOptionList<TEntity> OrderByDescending(Expression<Func<TEntity, object>> entityOrderByDescending)
         {
             var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityOrderByDescending.Body);

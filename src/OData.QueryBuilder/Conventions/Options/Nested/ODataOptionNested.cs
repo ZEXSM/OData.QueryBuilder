@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
 using OData.QueryBuilder.Resources;
@@ -49,6 +50,15 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
             var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityNestedOrderBy.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Asc}{QuerySeparators.Nested}");
+
+            return this;
+        }
+
+        public IODataOptionNested<TEntity> OrderBy(Expression<Func<TEntity, ISortFunction, object>> entityOrderBy)
+        {
+            var query = new ODataOptionOrderByExpressionVisitor().ToQuery(entityOrderBy.Body);
+
+            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }

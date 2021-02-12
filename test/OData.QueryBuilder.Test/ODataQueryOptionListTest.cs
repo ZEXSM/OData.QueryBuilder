@@ -1090,9 +1090,21 @@ namespace OData.QueryBuilder.Test
                 .Invoking(c => c
                     .For<ODataTypeEntity>(s => s.ODataType)
                     .ByList()
-                    .Filter((s, f) => @string.IndexOf("t") == 1)
+                    .Filter((s, f) => @string.Trim() == "s")
                     .ToUri())
-                .Should().Throw<NotSupportedException>().WithMessage($"Method {nameof(string.IndexOf)} not supported");
+                .Should().Throw<NotSupportedException>().WithMessage($"Method {nameof(string.Trim)} not supported");
+        }
+
+        [Fact(DisplayName = "IndexOf Test => Success")]
+        public void ODataQueryBuilderList_Test_IndexOf()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.IndexOf(s.ODataKind.ODataCode.Code, "testCode") == 1)
+                .ToUri();
+
+            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=indexof(ODataKind/ODataCode/Code,'testCode') eq 1");
         }
     }
 }

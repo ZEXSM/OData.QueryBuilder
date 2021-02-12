@@ -138,6 +138,11 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     var toLower0 = VisitExpression(methodCallExpression.Arguments[0]);
 
                     return $"{nameof(IODataFunction.ToLower).ToLowerInvariant()}({toLower0})";
+                case nameof(IODataStringAndCollectionFunction.IndexOf):
+                    var indexOf0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var indexOf1 = VisitExpression(methodCallExpression.Arguments[1]);
+
+                    return $"{nameof(IODataFunction.IndexOf).ToLowerInvariant()}({indexOf0},{indexOf1})";
                 case nameof(IConvertFunction.ConvertEnumToString):
                     return $"'{_valueExpression.GetValue(methodCallExpression.Arguments[0])}'";
                 case nameof(IConvertFunction.ConvertDateTimeToString):

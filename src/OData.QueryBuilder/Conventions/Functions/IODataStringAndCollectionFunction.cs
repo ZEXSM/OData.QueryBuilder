@@ -32,5 +32,10 @@ namespace OData.QueryBuilder.Conventions.Functions
         /// http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#sec_concat
         /// </summary>
         string Concat(string s1, string s2);
+
+        /// <summary>
+        /// http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#sec_indexof
+        /// </summary>
+        int IndexOf(string columnName, string value);
     }
 }

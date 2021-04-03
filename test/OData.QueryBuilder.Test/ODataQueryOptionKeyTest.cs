@@ -2,6 +2,7 @@
 using OData.QueryBuilder.Builders;
 using OData.QueryBuilder.Fakes;
 using OData.QueryBuilder.Options;
+using System;
 using System.Linq;
 using Xunit;
 
@@ -150,13 +151,13 @@ namespace OData.QueryBuilder.Test
                 .Expand(f =>
                 {
                     f.For<ODataKindEntity>(s => s.ODataKind)
-                        .Filter(s => s.IdKind == 1)
+                        .Filter((s, y, u) => s.IdKind == 1 && y.Date(s.EndDate) == DateTime.Today && u.In(s.IdKind, new[] { 1 }))
                         .Select(s => s.IdKind);
                 })
                 .Select(s => new { s.IdType, s.Sum })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1 and date(EndDate) eq {DateTime.Today:s}Z and IdKind in (1);$select=IdKind)&$select=IdType,Sum");
         }
 
         [Fact(DisplayName = "ToDicionary => Success")]

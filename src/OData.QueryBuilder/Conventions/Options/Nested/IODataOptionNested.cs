@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Conventions.Functions;
+using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Resources;
 using System;
 using System.Linq.Expressions;
@@ -12,6 +13,10 @@ namespace OData.QueryBuilder.Conventions.Options.Nested
         IODataOptionNested<TEntity> Expand(Expression<Func<TEntity, object>> entityNestedExpand);
 
         IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, bool>> entityNestedFilter, bool useParenthesis = false);
+
+        IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> entityFilter, bool useParenthesis = false);
+
+        IODataOptionNested<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> entityFilter, bool useParenthesis = false);
 
         IODataOptionNested<TEntity> Select(Expression<Func<TEntity, object>> entityNestedSelect);
 

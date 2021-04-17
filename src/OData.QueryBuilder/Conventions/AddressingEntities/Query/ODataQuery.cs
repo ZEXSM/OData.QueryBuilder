@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OData.QueryBuilder
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
-    internal class ODataQuery<TEntity> : IODataQuery
+    internal class ODataQuery : IODataQuery
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         protected readonly StringBuilder _stringBuilder;

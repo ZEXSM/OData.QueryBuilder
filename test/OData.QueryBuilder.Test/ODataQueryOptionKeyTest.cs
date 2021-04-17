@@ -2,6 +2,7 @@
 using OData.QueryBuilder.Builders;
 using OData.QueryBuilder.Fakes;
 using OData.QueryBuilder.Options;
+using System;
 using System.Linq;
 using Xunit;
 
@@ -141,8 +142,44 @@ namespace OData.QueryBuilder.Test
             uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc;$top=1)");
         }
 
-        [Fact(DisplayName = "Expand nested Filter => Success")]
-        public void ODataQueryBuilderKey_Expand_Nested_Filter_Success()
+        [Fact(DisplayName = "Expand nested Filter1 => Success")]
+        public void ODataQueryBuilderKey_Expand_Nested_Filter1_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Filter((s, y, u) => s.IdKind == 1 && y.Date(s.EndDate) == DateTime.Today && u.In(s.IdKind, new[] { 1 }))
+                        .Select(s => s.IdKind);
+                })
+                .Select(s => new { s.IdType, s.Sum })
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1 and date(EndDate) eq {DateTime.Today:s}Z and IdKind in (1);$select=IdKind)&$select=IdType,Sum");
+        }
+
+        [Fact(DisplayName = "Expand nested Filter2 => Success")]
+        public void ODataQueryBuilderKey_Expand_Nested_Filter2_Success()
+        {
+            var uri = _odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Filter((s, y) => s.IdKind == 1 && y.Date(s.EndDate) == DateTime.Today)
+                        .Select(s => s.IdKind);
+                })
+                .Select(s => new { s.IdType, s.Sum })
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1 and date(EndDate) eq {DateTime.Today:s}Z;$select=IdKind)&$select=IdType,Sum");
+        }
+
+        [Fact(DisplayName = "Expand nested Filter3 => Success")]
+        public void ODataQueryBuilderKey_Expand_Nested_Filter3_Success()
         {
             var uri = _odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -156,7 +193,7 @@ namespace OData.QueryBuilder.Test
                 .Select(s => new { s.IdType, s.Sum })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
         }
 
         [Fact(DisplayName = "ToDicionary => Success")]

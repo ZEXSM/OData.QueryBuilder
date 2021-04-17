@@ -22,6 +22,7 @@ The library primarily targets OData Version 4.01 and provides linq syntax for cr
         * [`toupper`](#toupper)
         * [`tolower`](#tolower)
         * [`concat`](#concat)
+        * [`indexof`](#indexof)
   * sorting by several fields with indication of direction
 
 ## Installation
@@ -289,6 +290,13 @@ var constValue = 3;
 .Filter((s, f) => f.Concat(s.ODataKind.ODataCode.Code, "_1") == "test_code_1")
 ```
 > $filter=concat(ODataKind/ODataCode/Code, '_1') eq 'test_code_1'
+
+#### <a name="indexof"/> indexof
+
+```csharp
+.Filter((s, f) => f.IndexOf(s.ODataKind.ODataCode.Code, "testCode") == 1)
+```
+> $filter=indexof(ODataKind/ODataCode/Code,'testCode') eq 1
 
 ## Usage other functions
 

@@ -1,11 +1,11 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Expand;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand;
 using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
 {
     internal class ODataExpandResource<TEntity> : IODataExpandResource<TEntity>
     {

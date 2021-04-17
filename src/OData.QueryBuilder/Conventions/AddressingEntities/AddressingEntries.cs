@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Options;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Query;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Options;
 using System.Text;

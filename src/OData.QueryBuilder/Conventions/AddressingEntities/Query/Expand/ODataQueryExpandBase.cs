@@ -2,7 +2,7 @@
 using OData.QueryBuilder.Options;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.AddressingEntities.Expand
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
     internal class ODataQueryExpandBase
     {

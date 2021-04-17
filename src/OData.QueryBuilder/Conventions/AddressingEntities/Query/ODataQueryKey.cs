@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
@@ -6,7 +6,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.AddressingEntities
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQueryKey<TEntity> : ODataQuery, IODataQueryKey<TEntity>
     {

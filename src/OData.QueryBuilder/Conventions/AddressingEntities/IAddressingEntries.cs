@@ -1,4 +1,6 @@
-﻿namespace OData.QueryBuilder.Conventions.AddressingEntities
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Query;
+
+namespace OData.QueryBuilder.Conventions.AddressingEntities
 {
     public interface IAddressingEntries<TEntity>
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OData.QueryBuilder.Conventions.AddressingEntities
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     public interface IODataQuery
     {

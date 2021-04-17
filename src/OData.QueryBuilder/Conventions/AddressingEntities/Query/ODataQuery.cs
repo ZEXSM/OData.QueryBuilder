@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.AddressingEntities
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQuery : IODataQuery
     {

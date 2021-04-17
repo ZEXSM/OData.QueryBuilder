@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Conventions.Operators;
@@ -8,7 +8,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.AddressingEntities.Expand
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
     internal class ODataQueryExpand<TEntity> : ODataQueryExpandBase, IODataQueryExpand<TEntity>
     {

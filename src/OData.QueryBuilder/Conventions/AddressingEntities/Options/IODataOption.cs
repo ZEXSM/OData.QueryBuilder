@@ -1,4 +1,4 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
 using System;
 using System.Linq.Expressions;
 

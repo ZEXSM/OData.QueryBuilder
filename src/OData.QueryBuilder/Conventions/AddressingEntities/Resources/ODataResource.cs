@@ -1,5 +1,4 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Options;
-using OData.QueryBuilder.Expressions.Visitors;
+﻿using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
@@ -18,9 +17,9 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
             _resourse = resourse;
         }
 
-        public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
+        public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource)
         {
-            var query = new ODataResourceExpressionVisitor().ToQuery(entityResource.Body);
+            var query = new ODataResourceExpressionVisitor().ToQuery(resource.Body);
 
             return new AddressingEntries<TEntity>(new StringBuilder($"{_resourse}{query}"), _odataQueryBuilderOptions);
         }

@@ -1106,5 +1106,19 @@ namespace OData.QueryBuilder.Test
 
             uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=indexof(ODataKind/ODataCode/Code,'testCode') eq 1");
         }
+
+        [Fact(DisplayName = "Filter Guid Test => Success")]
+        public void ODataQueryBuilderList_Test_Filter_Guid()
+        {
+            var newGuid = Guid.NewGuid();
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.Id == new Guid() || s.Id == newGuid)
+                .ToUri();
+
+            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=Id eq '00000000-0000-0000-0000-000000000000' or Id eq '{newGuid}'");
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace OData.QueryBuilder.Fakes
 {
     public class ODataTypeEntity
     {
+        public Guid Id { get; set; }
+
         public int IdType { get; set; }
 
         public int? IdRule { get; set; }

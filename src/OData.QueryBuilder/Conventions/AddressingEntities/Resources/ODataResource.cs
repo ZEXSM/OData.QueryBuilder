@@ -1,18 +1,18 @@
-﻿using OData.QueryBuilder.Conventions.Options;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Options;
 using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.Resources
+namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 {
-    public class ODataQueryResource<TResource> : IODataQueryResource<TResource>
+    public class ODataResource<TResource> : IODataResource<TResource>
     {
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly string _resourse;
 
-        public ODataQueryResource(string resourse, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataResource(string resourse, ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
             _resourse = resourse;

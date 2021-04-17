@@ -1,6 +1,6 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Conventions.Resources;
 using OData.QueryBuilder.Options;
-using OData.QueryBuilder.Resources;
 using System;
 
 namespace OData.QueryBuilder.Builders

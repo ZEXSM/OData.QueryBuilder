@@ -1,21 +1,21 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Conventions.Resources;
 using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
-using OData.QueryBuilder.Resources;
 using System;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace OData.QueryBuilder.Conventions.Options
 {
-    internal class ODataOptionKey<TEntity> : ODataQuery<TEntity>, IODataOptionKey<TEntity>
+    internal class AddressingEntriesKey<TEntity> : ODataQuery<TEntity>, IAddressingEntriesKey<TEntity>
     {
-        public ODataOptionKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public AddressingEntriesKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions)
         {
         }
 
-        public IODataOptionKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
+        public IAddressingEntriesKey<TEntity> Expand(Expression<Func<TEntity, object>> entityExpand)
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(entityExpand.Body);
 
@@ -24,9 +24,9 @@ namespace OData.QueryBuilder.Conventions.Options
             return this;
         }
 
-        public IODataOptionKey<TEntity> Expand(Action<IODataQueryExpandNestedResource<TEntity>> actionEntityExpandNested)
+        public IAddressingEntriesKey<TEntity> Expand(Action<IODataQueryExpandResource<TEntity>> actionEntityExpandNested)
         {
-            var builder = new ODataQueryExpandNestedResource<TEntity>(_odataQueryBuilderOptions);
+            var builder = new ODataQueryExpandResource<TEntity>(_odataQueryBuilderOptions);
 
             actionEntityExpandNested(builder);
 
@@ -35,7 +35,7 @@ namespace OData.QueryBuilder.Conventions.Options
             return this;
         }
 
-        public IODataOptionKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
+        public IAddressingEntriesKey<TEntity> Select(Expression<Func<TEntity, object>> entitySelect)
         {
             var query = new ODataOptionSelectExpressionVisitor().ToQuery(entitySelect.Body);
 

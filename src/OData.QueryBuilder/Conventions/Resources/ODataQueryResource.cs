@@ -5,7 +5,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace OData.QueryBuilder.Resources
+namespace OData.QueryBuilder.Conventions.Resources
 {
     public class ODataQueryResource<TResource> : IODataQueryResource<TResource>
     {
@@ -18,11 +18,11 @@ namespace OData.QueryBuilder.Resources
             _resourse = resourse;
         }
 
-        public IODataOption<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
+        public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> entityResource)
         {
             var query = new ODataResourceExpressionVisitor().ToQuery(entityResource.Body);
 
-            return new ODataOption<TEntity>(new StringBuilder($"{_resourse}{query}"), _odataQueryBuilderOptions);
+            return new AddressingEntries<TEntity>(new StringBuilder($"{_resourse}{query}"), _odataQueryBuilderOptions);
         }
     }
 }

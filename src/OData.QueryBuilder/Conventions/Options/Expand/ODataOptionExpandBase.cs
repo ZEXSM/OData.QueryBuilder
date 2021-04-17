@@ -2,14 +2,14 @@
 using OData.QueryBuilder.Options;
 using System.Text;
 
-namespace OData.QueryBuilder.Conventions.Options.Nested
+namespace OData.QueryBuilder.Conventions.Options.Expand
 {
-    internal class ODataOptionNestedBase
+    internal class ODataOptionExpandBase
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         protected readonly StringBuilder _stringBuilder;
 
-        public ODataOptionNestedBase(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataOptionExpandBase(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _stringBuilder = stringBuilder;
             _odataQueryBuilderOptions = odataQueryBuilderOptions;

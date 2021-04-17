@@ -17,11 +17,6 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Expand
         {
         }
 
-        public IODataQueryExpand<TEntity> Count(bool value = true)
-        {
-            throw new NotImplementedException();
-        }
-
         public IODataQueryExpand<TEntity> Expand(Expression<Func<TEntity, object>> expandNested)
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(expandNested.Body);
@@ -101,13 +96,6 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Expand
             var query = new ODataOptionSelectExpressionVisitor().ToQuery(selectNested.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
-
-            return this;
-        }
-
-        public IODataQueryExpand<TEntity> Skip(int value)
-        {
-            _stringBuilder.Append($"{ODataOptionNames.Skip}{QuerySeparators.EqualSign}{value}{QuerySeparators.Nested}");
 
             return this;
         }

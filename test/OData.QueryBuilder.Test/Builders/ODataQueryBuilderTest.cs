@@ -20,7 +20,7 @@ namespace OData.QueryBuilder.Test.Builders
         [Fact(DisplayName = "new instance ODataQueryBuilder with baseUrl Uri => Exception")]
         public void ODataQueryBuilder_New_Instance_BaseUrl_Uri_Exception()
         {
-            var uri = default(Uri);
+            var uri = default(System.Uri);
 
             var ex = Assert.Throws<ArgumentException>(() => new ODataQueryBuilder<ODataInfoContainer>(uri));
             ex.Message.Should().Be($"baseUrl is null");

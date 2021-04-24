@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 {
-    public interface IODataResource<TResource>
+    internal interface IODataResource<TResource>
     {
         IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource);
     }

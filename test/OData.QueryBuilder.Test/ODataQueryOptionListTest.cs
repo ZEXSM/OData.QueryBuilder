@@ -13,6 +13,7 @@ namespace OData.QueryBuilder.Test
     {
         private readonly CommonFixture _commonFixture;
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
+        private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderRelative;
 
         public static string IdCodeStatic => "testCode";
 
@@ -21,6 +22,7 @@ namespace OData.QueryBuilder.Test
             _commonFixture = commonFixture;
             _odataQueryBuilderDefault = new ODataQueryBuilder<ODataInfoContainer>(
                 commonFixture.BaseUri, new ODataQueryBuilderOptions());
+            _odataQueryBuilderRelative = new ODataQueryBuilder<ODataInfoContainer>();
         }
 
         [Fact(DisplayName = "Expand simple => Success")]
@@ -1123,6 +1125,18 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=Id eq 00000000-0000-0000-0000-000000000000 or Id eq {newGuid}");
+        }
+
+        [Fact(DisplayName = "ToRelativeUri => Success")]
+        public void ODataQueryBuilderList_Test_ToRelativeUri()
+        {
+            var uri = _odataQueryBuilderRelative
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IdRule == 1)
+                .ToRelativeUri();
+
+            uri.Should().Be($"ODataType?$filter=IdRule eq 1");
         }
     }
 }

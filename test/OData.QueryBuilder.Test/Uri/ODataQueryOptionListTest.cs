@@ -13,7 +13,6 @@ namespace OData.QueryBuilder.Test.Uri
     {
         private readonly CommonFixture _commonFixture;
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
-        private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderRelative;
 
         public static string IdCodeStatic => "testCode";
 
@@ -22,7 +21,6 @@ namespace OData.QueryBuilder.Test.Uri
             _commonFixture = commonFixture;
             _odataQueryBuilderDefault = new ODataQueryBuilder<ODataInfoContainer>(
                 commonFixture.BaseUri, new ODataQueryBuilderOptions());
-            _odataQueryBuilderRelative = new ODataQueryBuilder<ODataInfoContainer>();
         }
 
         [Fact(DisplayName = "Expand simple => Success")]

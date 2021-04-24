@@ -7,6 +7,8 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
     {
         Uri ToUri();
 
-        Dictionary<string, string> ToDictionary();
+        string ToRelativeUri();
+
+        IDictionary<string, string> ToDictionary();
     }
 }

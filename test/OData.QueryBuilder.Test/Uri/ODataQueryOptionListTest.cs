@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace OData.QueryBuilder.Test
+namespace OData.QueryBuilder.Test.Uri
 {
     public class ODataQueryOptionListTest : IClassFixture<CommonFixture>
     {

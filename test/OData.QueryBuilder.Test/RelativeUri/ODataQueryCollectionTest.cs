@@ -11,7 +11,6 @@ namespace OData.QueryBuilder.Test.RelativeUri
 {
     public class ODataQueryCollectionTest
     {
-        private readonly CommonFixture _commonFixture;
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
 
         public static string IdCodeStatic => "testCode";

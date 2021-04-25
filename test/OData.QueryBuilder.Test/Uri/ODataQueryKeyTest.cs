@@ -10,16 +10,16 @@ namespace OData.QueryBuilder.Test.Uri
 {
     public class ODataQueryKeyTest : IClassFixture<CommonFixture>
     {
-        private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
+        private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
 
         public ODataQueryKeyTest(CommonFixture commonFixture) =>
-            _odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+            _odataQueryBuilderDefault = new ODataQueryBuilder<ODataInfoContainer>(
                 commonFixture.BaseUrl, new ODataQueryBuilderOptions());
 
         [Fact(DisplayName = "Expand simple => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(s => s.ODataKind)
@@ -31,7 +31,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand simple with key string => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_With_Key_String_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey("223123123")
                 .Expand(s => s.ODataKind)
@@ -43,7 +43,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Select simple => Success")]
         public void ODataQueryBuilderKey_Select_Simple_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Select(s => s.IdType)
@@ -55,7 +55,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand and Select => Success")]
         public void ODataQueryBuilderKey_Expand_Select_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f => f.ODataKind)
@@ -68,7 +68,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested and Select => Success")]
         public void ODataQueryBuilderKey_ExpandNested_Select_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -93,7 +93,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested orderby => Success")]
         public void ODataQueryBuilderList_ExpandNested_OrderBy_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -110,7 +110,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested orderby desc => Success")]
         public void ODataQueryBuilderList_ExpandNested_OrderByDescending_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -127,7 +127,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested top => Success")]
         public void ODataQueryBuilderList_ExpandNested_Top_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -145,7 +145,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested Filter1 => Success")]
         public void ODataQueryBuilderKey_Expand_Nested_Filter1_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -163,7 +163,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested Filter2 => Success")]
         public void ODataQueryBuilderKey_Expand_Nested_Filter2_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -181,7 +181,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "Expand nested Filter3 => Success")]
         public void ODataQueryBuilderKey_Expand_Nested_Filter3_Success()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(f =>
@@ -199,7 +199,7 @@ namespace OData.QueryBuilder.Test.Uri
         [Fact(DisplayName = "ToDicionary => Success")]
         public void ToDicionaryTest()
         {
-            var uri = _odataQueryBuilder
+            var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey("223123123")
                 .Expand(s => s.ODataKind)

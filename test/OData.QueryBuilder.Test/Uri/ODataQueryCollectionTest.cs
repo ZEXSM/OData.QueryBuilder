@@ -9,14 +9,14 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test.Uri
 {
-    public class ODataQueryOptionListTest : IClassFixture<CommonFixture>
+    public class ODataQueryCollectionTest : IClassFixture<CommonFixture>
     {
         private readonly CommonFixture _commonFixture;
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
 
         public static string IdCodeStatic => "testCode";
 
-        public ODataQueryOptionListTest(CommonFixture commonFixture)
+        public ODataQueryCollectionTest(CommonFixture commonFixture)
         {
             _commonFixture = commonFixture;
             _odataQueryBuilderDefault = new ODataQueryBuilder<ODataInfoContainer>(

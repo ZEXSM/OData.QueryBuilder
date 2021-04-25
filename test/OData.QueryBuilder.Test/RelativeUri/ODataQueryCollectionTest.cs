@@ -9,14 +9,13 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test.RelativeUri
 {
-    public class ODataQueryOptionListTest
+    public class ODataQueryCollectionTest
     {
-        private readonly CommonFixture _commonFixture;
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
 
         public static string IdCodeStatic => "testCode";
 
-        public ODataQueryOptionListTest() =>
+        public ODataQueryCollectionTest() =>
             _odataQueryBuilderDefault = new ODataQueryBuilder<ODataInfoContainer>(new ODataQueryBuilderOptions());
 
         [Fact(DisplayName = "Expand simple => Success")]

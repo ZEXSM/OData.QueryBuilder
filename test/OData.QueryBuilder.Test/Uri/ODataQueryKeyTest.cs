@@ -8,11 +8,11 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test.Uri
 {
-    public class ODataQueryOptionKeyTest : IClassFixture<CommonFixture>
+    public class ODataQueryKeyTest : IClassFixture<CommonFixture>
     {
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
-        public ODataQueryOptionKeyTest(CommonFixture commonFixture) =>
+        public ODataQueryKeyTest(CommonFixture commonFixture) =>
             _odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 commonFixture.BaseUrl, new ODataQueryBuilderOptions());
 

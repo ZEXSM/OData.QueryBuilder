@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq.Expressions;
-
-namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
+﻿namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 {
-    internal interface IODataResource<TResource>
+    internal interface IODataResource
     {
-        IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource);
+        IAddressingEntries<TEntity> For<TEntity>(string resource);
     }
 }

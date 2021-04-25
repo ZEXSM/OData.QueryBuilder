@@ -8,11 +8,11 @@ using Xunit;
 
 namespace OData.QueryBuilder.Test.RelativeUri
 {
-    public class ODataQueryOptionKeyTest
+    public class ODataQueryKeyTest
     {
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilder;
 
-        public ODataQueryOptionKeyTest() =>
+        public ODataQueryKeyTest() =>
             _odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(new ODataQueryBuilderOptions());
 
         [Fact(DisplayName = "Expand simple => Success")]

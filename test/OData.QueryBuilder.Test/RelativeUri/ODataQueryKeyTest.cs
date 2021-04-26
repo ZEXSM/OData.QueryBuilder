@@ -22,7 +22,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Expand(s => s.ODataKind)
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$expand=ODataKind");
         }
@@ -34,7 +34,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey("223123123")
                 .Expand(s => s.ODataKind)
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType('223123123')?$expand=ODataKind");
         }
@@ -46,7 +46,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey(223123123)
                 .Select(s => s.IdType)
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$select=IdType");
         }
@@ -59,7 +59,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                 .ByKey(223123123)
                 .Expand(f => f.ODataKind)
                 .Select(s => new { s.IdType, s.Sum })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$expand=ODataKind&$select=IdType,Sum");
         }
@@ -83,7 +83,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .Select(s => s.IdKind);
                 })
                 .Select(s => new { s.IdType, s.Sum })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$expand=ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($expand=ODataCode;$select=IdKind),ODataKindNew($select=IdKind)&$select=IdType,Sum");
         }
@@ -101,7 +101,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .Select(s => s.IdKind)
                         .OrderBy(s => s.EndDate);
                 })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate asc)");
         }
@@ -118,7 +118,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .Select(s => s.IdKind)
                         .OrderByDescending(s => s.EndDate);
                 })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
         }
@@ -136,7 +136,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .OrderByDescending(s => s.EndDate)
                         .Top(1);
                 })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be("ODataType(223123123)?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc;$top=1)");
         }
@@ -154,7 +154,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .Select(s => s.IdKind);
                 })
                 .Select(s => new { s.IdType, s.Sum })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be($"ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1 and date(EndDate) eq {DateTime.Today:s}Z and IdKind in (1);$select=IdKind)&$select=IdType,Sum");
         }
@@ -172,7 +172,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .Select(s => s.IdKind);
                 })
                 .Select(s => new { s.IdType, s.Sum })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be($"ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1 and date(EndDate) eq {DateTime.Today:s}Z;$select=IdKind)&$select=IdType,Sum");
         }
@@ -190,7 +190,7 @@ namespace OData.QueryBuilder.Test.RelativeUri
                         .Select(s => s.IdKind);
                 })
                 .Select(s => new { s.IdType, s.Sum })
-                .ToRelativeUri();
+                .ToUri();
 
             uri.Should().Be($"ODataType(223123123)?$expand=ODataKind($filter=IdKind eq 1;$select=IdKind)&$select=IdType,Sum");
         }

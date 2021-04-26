@@ -8,7 +8,7 @@ namespace OData.QueryBuilder.Test
         {
         }
 
-        public string BaseUrl => "http://mock/odata/";
+        public string BaseUrl => "http://mock/odata";
 
         public Uri BaseUri => new Uri("http://mock/odata/");
     }

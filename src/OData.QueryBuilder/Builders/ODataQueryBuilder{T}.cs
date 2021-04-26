@@ -15,12 +15,12 @@ namespace OData.QueryBuilder.Builders
         }
 
         public ODataQueryBuilder(string baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
-             : base(baseUrl, odataQueryBuilderOptions)
+            : base(baseUrl, odataQueryBuilderOptions)
         {
         }
 
         public ODataQueryBuilder(Uri baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
-             : base(baseUrl, odataQueryBuilderOptions)
+            : base(baseUrl, odataQueryBuilderOptions)
         {
         }
 

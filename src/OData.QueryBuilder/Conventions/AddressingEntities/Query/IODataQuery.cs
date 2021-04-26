@@ -5,7 +5,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     public interface IODataQuery
     {
-        Uri ToUri();
+        Uri ToUri(UriKind uriKind = UriKind.RelativeOrAbsolute);
 
         IDictionary<string, string> ToDictionary();
     }

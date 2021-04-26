@@ -34,6 +34,6 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
             return dictionary;
         }
 
-        public Uri ToUri() => new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.Main), UriKind.RelativeOrAbsolute);
+        public Uri ToUri(UriKind uriKind = UriKind.RelativeOrAbsolute) => new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.Main), uriKind);
     }
 }

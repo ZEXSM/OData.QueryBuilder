@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace OData.QueryBuilder.Test.Uri
+namespace OData.QueryBuilder.Test
 {
     public class ODataQueryCollectionTest : IClassFixture<CommonFixture>
     {
@@ -32,7 +32,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Expand(s => new { s.ODataKind })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKind");
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKind");
         }
 
         [Fact(DisplayName = "Expand nested => Success")]
@@ -68,7 +68,7 @@ namespace OData.QueryBuilder.Test.Uri
                 })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKind($expand=ODataCode($select=IdCode);$select=IdKind),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)");
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKind($expand=ODataCode($select=IdCode);$select=IdKind),ODataKindNew($select=IdKind),ODataKindNew($select=IdKind)");
         }
 
         [Fact(DisplayName = "Expand nested orderby => Success")]
@@ -85,7 +85,7 @@ namespace OData.QueryBuilder.Test.Uri
                 })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=EndDate asc)");
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=EndDate asc)");
         }
 
         [Fact(DisplayName = "Expand nested top  => Success")]
@@ -103,7 +103,7 @@ namespace OData.QueryBuilder.Test.Uri
                 })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$top=1;$orderby=EndDate asc)");
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$top=1;$orderby=EndDate asc)");
         }
 
         [Fact(DisplayName = "Expand orderBy multiple sort => Success")]
@@ -123,7 +123,7 @@ namespace OData.QueryBuilder.Test.Uri
                 })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=OpenDate asc,ODataCode/Code desc,IdKind asc)");
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=OpenDate asc,ODataCode/Code desc,IdKind asc)");
         }
 
         [Fact(DisplayName = "Expand nested orderby desc => Success")]
@@ -140,7 +140,7 @@ namespace OData.QueryBuilder.Test.Uri
                 })
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$orderby=EndDate desc)");
         }
 
         [Fact(DisplayName = "Select simple => Success")]
@@ -152,7 +152,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Select(s => s.IdType)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$select=IdType");
+            uri.Should().Be("http://mock/odata/ODataType?$select=IdType");
         }
 
         [Fact(DisplayName = "OrderBy simple => Success")]
@@ -164,7 +164,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .OrderBy(s => s.IdType)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$orderby=IdType asc");
+            uri.Should().Be("http://mock/odata/ODataType?$orderby=IdType asc");
         }
 
         [Fact(DisplayName = "Filter orderBy multiple sort => Success")]
@@ -181,7 +181,7 @@ namespace OData.QueryBuilder.Test.Uri
                     .Descending(entity.ODataKind.OpenDate))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$orderby=BeginDate asc,EndDate desc,IdRule asc,Sum asc,ODataKind/OpenDate desc");
+            uri.Should().Be("http://mock/odata/ODataType?$orderby=BeginDate asc,EndDate desc,IdRule asc,Sum asc,ODataKind/OpenDate desc");
         }
 
         [Fact(DisplayName = "Filter orderBy multiple sort => NotSupportedException")]
@@ -206,7 +206,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .OrderByDescending(s => s.IdType)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$orderby=IdType desc");
+            uri.Should().Be("http://mock/odata/ODataType?$orderby=IdType desc");
         }
 
         [Fact(DisplayName = "Count simple => Success")]
@@ -218,7 +218,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$count=true");
+            uri.Should().Be("http://mock/odata/ODataType?$count=true");
         }
 
         [Fact(DisplayName = "Skip and Top simple => Success")]
@@ -231,7 +231,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Top(1)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
+            uri.Should().Be("http://mock/odata/ODataType?$skip=1&$top=1");
         }
 
         [Fact(DisplayName = "Filter call ToString => Success")]
@@ -243,7 +243,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter(s => s.TypeCode == 44.ToString())
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=TypeCode eq '44'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=TypeCode eq '44'");
         }
 
         [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
@@ -266,7 +266,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(constValue, dictionary))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
         }
 
         [Fact(DisplayName = "Filter enumerable string with ReplaceCharacters => Success")]
@@ -283,7 +283,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, f.ReplaceCharacters(strings, new Dictionary<string, string>(0) { { @"\", "%5C" } })))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')");
         }
 
         [Fact(DisplayName = "Filter call ReplaceCharacters in operator In => ArgumentException")]
@@ -330,7 +330,7 @@ namespace OData.QueryBuilder.Test.Uri
                     new Dictionary<string, string> { { "&", "%26" } }))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 / 7 ? 8 % 9 # 1'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3 %26 4 / 7 ? 8 % 9 # 1'");
         }
 
         [Fact(DisplayName = "Filter string with ReplaceCharacters Value => Success")]
@@ -346,7 +346,7 @@ namespace OData.QueryBuilder.Test.Uri
                     new Dictionary<string, string> { { "&", "%26" } }))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq null");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq null");
         }
 
         [Fact(DisplayName = "Filter string with ReplaceCharacters KeyValuePairs => ArgumentException")]
@@ -374,7 +374,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter(s => s.ODataKind.ODataCode.IdCode >= 3 || s.IdType == 5)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3 or IdType eq 5");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3 or IdType eq 5");
         }
 
         [Fact(DisplayName = "Filter simple const string => Success")]
@@ -389,7 +389,7 @@ namespace OData.QueryBuilder.Test.Uri
                      && s.ODataKind.ODataCode.Code == IdCodeStatic)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3' or ODataKind/ODataCode/Code eq '5' and ODataKind/ODataCode/Code eq 'testCode'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code eq '3' or ODataKind/ODataCode/Code eq '5' and ODataKind/ODataCode/Code eq 'testCode'");
         }
 
         [Fact(DisplayName = "Filter  operators All/Any => Success")]
@@ -402,7 +402,7 @@ namespace OData.QueryBuilder.Test.Uri
                     && o.All(s.ODataKind.ODataCodes, v => v.IdActive))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdActive)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:v/IdCode eq 1) and ODataKind/ODataCodes/all(v:v/IdActive)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any => Success")]
@@ -414,7 +414,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f, o) => o.Any(s.Tags, t => t == "testTag"))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any with or => Success")]
@@ -426,7 +426,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f, o) => o.Any(s.Labels, label => label == "lb1" || label == "lb2"))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=Labels/any(label:label eq 'lb1' or label eq 'lb2')");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=Labels/any(label:label eq 'lb1' or label eq 'lb2')");
         }
 
         [Fact(DisplayName = "Filter  operators Any with func => Success")]
@@ -438,7 +438,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f, o) => o.Any(s.ODataKind.ODataCodes, v => f.Date(v.Created) == new DateTime(2019, 2, 9)))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:date(v/Created) eq 2019-02-09T00:00:00Z)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:date(v/Created) eq 2019-02-09T00:00:00Z)");
         }
 
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
@@ -463,7 +463,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Count()
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and 3 le ODataKind/ODataCode/IdCode or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$skip=1&$top=1&$count=true");
+            uri.Should().Be($"http://mock/odata/ODataType?$expand=ODataKind&$filter=IdType lt 2 and 3 le ODataKind/ODataCode/IdCode or IdType eq 5 and IdRule ne null and IdRule eq null&$select=ODataKind,Sum&$orderby=IdType asc&$skip=1&$top=1&$count=true");
         }
 
         [Fact(DisplayName = "Filter nullable bool eq null => Success")]
@@ -477,7 +477,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter(s => s.IsOpen == constValue)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsOpen eq null");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=IsOpen eq null");
         }
 
         [Fact(DisplayName = "Function Date => Success")]
@@ -506,7 +506,7 @@ namespace OData.QueryBuilder.Test.Uri
                     && f.Date((DateTimeOffset)s.BeginDate) == DateTime.Today)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=" +
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=" +
                 $"date(ODataKind/OpenDate) eq 2019-02-09T01:02:04Z " +
                 $"and ODataKind/OpenDate eq 2019-02-09T00:00:00Z " +
                 $"and ODataKind/OpenDate eq {DateTime.Today:s}Z " +
@@ -534,7 +534,7 @@ namespace OData.QueryBuilder.Test.Uri
                     f.Date(s.ODataKind.OpenDate) == f.ConvertDateTimeToString(currentDateToday.Value, "yyyy-MM-dd"))
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09");
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09");
         }
 
         [Fact(DisplayName = "Function Datetime convert => Exception")]
@@ -563,7 +563,7 @@ namespace OData.QueryBuilder.Test.Uri
                     f.Date(s.ODataKind.OpenDate) == f.ConvertDateTimeOffsetToString(currentDateToday.Value, "yyyy-MM-dd"))
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09");
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=date(ODataKind/OpenDate) eq 2019-02-09");
         }
 
         [Fact(DisplayName = "Function Datetimeoffset convert => Exception")]
@@ -595,7 +595,7 @@ namespace OData.QueryBuilder.Test.Uri
                     || f.SubstringOf("55", s.ODataKindNew.ODataCode.Code))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=substringof('W',toupper(ODataKind/ODataCode/Code)) or substringof('P',ODataKind/ODataCode/Code) or substringof('TYPECODEVALUE',ODataKindNew/ODataCode/Code) or substringof('55',ODataKindNew/ODataCode/Code)");
         }
 
         [Fact(DisplayName = "SubstringOf is null or empty value => Success")]
@@ -617,7 +617,7 @@ namespace OData.QueryBuilder.Test.Uri
                     || f.SubstringOf(null, s.ODataKindNew.ODataCode.Code))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=substringof('P',ODataKind/ODataCode/Code)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=substringof('P',ODataKind/ODataCode/Code)");
         }
 
 
@@ -655,7 +655,7 @@ namespace OData.QueryBuilder.Test.Uri
                     || f.Contains(s.ODataKindNew.ODataCode.Code, "55"))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=contains(tolower(ODataKind/ODataCode/Code),'W') or contains(ODataKind/ODataCode/Code,'p') or contains(ODataKindNew/ODataCode/Code,'typecodevalue') or contains(ODataKindNew/ODataCode/Code,'55')");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=contains(tolower(ODataKind/ODataCode/Code),'W') or contains(ODataKind/ODataCode/Code,'p') or contains(ODataKindNew/ODataCode/Code,'typecodevalue') or contains(ODataKindNew/ODataCode/Code,'55')");
         }
 
         [Fact(DisplayName = "Contains is null or empty value => ArgumentException")]
@@ -696,7 +696,7 @@ namespace OData.QueryBuilder.Test.Uri
                     || f.Contains(s.ODataKindNew.ODataCode.Code, string.Empty))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=contains(ODataKind/ODataCode/Code,'P')");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=contains(ODataKind/ODataCode/Code,'P')");
         }
 
         [Fact(DisplayName = "Concat string simple => Success")]
@@ -708,7 +708,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.Concat(s.TypeCode, ";") == "typeCodeTest;")
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(TypeCode,';') eq 'typeCodeTest;'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=concat(TypeCode,';') eq 'typeCodeTest;'");
         }
 
         [Fact(DisplayName = "Nested Concat string => Success")]
@@ -720,7 +720,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.Concat(f.Concat(s.TypeCode, ", "), s.ODataKind.ODataCode.Code) == "testTypeCode1, testTypeCode2")
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
         }
 
         [Fact(DisplayName = "Nested Concat string => Success")]
@@ -734,7 +734,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.Concat(f.Concat(s.TypeCode, constParam), s.ODataKind.ODataCode.Code) == "testTypeCode1, testTypeCode2")
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
         }
 
         [Fact(DisplayName = "Nested Concat string => Success")]
@@ -749,7 +749,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.Concat(f.Concat(s.TypeCode, constParamObject.ODataKind.ODataCode.Code), s.ODataKind.ODataCode.Code) == "testTypeCode1, testTypeCode2")
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=concat(concat(TypeCode,', '),ODataKind/ODataCode/Code) eq 'testTypeCode1, testTypeCode2'");
         }
 
         [Fact(DisplayName = "Concat string is null or empty value argument1 => Exception")]
@@ -797,7 +797,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.Concat(value, s.TypeCode) == "typeCodeTest;")
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter='typeCodeTest;'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter='typeCodeTest;'");
         }
 
         [Theory(DisplayName = "Concat is null empty value agr2 => Success")]
@@ -815,7 +815,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.Concat(s.TypeCode, value) == "typeCodeTest;")
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter='typeCodeTest;'");
+            uri.Should().Be("http://mock/odata/ODataType?$filter='typeCodeTest;'");
         }
 
         [Fact(DisplayName = "Operator IN => Success")]
@@ -842,7 +842,7 @@ namespace OData.QueryBuilder.Test.Uri
                     && o.In(s.ODataKind.ODataCode.IdCode, newObjectSequenceArray.ODataKind.SequenceArray))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]
@@ -874,7 +874,7 @@ namespace OData.QueryBuilder.Test.Uri
                     && o.In(s.ODataKind.ODataCode.IdCode, newObjectSequenceArray.ODataKind.SequenceArray))
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=IdType in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512)");
         }
 
         [Fact(DisplayName = "Operator IN is null => ArgumentException 1")]
@@ -973,7 +973,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f, o) => o.In(s.ODataKind.ODataCode.Code, new[] { "123", "512" }) && o.In(s.IdType, new[] { 123, 512 }))
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)");
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)");
         }
 
         [Fact(DisplayName = "Filter boolean values => Success")]
@@ -991,7 +991,7 @@ namespace OData.QueryBuilder.Test.Uri
                     && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and IsOpen eq false and IsOpen eq true and ODataKind/ODataCode/IdActive eq false");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=IsActive and IsOpen eq false and IsOpen eq true and ODataKind/ODataCode/IdActive eq false");
         }
 
         [Fact(DisplayName = "Filter support parentheses => Success")]
@@ -1010,7 +1010,7 @@ namespace OData.QueryBuilder.Test.Uri
                     && o.In(s.ODataKind.ODataCode.Code, constStrIds), useParenthesis: true)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=(((IdRule eq 3" +
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=(((IdRule eq 3" +
                 $" and IsActive)" +
                 $" and (date(EndDate) eq null or EndDate gt {DateTime.Today:s}Z))" +
                 $" and (date(BeginDate) ne null or date(BeginDate) le {DateTime.Now:s}Z))" +
@@ -1028,7 +1028,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Count(value)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$count={value.ToString().ToLower()}");
+            uri.Should().Be($"http://mock/odata/ODataType?$count={value.ToString().ToLower()}");
         }
 
         [Fact(DisplayName = "Filter not bool => Success")]
@@ -1040,7 +1040,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter(s => s.IsActive && !(bool)s.IsOpen)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=IsActive and not IsOpen");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=IsActive and not IsOpen");
         }
 
         [Fact(DisplayName = "ToDicionary => Success")]
@@ -1082,7 +1082,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Top(10)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/Color eq 'Blue' and ODataKind/Color eq 2&$skip=1&$top=10");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/Color eq 'Blue' and ODataKind/Color eq 2&$skip=1&$top=10");
         }
 
         [Fact(DisplayName = "Filter method not supported => NotSupportedException")]
@@ -1108,7 +1108,7 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter((s, f) => f.IndexOf(s.ODataKind.ODataCode.Code, "testCode") == 1)
                 .ToUri();
 
-            uri.OriginalString.Should().Be("http://mock/odata/ODataType?$filter=indexof(ODataKind/ODataCode/Code,'testCode') eq 1");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=indexof(ODataKind/ODataCode/Code,'testCode') eq 1");
         }
 
         [Fact(DisplayName = "Filter Guid Test => Success")]
@@ -1122,7 +1122,31 @@ namespace OData.QueryBuilder.Test.Uri
                 .Filter(s => s.Id == new Guid() || s.Id == newGuid)
                 .ToUri();
 
-            uri.OriginalString.Should().Be($"http://mock/odata/ODataType?$filter=Id eq 00000000-0000-0000-0000-000000000000 or Id eq {newGuid}");
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Id eq 00000000-0000-0000-0000-000000000000 or Id eq {newGuid}");
+        }
+
+        [Fact(DisplayName = "Without base url => Success")]
+        public void ODataQueryBuilder_Test_without_base_url()
+        {
+            var uri = new ODataQueryBuilder<ODataInfoContainer>()
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IdRule == 1)
+                .ToUri();
+
+            uri.Should().Be("ODataType?$filter=IdRule eq 1");
+        }
+
+        [Fact(DisplayName = "Without base url and root model => Success")]
+        public void ODataQueryBuilder_Test_without_base_url_and_root_model()
+        {
+            var uri = new ODataQueryBuilder()
+                .For<ODataTypeEntity>("ODataType")
+                .ByList()
+                .Filter(s => s.IdRule == 1)
+                .ToUri();
+
+            uri.Should().Be("ODataType?$filter=IdRule eq 1");
         }
     }
 }

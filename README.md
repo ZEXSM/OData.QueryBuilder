@@ -40,19 +40,24 @@ dotnet add package OData.QueryBuilder
 
 1. Build instance
 
-    As soon as possible, create a new instance of the OData.QueryBuilder object indicating the data models and the base path:
+    As soon as possible, create a new instance of the OData.QueryBuilder object indicating the data models and the optional base path:
 
     ```csharp
-    var odataQueryBuilder = new ODataQueryBuilder<Your ODataContainerModel>(<Your base url>);
+    var odataQueryBuilder = new ODataQueryBuilder<Your OData root model>(<Your base url>?);
+    
+    // specify the resource for which the request will be built
+    odataQueryBuilder.For<Your OData entity model>(s => s.ODataEntity)
     ```
-
-2. Specify the resource for which the request will be built
-
+    :info: __OData.QueryBuilder assumes that you are using [OData Connected Service](https://marketplace.visualstudio.com/items?itemName=marketplace.ODataConnectedService) and you know the root model otherwise uses:__
+    
     ```csharp
-    odataQueryBuilder.For<Your ODataEntityModel>(s => s.ODataEntity)
+    var odataQueryBuilder = new ODataQueryBuilder(<Your base url>?);
+    
+    // specify the resource for which the request will be built
+    odataQueryBuilder.For<Your OData entity model>("ODataEntity")
     ```
 
-3. Select request type
+2. Select request type
 
     The builder allows you to build queries on the key and the list:
     * [ByKey](#ByKey)
@@ -77,7 +82,7 @@ dotnet add package OData.QueryBuilder
       * [top](#top)
       * [skip](#skip)
       * [count](#count)
-4. Get Uri request or collection of operators from the builder
+3. Get Uri request or collection of operators from the builder
     ```csharp
     odataQueryBuilder.ToUri()
     odataQueryBuilder.ToDictionary()

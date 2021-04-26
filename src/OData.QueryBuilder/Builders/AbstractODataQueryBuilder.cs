@@ -4,18 +4,18 @@ using System;
 
 namespace OData.QueryBuilder.Builders
 {
-    public abstract class BaseODataQueryBuilder
+    public abstract class AbstractODataQueryBuilder
     {
         protected readonly string _baseUrl;
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
 
-        public BaseODataQueryBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions = default)
+        public AbstractODataQueryBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions = default)
         {
             _baseUrl = string.Empty;
             _odataQueryBuilderOptions = odataQueryBuilderOptions ?? new ODataQueryBuilderOptions();
         }
 
-        public BaseODataQueryBuilder(string baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
+        public AbstractODataQueryBuilder(string baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
         {
             _baseUrl = !string.IsNullOrEmpty(baseUrl) ?
                 $"{baseUrl.TrimEnd(QuerySeparators.Slash)}{QuerySeparators.Slash}"
@@ -24,7 +24,7 @@ namespace OData.QueryBuilder.Builders
             _odataQueryBuilderOptions = odataQueryBuilderOptions ?? new ODataQueryBuilderOptions();
         }
 
-        public BaseODataQueryBuilder(Uri baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
+        public AbstractODataQueryBuilder(Uri baseUrl, ODataQueryBuilderOptions odataQueryBuilderOptions = default)
             : this(baseUrl?.OriginalString, odataQueryBuilderOptions)
         {
         }

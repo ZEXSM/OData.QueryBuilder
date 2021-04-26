@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OData.QueryBuilder.Builders
 {
-    public sealed class ODataQueryBuilder : BaseODataQueryBuilder
+    public sealed class ODataQueryBuilder : AbstractODataQueryBuilder
     {
         public ODataQueryBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions = default)
             : base(odataQueryBuilderOptions)

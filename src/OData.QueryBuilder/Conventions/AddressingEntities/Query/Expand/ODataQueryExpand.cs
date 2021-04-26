@@ -10,7 +10,7 @@ using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
-    internal class ODataQueryExpand<TEntity> : ODataQueryExpandBase, IODataQueryExpand<TEntity>
+    internal class ODataQueryExpand<TEntity> : AbstractODataQueryExpand, IODataQueryExpand<TEntity>
     {
         public ODataQueryExpand(ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(new StringBuilder(), odataQueryBuilderOptions)

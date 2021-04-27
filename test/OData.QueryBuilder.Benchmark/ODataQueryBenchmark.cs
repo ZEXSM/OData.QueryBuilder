@@ -132,7 +132,7 @@ namespace OData.QueryBuilder.Benchmark
             .ToUri();
 
         [Benchmark]
-        public Dictionary<string, string> ODataQueryBuilderKey_ToDicionary() => _odataQueryBuilder
+        public IDictionary<string, string> ODataQueryBuilderKey_ToDicionary() => _odataQueryBuilder
             .For<ODataTypeEntity>(s => s.ODataType)
             .ByKey("223123123")
             .Expand(s => s.ODataKind)
@@ -584,7 +584,7 @@ namespace OData.QueryBuilder.Benchmark
         private ODataTypeEntity ODataQueryBuilderList_ToDicionary_NewObject = new ODataTypeEntity { IsOpen = false };
 
         [Benchmark]
-        public Dictionary<string, string> ToDicionary() => _odataQueryBuilder
+        public IDictionary<string, string> ToDicionary() => _odataQueryBuilder
             .For<ODataTypeEntity>(s => s.ODataType)
             .ByList()
             .Filter(s => s.IsActive

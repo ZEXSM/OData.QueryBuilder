@@ -2,11 +2,12 @@
 using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
 using OData.QueryBuilder.Options;
 using System;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace OData.QueryBuilder.Builders
 {
-    public sealed class ODataQueryBuilder : AbstractODataQueryBuilder
+    public sealed class ODataQueryBuilder<TResource> : AbstractODataQueryBuilder
     {
         public ODataQueryBuilder(ODataQueryBuilderOptions odataQueryBuilderOptions = default)
             : base(odataQueryBuilderOptions)
@@ -23,8 +24,8 @@ namespace OData.QueryBuilder.Builders
         {
         }
 
-        public IAddressingEntries<TEntity> For<TEntity>(string resource) =>
-           new ODataResource(new StringBuilder(_baseUrl), _odataQueryBuilderOptions)
+        public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource) =>
+           new ODataResource<TResource>(new StringBuilder(_baseUrl), _odataQueryBuilderOptions)
                 .For<TEntity>(resource);
     }
 }

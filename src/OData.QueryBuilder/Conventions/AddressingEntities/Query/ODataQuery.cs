@@ -17,7 +17,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
-        public Dictionary<string, string> ToDictionary()
+        public IDictionary<string, string> ToDictionary()
         {
             var odataOperators = _stringBuilder.ToString()
                 .Split(new char[2] { QuerySeparators.Begin, QuerySeparators.Main }, StringSplitOptions.RemoveEmptyEntries);
@@ -34,6 +34,6 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
             return dictionary;
         }
 
-        public Uri ToUri() => new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.Main));
+        public Uri ToUri(UriKind uriKind = UriKind.RelativeOrAbsolute) => new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.Main), uriKind);
     }
 }

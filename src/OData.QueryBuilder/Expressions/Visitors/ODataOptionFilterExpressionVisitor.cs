@@ -181,12 +181,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     arguments[i] = _valueExpression.GetValue(newExpression.Arguments[i]);
                 }
 
-                if (newExpression.Type == typeof(DateTime) || newExpression.Type == typeof(DateTimeOffset))
-                {
-                    return newExpression.Constructor.Invoke(arguments).ToQuery();
-                }
-
-                return default;
+                return (arguments.Length == 0 ? Activator.CreateInstance(newExpression.Type) : newExpression.Constructor.Invoke(arguments)).ToQuery();
             }
 
             return base.VisitNewExpression(newExpression);

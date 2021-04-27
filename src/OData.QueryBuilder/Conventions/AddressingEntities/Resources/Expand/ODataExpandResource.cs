@@ -11,9 +11,9 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
     {
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         private readonly StringBuilder _stringBuilder;
-        private ODataQueryExpandBase _odataOptionNestedBase;
+        private AbstractODataQueryExpand _odataQueryExpand;
 
-        public string Query => $"{_stringBuilder}({_odataOptionNestedBase.Query})";
+        public string Query => $"{_stringBuilder}({_odataQueryExpand.Query})";
 
         public ODataExpandResource(ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
@@ -25,18 +25,18 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
         {
             var query = new ODataResourceExpressionVisitor().ToQuery(nestedExpand.Body);
 
-            if (!string.IsNullOrEmpty(_odataOptionNestedBase?.Query))
+            if (!string.IsNullOrEmpty(_odataQueryExpand?.Query))
             {
-                _stringBuilder.Append($"({_odataOptionNestedBase.Query}),{query}");
+                _stringBuilder.Append($"({_odataQueryExpand.Query}),{query}");
             }
             else
             {
                 _stringBuilder.Append(query);
             }
 
-            _odataOptionNestedBase = new ODataQueryExpand<TNestedEntity>(_odataQueryBuilderOptions);
+            _odataQueryExpand = new ODataQueryExpand<TNestedEntity>(_odataQueryBuilderOptions);
 
-            return _odataOptionNestedBase as ODataQueryExpand<TNestedEntity>;
+            return _odataQueryExpand as ODataQueryExpand<TNestedEntity>;
         }
     }
 }

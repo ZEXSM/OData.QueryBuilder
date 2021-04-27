@@ -59,6 +59,8 @@ namespace OData.QueryBuilder.Extensions
                     var stringValuesString = string.Join($"'{QuerySeparators.Comma}'", stringValues);
 
                     return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : string.Empty;
+                case Guid @guid:
+                    return $"{@guid}";
                 default:
                     return $"'{@object}'";
             }

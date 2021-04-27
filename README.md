@@ -48,7 +48,7 @@ dotnet add package OData.QueryBuilder
     // specify the resource for which the request will be built
     odataQueryBuilder.For<Your OData entity model>(s => s.ODataEntity)
     ```
-    :information_source: __OData.QueryBuilder assumes that you are using [OData Connected Service](https://marketplace.visualstudio.com/items?itemName=marketplace.ODataConnectedService) and you know the root model otherwise uses:__
+    :information_source: __OData.Query Builder assumes you are using [OData Connected Service](https://marketplace.visualstudio.com/items?itemName=marketplace.ODataConnectedService) and you have a root model otherwise use:__
     
     ```csharp
     var odataQueryBuilder = new ODataQueryBuilder(<Your base url>?);

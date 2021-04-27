@@ -104,6 +104,14 @@ var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
     .ToUri()
 ```
 > http://mock/odata/ODataType("223123123")
+```csharp
+var id = Guid.NewGuid();
+var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")
+    .For<ODataTypeEntity>(s => s.ODataType)
+    .ByKey(id)
+    .ToUri()
+```
+> http://mock/odata/ODataType(75ac7d3f-1082-479a-9dd1-d2bb43701372)
 #### <a name="ByList"/> ByList
 ```csharp
 var uri = new ODataQueryBuilder<ODataInfoContainer>("http://mock/odata")

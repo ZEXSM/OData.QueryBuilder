@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Conventions.AddressingEntities.Query;
+using System;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities
 {
@@ -7,6 +8,8 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities
         IODataQueryKey<TEntity> ByKey(int key);
 
         IODataQueryKey<TEntity> ByKey(string key);
+
+        IODataQueryKey<TEntity> ByKey(Guid key);
 
         IODataQueryCollection<TEntity> ByList();
     }

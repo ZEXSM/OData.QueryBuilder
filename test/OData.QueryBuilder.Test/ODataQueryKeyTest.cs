@@ -3,6 +3,7 @@ using OData.QueryBuilder.Builders;
 using OData.QueryBuilder.Fakes;
 using OData.QueryBuilder.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -38,6 +39,20 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType('223123123')?$expand=ODataKind");
+        }
+
+        [Fact(DisplayName = "Expand simple with key guid => Success")]
+        public void ODataQueryBuilderKey_Expand_Simple_With_Key_Guid_Success()
+        {
+            var id = Guid.NewGuid();
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(id)
+                .Expand(s => s.ODataKind)
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType({id})?$expand=ODataKind");
         }
 
         [Fact(DisplayName = "Select simple => Success")]
@@ -199,11 +214,18 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "ToDicionary => Success")]
         public void ToDicionaryTest()
         {
-            var uri = _odataQueryBuilderDefault
+            var dictionary = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByKey("223123123")
                 .Expand(s => s.ODataKind)
                 .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                { "$expand", "ODataKind" },
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
         }
     }
 }

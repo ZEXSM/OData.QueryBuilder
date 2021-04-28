@@ -1,6 +1,7 @@
 ﻿using OData.QueryBuilder.Conventions.AddressingEntities.Query;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Options;
+using System;
 using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities
@@ -26,6 +27,13 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities
         public IODataQueryKey<TEntity> ByKey(string key)
         {
             _stringBuilder.Append($"('{key}'){QuerySeparators.Begin}");
+
+            return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+        }
+
+        public IODataQueryKey<TEntity> ByKey(Guid key)
+        {
+            _stringBuilder.Append($"({key}){QuerySeparators.Begin}");
 
             return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }

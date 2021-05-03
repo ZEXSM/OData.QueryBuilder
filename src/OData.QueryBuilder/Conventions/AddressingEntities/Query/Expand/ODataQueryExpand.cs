@@ -100,9 +100,23 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
             return this;
         }
 
+        public IODataQueryExpand<TEntity> Skip(int value)
+        {
+            _stringBuilder.Append($"{ODataOptionNames.Skip}{QuerySeparators.EqualSign}{value}{QuerySeparators.Nested}");
+
+            return this;
+        }
+
         public IODataQueryExpand<TEntity> Top(int value)
         {
             _stringBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSign}{value}{QuerySeparators.Nested}");
+
+            return this;
+        }
+
+        public IODataQueryExpand<TEntity> Count(bool value = true)
+        {
+            _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSign}{value.ToString().ToLowerInvariant()}{QuerySeparators.Nested}");
 
             return this;
         }

@@ -2,7 +2,7 @@
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
-    public interface IODataQueryExpand<TEntity> : IODataOptionExpand<IODataQueryExpand<TEntity>, TEntity>
+    public interface IODataQueryExpand<TEntity> : IODataOptionCollection<IODataQueryExpand<TEntity>, TEntity>
     {
     }
 }

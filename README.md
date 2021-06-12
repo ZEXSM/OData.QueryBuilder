@@ -23,6 +23,7 @@ The library primarily targets OData Version 4.01 and provides linq syntax for cr
         * [`tolower`](#tolower)
         * [`concat`](#concat)
         * [`indexof`](#indexof)
+        * [`startswith`](#startswith)
   * sorting by several fields with indication of direction
 
 ## Installation
@@ -304,6 +305,13 @@ var constValue = 3;
 .Filter((s, f) => f.IndexOf(s.ODataKind.ODataCode.Code, "testCode") == 1)
 ```
 > $filter=indexof(ODataKind/ODataCode/Code,'testCode') eq 1
+
+#### <a name="startswith"/> startswith
+
+```csharp
+.Filter((s, f) => f.StartsWith(s.ODataKind.ODataCode.Code, "test"))
+```
+> $filter=startswith(ODataKind/ODataCode/Code,'test')
 
 ## Usage other functions
 

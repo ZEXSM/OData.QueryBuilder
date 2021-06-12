@@ -115,6 +115,21 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     }
 
                     return $"{nameof(IODataFunction.Contains).ToLowerInvariant()}({contains0},{contains1})";
+                case nameof(IODataFunction.StartsWith):
+                    var startsWith0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var startsWith1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ToQuery();
+
+                    if (startsWith1.IsNullOrQuotes())
+                    {
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArgs)
+                        {
+                            throw new ArgumentException("Value is empty or null");
+                        }
+
+                        return default;
+                    }
+
+                    return $"{nameof(IODataFunction.StartsWith).ToLowerInvariant()}({startsWith0},{startsWith1})";
                 case nameof(IODataFunction.Concat):
                     var concat0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var concat1 = VisitExpression(methodCallExpression.Arguments[1]);

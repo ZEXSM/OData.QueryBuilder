@@ -309,9 +309,9 @@ var constValue = 3;
 #### <a name="startswith"/> startswith
 
 ```csharp
-.Filter((s, f) => f.StartsWith(s.ODataKind.ODataCode.Code, "t"))
+.Filter((s, f) => f.StartsWith(s.ODataKind.ODataCode.Code, "test"))
 ```
-> $filter=startswith(ODataKind/ODataCode/Code,'t')
+> $filter=startswith(ODataKind/ODataCode/Code,'test')
 
 ## Usage other functions
 

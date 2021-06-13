@@ -1,5 +1,5 @@
 # OData.QueryBuilder
-The library primarily targets OData Version 4.01 and provides linq syntax for creating OData queries based on a data model.
+Library for creating complex OData queries (OData version 4.01) based on data models with linq syntax.
 
 [![Build Status](https://travis-ci.com/ZEXSM/OData.QueryBuilder.svg?branch=master)](https://travis-ci.com/ZEXSM/OData.QueryBuilder)
 [![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)

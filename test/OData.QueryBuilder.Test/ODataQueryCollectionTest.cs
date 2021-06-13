@@ -1040,5 +1040,46 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("ODataType?$filter=IdRule eq 1");
         }
+
+        [Fact(DisplayName = "StartsWith Test => Success")]
+        public void ODataQueryBuilder_Test_StartsWith_Success()
+        {
+            var uri = new ODataQueryBuilder<ODataInfoContainer>()
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.StartsWith(s.TypeCode, "some-name"))
+                .ToUri();
+
+            uri.Should().Be("ODataType?$filter=startswith(TypeCode,'some-name')");
+        }
+
+        [Fact(DisplayName = "StartsWith Test null value => ArgumentException")]
+        public void ODataQueryBuilder_Test_StartsWith_null_value_ArgumentException()
+        {
+            var byList = new ODataQueryBuilder<ODataInfoContainer>()
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList();
+
+            byList.Invoking(s => s.Filter((s, f) => f.StartsWith(s.TypeCode, null)).ToUri())
+                .Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Value is empty or null");
+        }
+
+        [Fact(DisplayName = "StartsWith Test null value => Success")]
+        public void ODataQueryBuilder_Test_StartsWith_null_value_Success()
+        {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
+            var uri = odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.StartsWith(s.TypeCode, null))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=");
+        }
     }
 }

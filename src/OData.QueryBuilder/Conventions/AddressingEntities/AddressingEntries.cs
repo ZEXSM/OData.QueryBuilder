@@ -17,23 +17,23 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
-        public IODataQueryKey<TEntity> ByKey(int key)
+        public IODataQueryKey<TEntity> ByKey(params int[] keys)
         {
-            _stringBuilder.Append($"({key}){QuerySeparators.Begin}");
+            _stringBuilder.Append($"({string.Join(QuerySeparators.Comma, keys)}){QuerySeparators.Begin}");
 
             return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }
 
-        public IODataQueryKey<TEntity> ByKey(string key)
+        public IODataQueryKey<TEntity> ByKey(params string[] keys)
         {
-            _stringBuilder.Append($"('{key}'){QuerySeparators.Begin}");
+            _stringBuilder.Append($"('{string.Join($"'{QuerySeparators.Comma}'", keys)}'){QuerySeparators.Begin}");
 
             return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }
 
-        public IODataQueryKey<TEntity> ByKey(Guid key)
+        public IODataQueryKey<TEntity> ByKey(params Guid[] keys)
         {
-            _stringBuilder.Append($"({key}){QuerySeparators.Begin}");
+            _stringBuilder.Append($"({string.Join(QuerySeparators.Comma, keys)}){QuerySeparators.Begin}");
 
             return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }

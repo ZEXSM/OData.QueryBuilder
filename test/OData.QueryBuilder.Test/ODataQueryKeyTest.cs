@@ -28,6 +28,17 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind");
         }
 
+        [Fact(DisplayName = "Simple with key ints => Success")]
+        public void ODataQueryBuilderKey_Simple_With_Key_Ints_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123, 223123124, 223123125)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType(223123123,223123124,223123125)");
+        }
+
         [Fact(DisplayName = "Expand simple with key string => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_With_Key_String_Success()
         {
@@ -38,6 +49,17 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType('223123123')?$expand=ODataKind");
+        }
+
+        [Fact(DisplayName = "Simple with key strings => Success")]
+        public void ODataQueryBuilderKey_Simple_With_Key_Strings_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey("223123123", "223123124", "223123125")
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType('223123123','223123124','223123125')");
         }
 
         [Fact(DisplayName = "Expand simple with key guid => Success")]
@@ -52,6 +74,20 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.Should().Be($"http://mock/odata/ODataType({id})?$expand=ODataKind");
+        }
+
+        [Fact(DisplayName = "Simple with key guids => Success")]
+        public void ODataQueryBuilderKey_Simple_With_Key_Guids_Success()
+        {
+            var id1 = Guid.NewGuid();
+            var id2 = Guid.NewGuid();
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(id1, id2)
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType({id1},{id2})");
         }
 
         [Fact(DisplayName = "Select simple => Success")]

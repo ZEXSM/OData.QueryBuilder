@@ -9,6 +9,8 @@ namespace OData.QueryBuilder.Conventions.Operators
 
         bool All<T>(IEnumerable<T> columnName, Func<T, bool> func);
 
+        bool Any<T>(IEnumerable<T> columnName);
+
         bool Any<T>(IEnumerable<T> columnName, Func<T, bool> func);
     }
 }

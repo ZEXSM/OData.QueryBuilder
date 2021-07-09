@@ -78,7 +78,16 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     return $"{all0}/{nameof(IODataOperator.All).ToLowerInvariant()}({all1})";
                 case nameof(IODataOperator.Any):
                     var any0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var any1 = VisitExpression(methodCallExpression.Arguments[1]);
+                    var any1 = "";
+
+                    if (methodCallExpression.Arguments.Count > 1)
+                    {
+                        any1 = VisitExpression(methodCallExpression.Arguments[1]);
+                    }
+                    if (any1 == "null")
+                    {
+                        any1 = "";
+                    }
 
                     return $"{any0}/{nameof(IODataOperator.Any).ToLowerInvariant()}({any1})";
                 case nameof(IODataFunction.Date):

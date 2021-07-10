@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System.Text;
 
@@ -15,6 +16,6 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
-        public string Query => _stringBuilder.ToString().Trim(QuerySeparators.Nested);
+        public StringBuilder Query => _stringBuilder.LastRemove(QuerySeparators.Nested);
     }
 }

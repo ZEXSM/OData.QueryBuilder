@@ -1,6 +1,8 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
+﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
+using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Expressions.Visitors;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
@@ -13,6 +15,13 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
         public ODataQueryKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions)
         {
+        }
+
+        public IAddressingEntries<TResource> For<TResource>(Expression<Func<TEntity, object>> resource)
+        {
+            _stringBuilder.LastReplace(QuerySeparators.Begin, QuerySeparators.Slash);
+
+            return new ODataResource<TEntity>(_stringBuilder, _odataQueryBuilderOptions).For<TResource>(resource);
         }
 
         public IODataQueryKey<TEntity> Expand(Expression<Func<TEntity, object>> expand)

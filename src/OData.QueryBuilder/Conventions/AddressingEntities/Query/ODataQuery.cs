@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,12 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
             return dictionary;
         }
 
-        public Uri ToUri(UriKind uriKind = UriKind.RelativeOrAbsolute) => 
-            new Uri(_stringBuilder.ToString().TrimEnd(QuerySeparators.Main, QuerySeparators.Begin), uriKind);
+        public Uri ToUri(UriKind uriKind = UriKind.RelativeOrAbsolute)
+        {
+            _stringBuilder.LastRemove(QuerySeparators.Begin);
+            _stringBuilder.LastRemove(QuerySeparators.Main);
+
+            return new Uri(_stringBuilder.ToString(), uriKind);
+        }
     }
 }

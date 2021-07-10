@@ -115,18 +115,6 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind&$select=IdType,Sum");
         }
 
-        [Fact(DisplayName = "Navigation properties => Success")]
-        public void Navigation_properties_test_success()
-        {
-            var uri = _odataQueryBuilderDefault
-                .For<ODataTypeEntity>(s => s.ODataType)
-                .ByKey(223123123)
-                .For<ODataKindEntity>(s => s.ODataKind)
-                .ByKey(223123123);
-
-            uri.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind&$select=IdType,Sum");
-        }
-
         [Fact(DisplayName = "ToDicionary => Success")]
         public void ToDicionaryTest()
         {
@@ -142,6 +130,33 @@ namespace OData.QueryBuilder.Test
             };
 
             dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
+        [Fact(DisplayName = "Navigation properties => Success")]
+        public void Navigation_properties_test_success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(223123123)
+                .For<ODataKindEntity>(s => s.ODataKind)
+                .ByKey(223123124)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType(223123123)/ODataKind(223123124)");
+        }
+
+        [Fact(DisplayName = "Navigation properties with select => Success")]
+        public void Navigation_properties_test_with_select_success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey("223123123")
+                .For<ODataKindEntity>(s => s.ODataKind)
+                .ByKey("223123124")
+                .Select(s => s.Color)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType('223123123')/ODataKind('223123124')?$select=Color");
         }
     }
 }

@@ -333,6 +333,50 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:date(v/Created) eq 2019-02-09T00:00:00Z)");
         }
 
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any without func => Success")]
+        public void ODataQueryBuilderList_Filter_Any_Without_Func()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.Any(s.Labels))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=Labels/any()");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any with func null supressed => Success")]
+        public void ODataQueryBuilderList_Filter_Any_With_Func_null_Supressed()
+        {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
+            var func = default(Func<string, bool>);
+
+            var uri = odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.Any(s.Labels, func))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any with func null => ArgumentException")]
+        public void ODataQueryBuilderList_Filter_Any_With_Func_null()
+        {
+            var func = default(Func<string, bool>);
+
+            _odataQueryBuilderDefault.Invoking(
+                (r) => r
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, _, o) => o.Any(s.Labels, func))
+                    .ToUri())
+                .Should().Throw<ArgumentException>().WithMessage("Func is null");
+        }
+
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {

@@ -13,7 +13,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
         private readonly StringBuilder _stringBuilder;
         private AbstractODataQueryExpand _odataQueryExpand;
 
-        public string Query => $"{_stringBuilder}({_odataQueryExpand.Query})";
+        public StringBuilder Query => new StringBuilder($"{_stringBuilder}({_odataQueryExpand.Query})");
 
         public ODataExpandResource(ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
@@ -25,7 +25,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
         {
             var query = new ODataResourceExpressionVisitor().ToQuery(nestedExpand.Body);
 
-            if (!string.IsNullOrEmpty(_odataQueryExpand?.Query))
+            if (_odataQueryExpand?.Query != default && _odataQueryExpand?.Query.Length != 0)
             {
                 _stringBuilder.Append($"({_odataQueryExpand.Query}),{query}");
             }

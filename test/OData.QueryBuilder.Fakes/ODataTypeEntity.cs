@@ -11,6 +11,10 @@ namespace OData.QueryBuilder.Fakes
 
         public int? IdRule { get; set; }
 
+        public long TotalCount { get; set; }
+
+        public double Money { get; set; }
+
         public string TypeCode { get; set; }
 
         public decimal Sum { get; set; }

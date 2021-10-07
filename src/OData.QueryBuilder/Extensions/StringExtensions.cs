@@ -46,6 +46,10 @@ namespace OData.QueryBuilder.Extensions
                     return $"{@bool}".ToLowerInvariant();
                 case int @int:
                     return $"{@int}";
+                case long @long:
+                    return $"{@long}";
+                case double @double:
+                    return $"{@double}";
                 case DateTime dateTime:
                     return $"{dateTime:s}Z";
                 case DateTimeOffset dateTimeOffset:

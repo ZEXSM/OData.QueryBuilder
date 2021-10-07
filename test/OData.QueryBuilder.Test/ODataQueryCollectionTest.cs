@@ -1125,5 +1125,17 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=");
         }
+
+        [Fact(DisplayName = "Should use filter long, double => Success")]
+        public void ODataQueryBuilder_Filter_use_long_double()
+        {
+            var uri = new ODataQueryBuilder<ODataInfoContainer>(_commonFixture.BaseUri)
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.TotalCount == 1 && s.Money == 0.11)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=TotalCount eq 1 and Money eq 0,11");
+        }
     }
 }

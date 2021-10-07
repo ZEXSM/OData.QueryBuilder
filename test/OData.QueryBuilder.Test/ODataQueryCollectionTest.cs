@@ -1135,7 +1135,7 @@ namespace OData.QueryBuilder.Test
                 .Filter(s => s.TotalCount == 1 && s.Money == 0.11)
                 .ToUri();
 
-            uri.Should().Be("http://mock/odata/ODataType?$filter=TotalCount eq 1 and Money eq 0.11d");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=TotalCount eq 1 and Money eq 0.11");
         }
     }
 }

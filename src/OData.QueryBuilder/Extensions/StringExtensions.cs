@@ -50,7 +50,7 @@ namespace OData.QueryBuilder.Extensions
                 case long @long:
                     return $"{@long}";
                 case double @double:
-                    return $"{@double.ToString(CultureInfo.InvariantCulture)}d";
+                    return @double.ToString(CultureInfo.InvariantCulture);
                 case DateTime dateTime:
                     return $"{dateTime:s}Z";
                 case DateTimeOffset dateTimeOffset:

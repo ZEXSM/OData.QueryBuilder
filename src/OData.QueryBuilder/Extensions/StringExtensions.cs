@@ -1,6 +1,7 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace OData.QueryBuilder.Extensions
@@ -49,7 +50,7 @@ namespace OData.QueryBuilder.Extensions
                 case long @long:
                     return $"{@long}";
                 case double @double:
-                    return $"{@double}";
+                    return @double.ToString(CultureInfo.InvariantCulture);
                 case DateTime dateTime:
                     return $"{dateTime:s}Z";
                 case DateTimeOffset dateTimeOffset:

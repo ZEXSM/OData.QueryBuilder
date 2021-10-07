@@ -16,6 +16,7 @@
     <Authors>ZEXSM</Authors>
     <Description>The library primarily targets OData Version 4.01 and provides linq syntax for creating OData queries based on a data model.</Description>
     <LangVersion>8.0</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <Target Name="RestoreTools" BeforeTargets="Build">

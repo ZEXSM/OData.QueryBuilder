@@ -292,5 +292,21 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew($select=IdKind;$skip=10;$top=10;$count=true)");
         }
+
+        [Fact(DisplayName = "Nested expand by list without all should be success")]
+        public void Should_nested_expand_by_list_without_all_success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(ee => ee.ODataKindNew);
+                    e.For<ODataKindEntity>(ee => ee.ODataKind);
+                })
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKindNew,ODataKind");
+        }
     }
 }

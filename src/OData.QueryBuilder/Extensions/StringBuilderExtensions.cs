@@ -6,6 +6,11 @@ namespace OData.QueryBuilder.Extensions
     {
         public static StringBuilder LastRemove(this StringBuilder stringBuilder, char @char)
         {
+            if (stringBuilder.Length == 0)
+            {
+                return stringBuilder;
+            }
+
             var lastIndex = stringBuilder.Length - 1;
 
             if (stringBuilder[lastIndex] == @char)

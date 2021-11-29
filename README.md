@@ -24,6 +24,7 @@ Library for creating complex OData queries (OData version 4.01) based on data mo
         * [`concat`](#concat)
         * [`indexof`](#indexof)
         * [`startswith`](#startswith)
+        * [`length`](#length)
   * sorting by several fields with indication of direction
 
 ## Installation
@@ -321,6 +322,13 @@ var constValue = 3;
 .Filter((s, f) => f.StartsWith(s.ODataKind.ODataCode.Code, "test"))
 ```
 > $filter=startswith(ODataKind/ODataCode/Code,'test')
+
+#### <a name="length"/> length
+
+```csharp
+.Filter((s, f) => f.Length(s.ODataKind.ODataCode.Code) > 0)
+```
+> $filter=length(ODataKind/ODataCode/Code) gt 0
 
 ## Usage other functions
 

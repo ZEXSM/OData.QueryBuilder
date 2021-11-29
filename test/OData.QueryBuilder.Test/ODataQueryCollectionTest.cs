@@ -1137,5 +1137,17 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=TotalCount eq 1 and Money eq 0.11");
         }
+
+        [Fact(DisplayName = "Function Length => Success")]
+        public void ODataQueryBuilder_Function_Length_Success()
+        {
+            var uri = new ODataQueryBuilder<ODataInfoContainer>()
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Length(s.TypeCode) > 0)
+                .ToUri();
+
+            uri.Should().Be("ODataType?$filter=length(TypeCode) gt 0");
+        }
     }
 }

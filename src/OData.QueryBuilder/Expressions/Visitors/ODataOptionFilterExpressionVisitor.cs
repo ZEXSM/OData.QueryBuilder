@@ -176,7 +176,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 case nameof(IODataStringAndCollectionFunction.Length):
                     var length0 = VisitExpression(methodCallExpression.Arguments[0]);
 
-                    return $"{nameof(IODataFunction.Length).ToLowerInvariant()}({length0})";
+                    return $"{nameof(IODataStringAndCollectionFunction.Length).ToLowerInvariant()}({length0})";
                 case nameof(IConvertFunction.ConvertEnumToString):
                     return $"'{_valueExpression.GetValue(methodCallExpression.Arguments[0])}'";
                 case nameof(IConvertFunction.ConvertDateTimeToString):

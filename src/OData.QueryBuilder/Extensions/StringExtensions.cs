@@ -35,6 +35,19 @@ namespace OData.QueryBuilder.Extensions
             return replaceValues;
         }
 
+        public static string replaceSpecialCharacters(string attribute)
+        {
+            attribute = attribute.Replace("'", "''");
+            attribute = attribute.Replace("+", "%2B");
+            attribute = attribute.Replace("/", "%2F");
+            attribute = attribute.Replace("?", "%3F");
+            attribute = attribute.Replace("%", "%25");
+            attribute = attribute.Replace("#", "%23");
+            attribute = attribute.Replace("&", "%26");
+
+            return attribute;
+        }
+        
         public static string ToQuery(this object @object)
         {
             switch (@object)
@@ -42,7 +55,7 @@ namespace OData.QueryBuilder.Extensions
                 case null:
                     return "null";
                 case string @string:
-                    return $"'{@string}'";
+                    return $"'{replaceSpecialCharacters(@string)}'";
                 case bool @bool:
                     return $"{@bool}".ToLowerInvariant();
                 case DateTime dateTime:

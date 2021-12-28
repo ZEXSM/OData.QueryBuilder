@@ -18,6 +18,8 @@ namespace OData.QueryBuilder.Fakes
 
         public int[] SequenceArray { get; set; }
 
+        public long[] SequenceLongArray { get; set; }
+
         public ColorEnum Color { get; set; }
     }
 }

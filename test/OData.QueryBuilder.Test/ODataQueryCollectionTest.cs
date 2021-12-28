@@ -380,7 +380,7 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {
-            var constValue = 2;
+            long constValue = 2;
             var constCurrentDate = DateTime.Today.ToString("yyyy-MM-dd");
 
             var uri = _odataQueryBuilderDefault
@@ -760,9 +760,10 @@ namespace OData.QueryBuilder.Test
             var constStrIds = new[] { "123", "512" };
             var constStrListIds = new[] { "123", "512" }.ToList();
             var constIntIds = new[] { 123, 512 };
+            var constLongIds = new long[] { 333, 555 };
             var constIntListIds = new[] { 123, 512 }.ToList();
             var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
-            var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
+            var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds, SequenceLongArray = constLongIds } };
 
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -771,6 +772,7 @@ namespace OData.QueryBuilder.Test
                     && o.In(s.ODataKind.ODataCode.Code, constStrIds)
                     && o.In(s.ODataKind.ODataCode.Code, constStrListIds)
                     && o.In(s.IdType, constIntIds)
+                    && o.In(s.IdType, constLongIds)
                     && o.In(s.IdType, constIntListIds)
                     && o.In((int)s.IdRule, constIntIds)
                     && o.In((int)s.IdRule, constIntListIds)
@@ -778,7 +780,7 @@ namespace OData.QueryBuilder.Test
                     && o.In(s.ODataKind.ODataCode.IdCode, newObjectSequenceArray.ODataKind.SequenceArray))
                 .ToUri();
 
-            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (333,555) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]

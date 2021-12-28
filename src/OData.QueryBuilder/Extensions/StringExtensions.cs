@@ -1,5 +1,6 @@
 ﻿using OData.QueryBuilder.Conventions.Constants;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -23,13 +24,15 @@ namespace OData.QueryBuilder.Extensions
             return stringBuilder.ToString();
         }
 
-        public static IEnumerable<string> ReplaceWithStringBuilder(this IEnumerable<string> values, IDictionary<string, string> keyValuePairs)
+        public static IEnumerable<string> ReplaceWithStringBuilder(this ICollection<string> values, IDictionary<string, string> keyValuePairs)
         {
-            var replaceValues = new List<string>();
+            var index = 0;
+            var replaceValues = new string[values.Count];
 
             foreach (var value in values)
             {
-                replaceValues.Add(value.ReplaceWithStringBuilder(keyValuePairs));
+                replaceValues[index] = value.ReplaceWithStringBuilder(keyValuePairs);
+                index++;
             }
 
             return replaceValues;
@@ -37,32 +40,30 @@ namespace OData.QueryBuilder.Extensions
 
         public static string ToQuery(this object @object)
         {
-            switch (@object)
+            return @object switch
             {
-                case null:
-                    return "null";
-                case string @string:
-                    return $"'{@string}'";
-                case bool @bool:
-                    return $"{@bool}".ToLowerInvariant();
-                case DateTime dateTime:
-                    return $"{dateTime:s}Z";
-                case DateTimeOffset dateTimeOffset:
-                    return $"{dateTimeOffset:s}Z";
-                case IEnumerable<int> intValues:
-                    var intValuesString = string.Join(QuerySeparators.Comma, intValues);
+                null => "null",
+                bool @bool => $"{@bool}".ToLowerInvariant(),
+                DateTime dateTime => $"{dateTime:s}Z",
+                DateTimeOffset dateTimeOffset => $"{dateTimeOffset:s}Z",
+                ICollection collection => collection.ToQuery(),
+                Guid @guid => $"{@guid}",
+                _ => @object.GetType().IsPrimitive ? Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'",
+            };
+        }
 
-                    return !string.IsNullOrEmpty(intValuesString) ? intValuesString : string.Empty;
-                case IEnumerable<string> stringValues:
-                    var stringValuesString = string.Join($"'{QuerySeparators.Comma}'", stringValues);
+        private static string ToQuery(this ICollection collection)
+        {
+            var index = 0;
+            var queries = new string[collection.Count];
 
-                    return !string.IsNullOrEmpty(stringValuesString) ? $"'{stringValuesString}'" : string.Empty;
-                case Guid @guid:
-                    return $"{@guid}";
-                default:
-                    return @object.GetType().IsPrimitive ?
-                        Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'";
+            foreach (var item in collection)
+            {
+                queries[index] = item.ToQuery();
+                index++;
             }
+
+            return string.Join(QuerySeparators.Comma, queries) ?? string.Empty;
         }
     }
 }

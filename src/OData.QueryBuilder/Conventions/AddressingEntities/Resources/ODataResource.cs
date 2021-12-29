@@ -1,4 +1,5 @@
 ﻿using OData.QueryBuilder.Options;
+using System;
 using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
@@ -16,6 +17,11 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 
         public IAddressingEntries<TEntity> For<TEntity>(string resource)
         {
+            if (string.IsNullOrWhiteSpace(resource))
+            {
+                throw new ArgumentException($"The specified resource name is null or empty", nameof(resource));
+            }
+
             _stringBuilder.Append(resource);
 
             return new AddressingEntries<TEntity>(_stringBuilder, _odataQueryBuilderOptions);

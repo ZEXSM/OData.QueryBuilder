@@ -12,37 +12,21 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQueryCollection<TEntity> : ODataQuery, IODataQueryCollection<TEntity>
     {
+        private int _countFilters;
         public ODataQueryCollection(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions)
         {
+            _countFilters = 0;
         }
 
-        public IODataQueryCollection<TEntity> Filter(Expression<Func<TEntity, bool>> filter, bool useParenthesis = false)
-        {
-            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter.Body, useParenthesis);
+        public IODataQueryCollection<TEntity> Filter(Expression<Func<TEntity, bool>> filter, bool useParenthesis = false) =>
+            FilterByLambdaExpression(filter, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+        public IODataQueryCollection<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> filter, bool useParenthesis = false) =>
+            FilterByLambdaExpression(filter, useParenthesis);
 
-            return this;
-        }
-
-        public IODataQueryCollection<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> filter, bool useParenthesis = false)
-        {
-            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter.Body, useParenthesis);
-
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
-
-            return this;
-        }
-
-        public IODataQueryCollection<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> filter, bool useParenthesis = false)
-        {
-            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter.Body, useParenthesis);
-
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
-
-            return this;
-        }
+        public IODataQueryCollection<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> filter, bool useParenthesis = false) =>
+            FilterByLambdaExpression(filter, useParenthesis);
 
         public IODataQueryCollection<TEntity> Expand(Expression<Func<TEntity, object>> expand)
         {
@@ -117,6 +101,30 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
         public IODataQueryCollection<TEntity> Count(bool value = true)
         {
             _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSign}{value.ToString().ToLowerInvariant()}{QuerySeparators.Main}");
+
+            return this;
+        }
+
+        private IODataQueryCollection<TEntity> FilterByLambdaExpression(LambdaExpression filter, bool useParenthesis = false)
+        {
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter.Body, useParenthesis);
+
+            if (_countFilters > 0)
+            {
+                for (var i = 0; i < _stringBuilder.Length; i--)
+                {
+                    if (_stringBuilder[i] == '$' && _stringBuilder[i + 1] == 'f' && _stringBuilder[i + 2] == 'i')
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+            }
+
+            _countFilters++;
 
             return this;
         }

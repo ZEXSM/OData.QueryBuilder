@@ -1008,6 +1008,34 @@ namespace OData.QueryBuilder.Test
             dictionary.Should().BeEquivalentTo(resultEquivalent);
         }
 
+        [Fact(DisplayName = "ToDicionary => Exception")]
+        public void ODataQueryBuilderList_ToDicionary_Exception()
+        {
+            _odataQueryBuilderDefault
+                .Invoking(s => s
+                    .For<ODataTypeEntity>(null)
+                        .ByList()
+                            .Filter(s => s.IsActive)
+                        .ToDictionary())
+                .Should()
+                .Throw<ArgumentException>()
+                .WithMessage($"The specified resource name is null (Parameter 'resource')");
+        }
+
+        [Fact(DisplayName = "ToDicionary => Exception 2")]
+        public void ODataQueryBuilderList_ToDicionary_Exception_2()
+        {
+            new ODataQueryBuilder()
+                .Invoking(s => s
+                    .For<ODataTypeEntity>(null)
+                        .ByList()
+                            .Filter(s => s.IsActive)
+                        .ToDictionary())
+                .Should()
+                .Throw<ArgumentException>()
+                .WithMessage($"The specified resource name is null or empty (Parameter 'resource')");
+        }
+
         [Fact(DisplayName = "Filter Enum => Success")]
         public void ODataQueryBuilderList_Filter_Enum_Success()
         {

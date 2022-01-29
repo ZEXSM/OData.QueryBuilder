@@ -58,6 +58,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
             {
                 case nameof(IODataOperator.In):
                     var in0 = VisitExpression(methodCallExpression.Arguments[0]);
+
                     var in1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ToQuery();
 
                     if (in1.IsNullOrQuotes())

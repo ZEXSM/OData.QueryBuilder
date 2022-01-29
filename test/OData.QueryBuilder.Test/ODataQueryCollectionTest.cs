@@ -914,6 +914,76 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be($"http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)");
         }
 
+        [Fact(DisplayName = "IN operator with long => Success")]
+        public void ODataQueryBuilderList_IN_with_long_Success()
+        {
+            var longs = new long[] { 123L, 512L };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.Long, longs))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Long in (123,512)");
+        }
+
+        [Fact(DisplayName = "IN operator with float => Success")]
+        public void ODataQueryBuilderList_IN_with_float_Success()
+        {
+            var floats = new float[] { 123.54F, 512.45F };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.Float, floats))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Float in (123.54,512.45)");
+        }
+
+        [Fact(DisplayName = "IN operator with (long/double/float/DateTime) => Success")]
+        public void ODataQueryBuilderList_IN_with_double_Success()
+        {
+            var doubles = new double[] { 123.23D, 512.12D };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.Double, doubles))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Double in (123.23,512.12)");
+        }
+
+        [Fact(DisplayName = "IN operator with DateTime => Success")]
+        public void ODataQueryBuilderList_IN_with_DateTime_Success()
+        {
+            var dateTimes = new DateTime[] { new DateTime(2022, 1, 31), new DateTime(2022, 2, 1, 1, 3, 2) };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.DateTime, dateTimes))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=DateTime in (2022-01-31T00:00:00Z,2022-02-01T01:03:02Z)");
+        }
+
+        [Fact(DisplayName = "IN operator with enumerable => Success")]
+        public void ODataQueryBuilderList_IN_with_enumerable_Success()
+        {
+            var enumerableString = Enumerable.Range(1, 2).Select(s => s.ToString());
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.TypeCode, enumerableString))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=TypeCode in ('1','2')");
+        }
+
         [Fact(DisplayName = "Filter boolean values => Success")]
         public void ODataQueryBuilderList_Filter_Boolean_Values_Success()
         {

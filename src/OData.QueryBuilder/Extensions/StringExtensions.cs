@@ -9,8 +9,10 @@ namespace OData.QueryBuilder.Extensions
 {
     internal static class StringExtensions
     {
+        private const string Null = "null";
+
         public static bool IsNullOrQuotes(this string value) =>
-            string.IsNullOrEmpty(value) || value == "null" || value == "''";
+            string.IsNullOrEmpty(value) || value == Null || value == "''";
 
         public static string ReplaceWithStringBuilder(this string value, IDictionary<string, string> keyValuePairs)
         {
@@ -38,26 +40,42 @@ namespace OData.QueryBuilder.Extensions
             return replaceValues;
         }
 
-        public static string ToQuery(this object @object)
+        public static string ToQuery(this object @object) => @object switch
         {
-            return @object switch
-            {
-                null => "null",
-                bool @bool => $"{@bool}".ToLowerInvariant(),
-                DateTime dateTime => $"{dateTime:s}Z",
-                DateTimeOffset dateTimeOffset => $"{dateTimeOffset:s}Z",
-                ICollection collection => collection.ToQuery(),
-                Guid @guid => $"{@guid}",
-                _ => @object.GetType().IsPrimitive ? Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'",
-            };
-        }
+            null => Null,
+            bool @bool => @bool ? "true" : "false",
+            DateTime dateTime => $"{dateTime:s}Z",
+            DateTimeOffset dateTimeOffset => $"{dateTimeOffset:s}Z",
+            string @string => $"'{@string}'",
+            ICollection collection => collection.CollectionToQuery(),
+            IEnumerable enumerable => enumerable.EnumerableToQuery(),
+            Guid @guid => $"{@guid}",
+            _ => @object.GetType().IsPrimitive ? Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'",
+        };
 
-        private static string ToQuery(this ICollection collection)
+        private static string CollectionToQuery(this ICollection collection) =>
+            collection.EnumerableToQuery(collection.Count);
+
+        private static string EnumerableToQuery(this IEnumerable enumerable, int initCount = 0)
         {
             var index = 0;
-            var queries = new string[collection.Count];
+            var count = 0;
 
-            foreach (var item in collection)
+            if (initCount <= 0)
+            {
+                foreach (var _ in enumerable)
+                {
+                    count++;
+                }
+            }
+            else
+            {
+                count = initCount;
+            }
+
+            var queries = new string[count];
+
+            foreach (var item in enumerable)
             {
                 queries[index] = item.ToQuery();
                 index++;

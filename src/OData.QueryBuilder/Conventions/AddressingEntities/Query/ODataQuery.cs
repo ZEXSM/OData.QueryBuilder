@@ -12,6 +12,9 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
         protected readonly StringBuilder _stringBuilder;
 
+        private static readonly char[] SeparatorUri = new char[2] { QuerySeparators.Begin, QuerySeparators.Main };
+        private static readonly char[] SeparatorOperator = new char[1] { QuerySeparators.EqualSign };
+
         public ODataQuery(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _stringBuilder = stringBuilder;
@@ -20,14 +23,15 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
         public IDictionary<string, string> ToDictionary()
         {
-            var odataOperators = _stringBuilder.ToString()
-                .Split(new char[2] { QuerySeparators.Begin, QuerySeparators.Main }, StringSplitOptions.RemoveEmptyEntries);
+            var odataOperators = _stringBuilder
+                .ToString()
+                .Split(SeparatorUri, StringSplitOptions.RemoveEmptyEntries);
 
-            var dictionary = new Dictionary<string, string>(odataOperators.Length - 1);
+            var dictionary = new Dictionary<string, string>(odataOperators.Length);
 
             for (var step = 1; step < odataOperators.Length; step++)
             {
-                var odataOperator = odataOperators[step].Split(QuerySeparators.EqualSign);
+                var odataOperator = odataOperators[step].Split(SeparatorOperator, 2);
 
                 dictionary.Add(odataOperator[0], odataOperator[1]);
             }

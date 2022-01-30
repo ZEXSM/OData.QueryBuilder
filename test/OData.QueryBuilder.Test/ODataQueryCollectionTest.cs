@@ -1078,6 +1078,44 @@ namespace OData.QueryBuilder.Test
             dictionary.Should().BeEquivalentTo(resultEquivalent);
         }
 
+        [Fact(DisplayName = "ToDicionary Complex => Success")]
+        public void ODataQueryBuilderList_ToDicionary_Complex_Success()
+        {
+            var dictionary = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(ff => ff
+                            .For<ODataCodeEntity>(s => s.ODataCode)
+                                .Select(s => s.IdCode));
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Expand(ff => ff.ODataCode)
+                        .Select(s => s.IdKind);
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind);
+                })
+                .Filter(s => s.IdRule == 3)
+                .Select(s => new { s.IdType, s.Sum })
+                .OrderBy(s => s.IdRule)
+                .Skip(10)
+                .Top(10)
+                .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                ["$expand"] = "ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($expand=ODataCode;$select=IdKind),ODataKindNew($select=IdKind)",
+                ["$filter"] = "IdRule eq 3",
+                ["$select"] = "IdType,Sum",
+                ["$orderby"] = "IdRule asc",
+                ["$skip"] = "10",
+                ["$top"] = "10"
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
         [Fact(DisplayName = "ToDicionary => Exception")]
         public void ODataQueryBuilderList_ToDicionary_Exception()
         {

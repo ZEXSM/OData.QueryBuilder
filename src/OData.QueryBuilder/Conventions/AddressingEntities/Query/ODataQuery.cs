@@ -31,7 +31,8 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
             for (var step = 1; step < odataOperators.Length; step++)
             {
-                var odataOperator = odataOperators[step].Split(SeparatorOperator, 2);
+                var odataOperator = odataOperators[step]
+                    .Split(SeparatorOperator, 2, StringSplitOptions.RemoveEmptyEntries);
 
                 dictionary.Add(odataOperator[0], odataOperator[1]);
             }

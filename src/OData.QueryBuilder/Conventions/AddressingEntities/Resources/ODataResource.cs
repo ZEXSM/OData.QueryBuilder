@@ -22,7 +22,10 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
                 throw new ArgumentException("Resource name is null", nameof(resource));
             }
 
-            _stringBuilder.Append(resource);
+            if (resource != string.Empty)
+            {
+                _stringBuilder.Append(resource);
+            }
 
             return new AddressingEntries<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }

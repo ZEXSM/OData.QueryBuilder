@@ -1058,19 +1058,44 @@ namespace OData.QueryBuilder.Test
             var newObject = new ODataTypeEntity { IsOpen = false };
 
             var dictionary = _odataQueryBuilderDefault
-            .For<ODataTypeEntity>(s => s.ODataType)
-            .ByList()
-            .Filter(s => s.IsActive
-                && s.IsOpen == constValue
-                && s.IsOpen == true
-                && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
-            .Skip(1)
-            .Top(10)
-            .ToDictionary();
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IsActive
+                    && s.IsOpen == constValue
+                    && s.IsOpen == true
+                    && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
+                .Skip(1)
+                .Top(10)
+                .ToDictionary();
 
             var resultEquivalent = new Dictionary<string, string>
             {
                 { "$filter", "IsActive and IsOpen eq false and IsOpen eq true and ODataKind/ODataCode/IdActive eq false" },
+                { "$skip", "1" },
+                { "$top", "10" }
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
+        [Fact(DisplayName = "ToDicionary empty resource => Success")]
+        public void ODataQueryBuilderList_ToDicionary_Empty_Resource()
+        {
+            var dictionary = new ODataQueryBuilder()
+                .For<ODataTypeEntity>(string.Empty)
+                .ByList()
+                .Expand(s => s.ODataKind)
+                .Filter(s => s.IsActive == true)
+                .Select(s => s.Open)
+                .Skip(1)
+                .Top(10)
+                .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                { "$expand", "ODataKind" },
+                { "$filter", "IsActive eq true" },
+                { "$select", "Open" },
                 { "$skip", "1" },
                 { "$top", "10" }
             };
@@ -1127,7 +1152,7 @@ namespace OData.QueryBuilder.Test
                         .ToDictionary())
                 .Should()
                 .Throw<ArgumentException>()
-                .WithMessage($"The specified resource name is null (Parameter 'resource')");
+                .WithMessage($"Resource name is null (Parameter 'resource')");
         }
 
         [Fact(DisplayName = "ToDicionary => Exception 2")]
@@ -1141,7 +1166,7 @@ namespace OData.QueryBuilder.Test
                         .ToDictionary())
                 .Should()
                 .Throw<ArgumentException>()
-                .WithMessage($"The specified resource name is null or empty (Parameter 'resource')");
+                .WithMessage($"Resource name is null (Parameter 'resource')");
         }
 
         [Fact(DisplayName = "Filter Enum => Success")]

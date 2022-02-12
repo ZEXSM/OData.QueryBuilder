@@ -29,12 +29,15 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
             var dictionary = new Dictionary<string, string>(odataOperators.Length);
 
-            for (var step = 1; step < odataOperators.Length; step++)
+            for (var step = 0; step < odataOperators.Length; step++)
             {
                 var odataOperator = odataOperators[step]
                     .Split(SeparatorOperator, 2, StringSplitOptions.RemoveEmptyEntries);
 
-                dictionary.Add(odataOperator[0], odataOperator[1]);
+                if (odataOperator.Length > 1)
+                {
+                    dictionary.Add(odataOperator[0], odataOperator[1]);
+                }
             }
 
             return dictionary;

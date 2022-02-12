@@ -17,12 +17,15 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 
         public IAddressingEntries<TEntity> For<TEntity>(string resource)
         {
-            if (string.IsNullOrWhiteSpace(resource))
+            if (resource == null)
             {
-                throw new ArgumentException($"The specified resource name is null or empty", nameof(resource));
+                throw new ArgumentNullException(nameof(resource),"Resource name is null");
             }
 
-            _stringBuilder.Append(resource);
+            if (resource != string.Empty)
+            {
+                _stringBuilder.Append(resource);
+            }
 
             return new AddressingEntries<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }

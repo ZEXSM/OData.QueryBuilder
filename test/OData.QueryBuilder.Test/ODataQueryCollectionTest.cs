@@ -1151,8 +1151,8 @@ namespace OData.QueryBuilder.Test
                             .Filter(s => s.IsActive)
                         .ToDictionary())
                 .Should()
-                .Throw<ArgumentException>()
-                .WithMessage($"Resource name is null (Parameter 'resource')");
+                .Throw<ArgumentNullException>()
+                .WithMessage("Resource name is null (Parameter 'resource')");
         }
 
         [Fact(DisplayName = "ToDicionary => Exception 2")]
@@ -1165,8 +1165,8 @@ namespace OData.QueryBuilder.Test
                             .Filter(s => s.IsActive)
                         .ToDictionary())
                 .Should()
-                .Throw<ArgumentException>()
-                .WithMessage($"Resource name is null (Parameter 'resource')");
+                .Throw<ArgumentNullException>()
+                .WithMessage("Resource name is null (Parameter 'resource')");
         }
 
         [Fact(DisplayName = "Filter Enum => Success")]

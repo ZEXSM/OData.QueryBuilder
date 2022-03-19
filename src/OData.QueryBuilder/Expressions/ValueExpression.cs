@@ -75,7 +75,7 @@ namespace OData.QueryBuilder.Expressions
             switch (methodCallExpression.Method.Name)
             {
                 case nameof(IReplaceFunction.ReplaceCharacters):
-                    var @symbol0 = GetValue(methodCallExpression.Arguments[0]) as IEnumerable<string>;
+                    var @symbol0 = GetValue(methodCallExpression.Arguments[0]) as ICollection<string>;
                     var @symbol1 = GetValue(methodCallExpression.Arguments[1]) as IDictionary<string, string>;
 
                     if (@symbol1 == default)

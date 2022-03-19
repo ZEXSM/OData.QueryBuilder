@@ -19,6 +19,11 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 
         public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource)
         {
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource), "Resource name is null");
+            }
+
             var query = new ODataResourceExpressionVisitor().ToQuery(resource.Body);
 
             _stringBuilder.Append(query);

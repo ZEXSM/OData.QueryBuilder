@@ -37,6 +37,14 @@ namespace OData.QueryBuilder.Fakes
 
         public string[] Tags { get; set; }
 
+        public long Long { get; set; }
+
+        public float Float { get; set; }
+
+        public double Double { get; set; }
+
+        public DateTime DateTime { get; set; }
+
         public List<string> Labels { get; set; }
     }
 }

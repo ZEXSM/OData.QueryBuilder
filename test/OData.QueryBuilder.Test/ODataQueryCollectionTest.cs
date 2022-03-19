@@ -380,7 +380,7 @@ namespace OData.QueryBuilder.Test
         [Fact(DisplayName = "Expand,Filter,Select,OrderBy,OrderByDescending,Skip,Top,Count => Success")]
         public void ODataQueryBuilderList_Expand_Filter_Select_OrderBy_OrderByDescending_Skip_Top_Count_Success()
         {
-            var constValue = 2;
+            long constValue = 2;
             var constCurrentDate = DateTime.Today.ToString("yyyy-MM-dd");
 
             var uri = _odataQueryBuilderDefault
@@ -760,9 +760,10 @@ namespace OData.QueryBuilder.Test
             var constStrIds = new[] { "123", "512" };
             var constStrListIds = new[] { "123", "512" }.ToList();
             var constIntIds = new[] { 123, 512 };
+            var constLongIds = new long[] { 333, 555 };
             var constIntListIds = new[] { 123, 512 }.ToList();
             var newObject = new ODataTypeEntity { ODataKind = new ODataKindEntity { Sequence = constIntListIds } };
-            var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds } };
+            var newObjectSequenceArray = new ODataTypeEntity { ODataKind = new ODataKindEntity { SequenceArray = constIntIds, SequenceLongArray = constLongIds } };
 
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -771,6 +772,7 @@ namespace OData.QueryBuilder.Test
                     && o.In(s.ODataKind.ODataCode.Code, constStrIds)
                     && o.In(s.ODataKind.ODataCode.Code, constStrListIds)
                     && o.In(s.IdType, constIntIds)
+                    && o.In(s.IdType, constLongIds)
                     && o.In(s.IdType, constIntListIds)
                     && o.In((int)s.IdRule, constIntIds)
                     && o.In((int)s.IdRule, constIntListIds)
@@ -778,7 +780,7 @@ namespace OData.QueryBuilder.Test
                     && o.In(s.ODataKind.ODataCode.IdCode, newObjectSequenceArray.ODataKind.SequenceArray))
                 .ToUri();
 
-            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512) and IdType in (333,555) and IdType in (123,512) and IdRule in (123,512) and IdRule in (123,512) and ODataKind/IdKind in (123,512) and ODataKind/ODataCode/IdCode in (123,512)");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Operator IN empty => Success")]
@@ -912,6 +914,76 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be($"http://mock/odata/ODataType?$filter=ODataKind/ODataCode/Code in ('123','512') and IdType in (123,512)");
         }
 
+        [Fact(DisplayName = "IN operator with long => Success")]
+        public void ODataQueryBuilderList_IN_with_long_Success()
+        {
+            var longs = new long[] { 123L, 512L };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.Long, longs))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Long in (123,512)");
+        }
+
+        [Fact(DisplayName = "IN operator with float => Success")]
+        public void ODataQueryBuilderList_IN_with_float_Success()
+        {
+            var floats = new float[] { 123.54F, 512.45F };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.Float, floats))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Float in (123.54,512.45)");
+        }
+
+        [Fact(DisplayName = "IN operator with (long/double/float/DateTime) => Success")]
+        public void ODataQueryBuilderList_IN_with_double_Success()
+        {
+            var doubles = new double[] { 123.23D, 512.12D };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.Double, doubles))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=Double in (123.23,512.12)");
+        }
+
+        [Fact(DisplayName = "IN operator with DateTime => Success")]
+        public void ODataQueryBuilderList_IN_with_DateTime_Success()
+        {
+            var dateTimes = new DateTime[] { new DateTime(2022, 1, 31), new DateTime(2022, 2, 1, 1, 3, 2) };
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.DateTime, dateTimes))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=DateTime in (2022-01-31T00:00:00Z,2022-02-01T01:03:02Z)");
+        }
+
+        [Fact(DisplayName = "IN operator with enumerable => Success")]
+        public void ODataQueryBuilderList_IN_with_enumerable_Success()
+        {
+            var enumerableString = Enumerable.Range(1, 2).Select(s => s.ToString());
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.In(s.TypeCode, enumerableString))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=TypeCode in ('1','2')");
+        }
+
         [Fact(DisplayName = "Filter boolean values => Success")]
         public void ODataQueryBuilderList_Filter_Boolean_Values_Success()
         {
@@ -986,15 +1058,15 @@ namespace OData.QueryBuilder.Test
             var newObject = new ODataTypeEntity { IsOpen = false };
 
             var dictionary = _odataQueryBuilderDefault
-            .For<ODataTypeEntity>(s => s.ODataType)
-            .ByList()
-            .Filter(s => s.IsActive
-                && s.IsOpen == constValue
-                && s.IsOpen == true
-                && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
-            .Skip(1)
-            .Top(10)
-            .ToDictionary();
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.IsActive
+                    && s.IsOpen == constValue
+                    && s.IsOpen == true
+                    && s.ODataKind.ODataCode.IdActive == newObject.IsOpen)
+                .Skip(1)
+                .Top(10)
+                .ToDictionary();
 
             var resultEquivalent = new Dictionary<string, string>
             {
@@ -1004,6 +1076,97 @@ namespace OData.QueryBuilder.Test
             };
 
             dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
+        [Fact(DisplayName = "ToDicionary empty resource => Success")]
+        public void ODataQueryBuilderList_ToDicionary_Empty_Resource()
+        {
+            var dictionary = new ODataQueryBuilder()
+                .For<ODataTypeEntity>(string.Empty)
+                .ByList()
+                .Expand(s => s.ODataKind)
+                .Filter(s => s.IsActive == true)
+                .Select(s => s.Open)
+                .Skip(1)
+                .Top(10)
+                .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                { "$expand", "ODataKind" },
+                { "$filter", "IsActive eq true" },
+                { "$select", "Open" },
+                { "$skip", "1" },
+                { "$top", "10" }
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
+        [Fact(DisplayName = "ToDicionary Complex => Success")]
+        public void ODataQueryBuilderList_ToDicionary_Complex_Success()
+        {
+            var dictionary = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(f =>
+                {
+                    f.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(ff => ff
+                            .For<ODataCodeEntity>(s => s.ODataCode)
+                                .Select(s => s.IdCode));
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Expand(ff => ff.ODataCode)
+                        .Select(s => s.IdKind);
+                    f.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Select(s => s.IdKind);
+                })
+                .Filter(s => s.IdRule == 3)
+                .Select(s => new { s.IdType, s.Sum })
+                .OrderBy(s => s.IdRule)
+                .Skip(10)
+                .Top(10)
+                .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                ["$expand"] = "ODataKind($expand=ODataCode($select=IdCode)),ODataKindNew($expand=ODataCode;$select=IdKind),ODataKindNew($select=IdKind)",
+                ["$filter"] = "IdRule eq 3",
+                ["$select"] = "IdType,Sum",
+                ["$orderby"] = "IdRule asc",
+                ["$skip"] = "10",
+                ["$top"] = "10"
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
+        [Fact(DisplayName = "ToDicionary => Exception")]
+        public void ODataQueryBuilderList_ToDicionary_Exception()
+        {
+            _odataQueryBuilderDefault
+                .Invoking(s => s
+                    .For<ODataTypeEntity>(null)
+                        .ByList()
+                            .Filter(s => s.IsActive)
+                        .ToDictionary())
+                .Should()
+                .Throw<ArgumentNullException>()
+                .WithMessage("Resource name is null (Parameter 'resource')");
+        }
+
+        [Fact(DisplayName = "ToDicionary => Exception 2")]
+        public void ODataQueryBuilderList_ToDicionary_Exception_2()
+        {
+            new ODataQueryBuilder()
+                .Invoking(s => s
+                    .For<ODataTypeEntity>(null)
+                        .ByList()
+                            .Filter(s => s.IsActive)
+                        .ToDictionary())
+                .Should()
+                .Throw<ArgumentNullException>()
+                .WithMessage("Resource name is null (Parameter 'resource')");
         }
 
         [Fact(DisplayName = "Filter Enum => Success")]

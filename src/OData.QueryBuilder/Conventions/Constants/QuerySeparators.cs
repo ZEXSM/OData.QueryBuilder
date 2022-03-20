@@ -1,4 +1,6 @@
-﻿namespace OData.QueryBuilder.Conventions.Constants
+﻿using System;
+
+namespace OData.QueryBuilder.Conventions.Constants
 {
     internal struct QuerySeparators
     {
@@ -12,7 +14,12 @@
 
         public const char Slash = '/';
 
-        public const string Comma = ",";
+        public const char Comma = ',';
+
+        public const char DollarSign = '$';
+
+        [Obsolete("Remove after upgrade to netstandard 2.1")]
+        public const string StringComma = ",";
 
         public const char Dot = '.';
     }

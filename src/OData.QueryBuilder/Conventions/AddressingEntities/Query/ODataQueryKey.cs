@@ -12,9 +12,12 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQueryKey<TEntity> : ODataQuery, IODataQueryKey<TEntity>
     {
+        private bool _hasMultyExpands;
+
         public ODataQueryKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions)
         {
+            _hasMultyExpands = false;
         }
 
         public IAddressingEntries<TResource> For<TResource>(Expression<Func<TEntity, object>> resource)
@@ -28,9 +31,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(expand.Body);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
-
-            return this;
+            return Expand(query);
         }
 
         public IODataQueryKey<TEntity> Expand(Action<IODataExpandResource<TEntity>> expandNested)
@@ -39,9 +40,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
             expandNested(builder);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{builder.Query}{QuerySeparators.Main}");
-
-            return this;
+            return Expand(builder.Query);
         }
 
         public IODataQueryKey<TEntity> Select(Expression<Func<TEntity, object>> select)
@@ -49,6 +48,22 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
             var query = new ODataOptionSelectExpressionVisitor().ToQuery(select.Body);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+
+            return this;
+        }
+
+        private IODataQueryKey<TEntity> Expand<T>(T query) where T : class
+        {
+            if (_hasMultyExpands)
+            {
+                _stringBuilder.Merge(ODataOptionNames.Expand, QuerySeparators.Main, $"{QuerySeparators.Comma}{query}");
+            }
+            else
+            {
+                _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+            }
+
+            _hasMultyExpands = true;
 
             return this;
         }

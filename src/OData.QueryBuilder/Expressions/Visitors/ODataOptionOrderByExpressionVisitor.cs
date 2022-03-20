@@ -20,14 +20,14 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     var ascending0 = VisitExpression(methodCallExpression.Arguments[0]);
 
                     var ascendingQuery = VisitExpression(methodCallExpression.Object as MethodCallExpression);
-                    var ascendingQueryComma = ascendingQuery == default ? string.Empty : QuerySeparators.Comma;
+                    var ascendingQueryComma = ascendingQuery == default ? string.Empty : QuerySeparators.StringComma;
 
                     return $"{ascendingQuery}{ascendingQueryComma}{ascending0} {QuerySorts.Asc}";
                 case nameof(ISortFunction.Descending):
                     var descending0 = VisitExpression(methodCallExpression.Arguments[0]);
 
                     var descendingQuery = VisitExpression(methodCallExpression.Object as MethodCallExpression);
-                    var descendingQueryComma = descendingQuery == default ? string.Empty : QuerySeparators.Comma;
+                    var descendingQueryComma = descendingQuery == default ? string.Empty : QuerySeparators.StringComma;
 
                     return $"{descendingQuery}{descendingQueryComma}{descending0} {QuerySorts.Desc}";
                 default:

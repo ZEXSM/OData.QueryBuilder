@@ -19,7 +19,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities
 
         public IODataQueryKey<TEntity> ByKey(params int[] keys)
         {
-            _stringBuilder.Append($"({string.Join(QuerySeparators.Comma, keys)}){QuerySeparators.Begin}");
+            _stringBuilder.Append($"({string.Join(QuerySeparators.StringComma, keys)}){QuerySeparators.Begin}");
 
             return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }
@@ -33,7 +33,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities
 
         public IODataQueryKey<TEntity> ByKey(params Guid[] keys)
         {
-            _stringBuilder.Append($"({string.Join(QuerySeparators.Comma, keys)}){QuerySeparators.Begin}");
+            _stringBuilder.Append($"({string.Join(QuerySeparators.StringComma, keys)}){QuerySeparators.Begin}");
 
             return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
         }

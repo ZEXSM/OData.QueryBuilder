@@ -9,6 +9,8 @@ namespace OData.QueryBuilder.Fakes
 
         public ODataCodeEntity ODataCode { get; set; }
 
+        public ODataCodeEntity ODataCodeNew { get; set; }
+
         public DateTimeOffset OpenDate { get; set; }
         public DateTime EndDate { get; set; }
 

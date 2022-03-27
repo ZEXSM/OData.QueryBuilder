@@ -157,7 +157,6 @@ namespace OData.QueryBuilder.Test
                         .Filter(s => s.EndDate == DateTime.Today)
                         .Select(s => s.OpenDate)
                         .Filter(s => s.IdKind == 1)
-                        .Expand(a => a.ODataCodeNew)
                         .Count(false);
                 })
                 .Filter(s => s.TypeCode == 44.ToString())
@@ -181,14 +180,13 @@ namespace OData.QueryBuilder.Test
                             "ODataCode(" +
                                 "$filter=Code eq 'test' and IdActive;" +
                                 "$select=Created" +
-                            ")," +
-                            "ODataCodeNew;" +
-                        "$filter=EndDate eq 2022-03-20T00:00:00Z and IdKind eq 1;" +
+                            ");" +
+                        $"$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;" +
                         "$select=OpenDate;" +
                         "$count=false" +
                     ")," +
                     "ODataKindNew(" +
-                        "$filter=EndDate eq 2022-03-20T00:00:00Z and IdKind eq 1;" +
+                        $"$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;" +
                         "$select=OpenDate;" +
                         "$count=false" +
                     ")" +

@@ -33,7 +33,11 @@ namespace OData.QueryBuilder.Extensions
             return stringBuilder;
         }
 
-        public static StringBuilder Merge(this StringBuilder stringBuilder, string startValue, char endChar, string value)
+        public static StringBuilder Merge(
+            this StringBuilder stringBuilder,
+            string startValue,
+            char endChar,
+            string value)
         {
             var positionEndFilter = -1;
 
@@ -49,6 +53,7 @@ namespace OData.QueryBuilder.Extensions
                 if (stringBuilder[position] == startValue[0]
                     && stringBuilder[position + 1] == startValue[1])
                 {
+
                     stringBuilder.Insert(positionEndFilter, value);
 
                     break;

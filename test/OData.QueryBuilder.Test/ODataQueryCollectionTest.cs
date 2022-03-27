@@ -1227,6 +1227,51 @@ namespace OData.QueryBuilder.Test
                 .WithMessage("Resource name is null (Parameter 'resource')");
         }
 
+        [Fact(DisplayName = "ToDicionary filter and expand union => Success")]
+        public void ODataQueryBuilderList_ToDicionary_FilterAndExpand_Union_Success()
+        {
+            var dictionary = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(a =>
+                        {
+                            a.For<ODataCodeEntity>(f => f.ODataCode)
+                                .Filter(v => v.Code == "test")
+                                .Select(v => v.Created)
+                                .Filter(v => v.IdActive);
+                        })
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Filter(s => s.TypeCode == 44.ToString())
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Filter(s => s.IdType == 3)
+                .Select(s => s.IdRule)
+                .Filter(s => s.IdRule == 1)
+                .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                ["$expand"] = $"ODataKind($expand=ODataCode($filter=Code eq 'test' and IdActive;$select=Created);$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;$select=OpenDate;$count=false),ODataKindNew($filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;$select=OpenDate;$count=false)",
+                ["$filter"] = "TypeCode eq '44' and IdType eq 3 and IdRule eq 1",
+                ["$select"] = "IdRule"
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
+        }
+
         [Fact(DisplayName = "Filter Enum => Success")]
         public void ODataQueryBuilderList_Filter_Enum_Success()
         {

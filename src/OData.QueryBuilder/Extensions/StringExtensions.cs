@@ -81,7 +81,7 @@ namespace OData.QueryBuilder.Extensions
                 index++;
             }
 
-            return string.Join(QuerySeparators.Comma, queries) ?? string.Empty;
+            return string.Join(QuerySeparators.StringComma, queries) ?? string.Empty;
         }
     }
 }

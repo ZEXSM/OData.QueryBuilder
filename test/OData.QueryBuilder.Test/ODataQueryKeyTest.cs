@@ -115,6 +115,59 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType(223123123)?$expand=ODataKind&$select=IdType,Sum");
         }
 
+        [Fact(DisplayName = "Expand union => Success")]
+        public void ODataQueryBuilderKey_Expand_Union_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(333)
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(a =>
+                        {
+                            a.For<ODataCodeEntity>(f => f.ODataCode)
+                                .Filter(v => v.Code == "test")
+                                .Select(v => v.Created)
+                                .Filter(v => v.IdActive);
+                        })
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Select(s => s.IdRule)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType(333)?" +
+                "$expand=" +
+                    "ODataKind(" +
+                        "$expand=" +
+                            "ODataCode(" +
+                                "$filter=Code eq 'test' and IdActive;" +
+                                "$select=Created" +
+                            ");" +
+                        $"$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;" +
+                        "$select=OpenDate;" +
+                        "$count=false" +
+                    ")," +
+                    "ODataKindNew(" +
+                        $"$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;" +
+                        "$select=OpenDate;" +
+                        "$count=false" +
+                    ")" +
+                "&" +
+                "$select=IdRule");
+        }
+
         [Fact(DisplayName = "ToDicionary => Success")]
         public void ToDicionaryTest()
         {

@@ -138,6 +138,64 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType?$filter=TypeCode eq '44'");
         }
 
+        [Fact(DisplayName = "Filter and expand union => Success")]
+        public void ODataQueryBuilderList_FilterAndExpand_Union_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(a =>
+                        {
+                            a.For<ODataCodeEntity>(f => f.ODataCode)
+                                .Filter(v => v.Code == "test")
+                                .Select(v => v.Created)
+                                .Filter(v => v.IdActive);
+                        })
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Filter(s => s.TypeCode == 44.ToString())
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Filter(s => s.IdType == 3)
+                .Select(s => s.IdRule)
+                .Filter(s => s.IdRule == 1)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?" +
+                "$expand=" +
+                    "ODataKind(" +
+                        "$expand=" +
+                            "ODataCode(" +
+                                "$filter=Code eq 'test' and IdActive;" +
+                                "$select=Created" +
+                            ");" +
+                        $"$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;" +
+                        "$select=OpenDate;" +
+                        "$count=false" +
+                    ")," +
+                    "ODataKindNew(" +
+                        $"$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;" +
+                        "$select=OpenDate;" +
+                        "$count=false" +
+                    ")" +
+                "&" +
+                "$filter=TypeCode eq '44' and IdType eq 3 and IdRule eq 1" +
+                "&" +
+                "$select=IdRule");
+        }
+
         [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
         public void ODataQueryBuilderList_Filter_string_with_ReplaceCharacters_Success()
         {
@@ -1167,6 +1225,51 @@ namespace OData.QueryBuilder.Test
                 .Should()
                 .Throw<ArgumentNullException>()
                 .WithMessage("Resource name is null (Parameter 'resource')");
+        }
+
+        [Fact(DisplayName = "ToDicionary filter and expand union => Success")]
+        public void ODataQueryBuilderList_ToDicionary_FilterAndExpand_Union_Success()
+        {
+            var dictionary = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(a =>
+                        {
+                            a.For<ODataCodeEntity>(f => f.ODataCode)
+                                .Filter(v => v.Code == "test")
+                                .Select(v => v.Created)
+                                .Filter(v => v.IdActive);
+                        })
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Filter(s => s.TypeCode == 44.ToString())
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Filter(s => s.IdType == 3)
+                .Select(s => s.IdRule)
+                .Filter(s => s.IdRule == 1)
+                .ToDictionary();
+
+            var resultEquivalent = new Dictionary<string, string>
+            {
+                ["$expand"] = $"ODataKind($expand=ODataCode($filter=Code eq 'test' and IdActive;$select=Created);$filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;$select=OpenDate;$count=false),ODataKindNew($filter=EndDate eq {DateTime.Today:s}Z and IdKind eq 1;$select=OpenDate;$count=false)",
+                ["$filter"] = "TypeCode eq '44' and IdType eq 3 and IdRule eq 1",
+                ["$select"] = "IdRule"
+            };
+
+            dictionary.Should().BeEquivalentTo(resultEquivalent);
         }
 
         [Fact(DisplayName = "Filter Enum => Success")]

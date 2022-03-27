@@ -3,6 +3,7 @@ using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Expressions.Visitors;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
@@ -12,11 +13,12 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
     internal class ODataQueryExpand<TEntity> : AbstractODataQueryExpand, IODataQueryExpand<TEntity>
     {
+        private bool _hasMultyFilters;
         public ODataQueryExpand(ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(new StringBuilder(), odataQueryBuilderOptions)
         {
+            _hasMultyFilters = false;
         }
-
         public IODataQueryExpand<TEntity> Expand(Expression<Func<TEntity, object>> expandNested)
         {
             var query = new ODataOptionExpandExpressionVisitor().ToQuery(expandNested.Body);
@@ -41,27 +43,21 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filterNested.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
-
-            return this;
+            return Filter(query);
         }
 
         public IODataQueryExpand<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> filterNested, bool useParenthesis = false)
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filterNested.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
-
-            return this;
+            return Filter(query);
         }
 
         public IODataQueryExpand<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> filterNested, bool useParenthesis = false)
         {
             var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filterNested.Body, useParenthesis);
 
-            _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
-
-            return this;
+            return Filter(query);
         }
 
         public IODataQueryExpand<TEntity> OrderBy(Expression<Func<TEntity, object>> orderByNested)
@@ -117,6 +113,22 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
         public IODataQueryExpand<TEntity> Count(bool value = true)
         {
             _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSign}{value.ToString().ToLowerInvariant()}{QuerySeparators.Nested}");
+
+            return this;
+        }
+
+        private IODataQueryExpand<TEntity> Filter(string query)
+        {
+            if (_hasMultyFilters)
+            {
+                _stringBuilder.Merge(ODataOptionNames.Filter, QuerySeparators.Nested, $" {ODataLogicalOperations.And} {query}");
+            }
+            else
+            {
+                _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
+            }
+
+            _hasMultyFilters = true;
 
             return this;
         }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using OData.QueryBuilder.Conventions.Constants;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Extensions
@@ -7,17 +7,17 @@ namespace OData.QueryBuilder.Extensions
     {
         public static string ToODataOperator(this ExpressionType expressionType) => expressionType switch
         {
-            ExpressionType.And => "and",
-            ExpressionType.AndAlso => "and",
-            ExpressionType.Or => "or",
-            ExpressionType.OrElse => "or",
-            ExpressionType.Equal => "eq",
-            ExpressionType.Not => "not",
-            ExpressionType.NotEqual => "ne",
-            ExpressionType.LessThan => "lt",
-            ExpressionType.LessThanOrEqual => "le",
-            ExpressionType.GreaterThan => "gt",
-            ExpressionType.GreaterThanOrEqual => "ge",
+            ExpressionType.And => ODataLogicalOperations.And,
+            ExpressionType.AndAlso => ODataLogicalOperations.And,
+            ExpressionType.Or => ODataLogicalOperations.Or,
+            ExpressionType.OrElse => ODataLogicalOperations.Or,
+            ExpressionType.Equal => ODataLogicalOperations.Equal,
+            ExpressionType.Not => ODataLogicalOperations.Not,
+            ExpressionType.NotEqual => ODataLogicalOperations.NotEqual,
+            ExpressionType.LessThan => ODataLogicalOperations.LessThan,
+            ExpressionType.LessThanOrEqual => ODataLogicalOperations.LessThanOrEqual,
+            ExpressionType.GreaterThan => ODataLogicalOperations.GreaterThan,
+            ExpressionType.GreaterThanOrEqual => ODataLogicalOperations.GreaterThanOrEqual,
             _ => default,
         };
     }

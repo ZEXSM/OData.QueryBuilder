@@ -6,7 +6,6 @@ Library for creating complex OData queries (OData version 4.01) based on data mo
 [![Nuget Status](https://img.shields.io/nuget/dt/OData.QueryBuilder.svg)](https://www.nuget.org/packages/OData.QueryBuilder)
 
 ## Benefits
-* Expression is not used to `Compile()`, which generates `MSIL` code, which leads to memory leaks
 * Support:
   * nested extenders with a choice of filtering
   * operators

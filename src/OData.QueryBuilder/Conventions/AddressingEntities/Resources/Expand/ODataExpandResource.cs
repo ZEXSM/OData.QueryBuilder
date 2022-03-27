@@ -20,7 +20,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
             {
                 if (_odataQueryExpand?.Query?.Length > 0)
                 {
-                    return _stringBuilder.Append($"({_odataQueryExpand.Query})");
+                    return _stringBuilder.Append($"{QuerySeparators.LeftBracket}{_odataQueryExpand.Query}{QuerySeparators.RigthBracket}");
                 }
 
                 return _stringBuilder;
@@ -39,7 +39,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
 
             if (_odataQueryExpand?.Query?.Length > 0)
             {
-                _stringBuilder.Append($"({_odataQueryExpand.Query}){QuerySeparators.Comma}{query}");
+                _stringBuilder.Append($"{QuerySeparators.LeftBracket}{_odataQueryExpand.Query}{QuerySeparators.RigthBracket}{QuerySeparators.Comma}{query}");
             }
             else
             {

@@ -18,6 +18,10 @@ namespace OData.QueryBuilder.Conventions.Constants
 
         public const char DollarSign = '$';
 
+        public const char RigthBracket = ')';
+
+        public const char LeftBracket = '(';
+
         [Obsolete("Remove after upgrade to netstandard 2.1")]
         public const string StringComma = ",";
 

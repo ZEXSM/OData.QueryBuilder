@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Conventions.Functions;
+﻿using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Conventions.Operators;
 using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
@@ -41,7 +42,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
             }
 
             return hasParenthesis ?
-                $"({left} {binaryExpression.NodeType.ToODataOperator()} {right})"
+                $"{QuerySeparators.LeftBracket}{left} {binaryExpression.NodeType.ToODataOperator()} {right}{QuerySeparators.RigthBracket}"
                 :
                 $"{left} {binaryExpression.NodeType.ToODataOperator()} {right}";
         }

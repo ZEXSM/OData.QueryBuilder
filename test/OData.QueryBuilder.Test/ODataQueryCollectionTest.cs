@@ -1427,5 +1427,37 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("ODataType?$filter=contains(cast(ODataKindNew/ODataCode/Code,Edm.String),'55')");
         }
+
+        [Theory(DisplayName = "Function Cast => Exception")]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ODataQueryBuilder_Function_Cast_Exception(string value)
+        {
+            _odataQueryBuilderDefault
+               .Invoking((r) => r
+                   .For<ODataTypeEntity>(s => s.ODataType)
+                   .ByList()
+                   .Filter((s, f) => f.Contains(f.Cast(s.ODataKindNew.ODataCode.Code, value), "55"))
+                   .ToUri())
+               .Should().Throw<ArgumentException>().WithMessage("Type is empty or null");
+        }
+
+        [Theory(DisplayName = "Function Cast => Skip Exception")]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ODataQueryBuilder_Function_Cast_Skip_Exception(string value)
+        {
+            var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyFunctionArgs = true };
+            var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
+                _commonFixture.BaseUri, odataQueryBuilderOptions);
+
+            var uri = odataQueryBuilder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Contains(f.Cast(s.ODataKindNew.ODataCode.Code, value), "55"))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=contains(,'55')");
+        }
     }
 }

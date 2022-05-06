@@ -202,7 +202,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     var cast0 = VisitExpression(methodCallExpression.Arguments[0]);
                     var cast1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]) as string;
 
-                    if (cast1.IsNullOrQuotes())
+                    if (string.IsNullOrEmpty(cast1))
                     {
                         if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArgs)
                         {

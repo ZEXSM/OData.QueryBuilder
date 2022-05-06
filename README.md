@@ -24,6 +24,8 @@ Library for creating complex OData queries (OData version 4.01) based on data mo
         * [`indexof`](#indexof)
         * [`startswith`](#startswith)
         * [`length`](#length)
+    * type
+        * [`cast`](#cast)
   * sorting by several fields with indication of direction
 
 ## Installation
@@ -328,6 +330,15 @@ var constValue = 3;
 .Filter((s, f) => f.Length(s.ODataKind.ODataCode.Code) > 0)
 ```
 > $filter=length(ODataKind/ODataCode/Code) gt 0
+
+## Usage type functions
+
+#### <a name="cast"/> cast
+
+```csharp
+.Filter((s, f) => f.Contains(f.Cast(s.ODataKindNew.ODataCode.Code, "Edm.String"), "55"))
+```
+> $filter=contains(cast(ODataKindNew/ODataCode/Code,Edm.String),'55')
 
 ## Usage other functions
 

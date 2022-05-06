@@ -1,6 +1,9 @@
 ﻿namespace OData.QueryBuilder.Conventions.Functions
 {
-    public interface IODataFunction : IODataStringAndCollectionFunction, IODataDateFunction, IConvertFunction, IReplaceFunction
+    /// <summary>
+    /// OData functions
+    /// </summary>
+    public interface IODataFunction : IODataStringAndCollectionFunction, IODataDateTimeFunction, ICustomFunction, ITypeFunction
     {
     }
 }

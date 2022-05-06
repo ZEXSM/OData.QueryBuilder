@@ -2,7 +2,10 @@
 
 namespace OData.QueryBuilder.Conventions.Functions
 {
-    public interface IODataDateFunction
+    /// <summary>
+    /// https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#sec_DateandTimeFunctions
+    /// </summary>
+    public interface IODataDateTimeFunction
     {
         /// <summary>
         /// http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#sec_date

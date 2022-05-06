@@ -178,17 +178,17 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     var length0 = VisitExpression(methodCallExpression.Arguments[0]);
 
                     return $"{nameof(IODataStringAndCollectionFunction.Length).ToLowerInvariant()}({length0})";
-                case nameof(IConvertFunction.ConvertEnumToString):
+                case nameof(ICustomFunction.ConvertEnumToString):
                     return $"'{_valueExpression.GetValue(methodCallExpression.Arguments[0])}'";
-                case nameof(IConvertFunction.ConvertDateTimeToString):
+                case nameof(ICustomFunction.ConvertDateTimeToString):
                     var dateTime = (DateTime)_valueExpression.GetValue(methodCallExpression.Arguments[0]);
 
                     return dateTime.ToString((string)_valueExpression.GetValue(methodCallExpression.Arguments[1]));
-                case nameof(IConvertFunction.ConvertDateTimeOffsetToString):
+                case nameof(ICustomFunction.ConvertDateTimeOffsetToString):
                     var dateTimeOffset = (DateTimeOffset)_valueExpression.GetValue(methodCallExpression.Arguments[0]);
 
                     return dateTimeOffset.ToString((string)_valueExpression.GetValue(methodCallExpression.Arguments[1]));
-                case nameof(IReplaceFunction.ReplaceCharacters):
+                case nameof(ICustomFunction.ReplaceCharacters):
                     var @symbol0 = _valueExpression.GetValue(methodCallExpression.Arguments[0]).ToQuery();
                     var @symbol1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]);
 
@@ -198,6 +198,21 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     }
 
                     return @symbol0.ReplaceWithStringBuilder(@symbol1 as IDictionary<string, string>);
+                case nameof(ITypeFunction.Cast):
+                    var cast0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var cast1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]) as string;
+
+                    if (cast1.IsNullOrQuotes())
+                    {
+                        if (!_odataQueryBuilderOptions.SuppressExceptionOfNullOrEmptyFunctionArgs)
+                        {
+                            throw new ArgumentException("Type is empty or null");
+                        }
+
+                        return default;
+                    }
+
+                    return $"{nameof(ITypeFunction.Cast).ToLowerInvariant()}({cast0},{cast1})";
                 case nameof(string.ToString):
                     return _valueExpression.GetValue(methodCallExpression.Object).ToString().ToQuery();
                 default:

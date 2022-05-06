@@ -1415,5 +1415,17 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("ODataType?$filter=length(TypeCode) gt 0");
         }
+
+        [Fact(DisplayName = "Function Cast => Success")]
+        public void ODataQueryBuilder_Function_Cast_Success()
+        {
+            var uri = new ODataQueryBuilder<ODataInfoContainer>()
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f) => f.Contains(f.Cast(s.ODataKindNew.ODataCode.Code, "Edm.String"), "55"))
+                .ToUri();
+
+            uri.Should().Be("ODataType?$filter=contains(cast(ODataKindNew/ODataCode/Code,Edm.String),'55')");
+        }
     }
 }

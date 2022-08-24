@@ -35,6 +35,18 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKind");
         }
 
+        [Fact(DisplayName = "Expand dynamic property => Success")]
+        public void ODataQueryBuilderList_Expand_DynamicProperty_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(s => new { ODataKind = ODataProperty.FromPath<ODataKindEntity>("ODataKind") })
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKind");
+        }
+        
         [Fact(DisplayName = "Select simple => Success")]
         public void ODataQueryBuilderList_Select_Simple_Success()
         {
@@ -47,6 +59,18 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType?$select=IdType");
         }
 
+        [Fact(DisplayName = "Select dynamic property => Success")]
+        public void ODataQueryBuilderList_Select_DynamicProperty_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Select(s => ODataProperty.FromPath<int>("IdType"))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$select=IdType");
+        }
+        
         [Fact(DisplayName = "OrderBy simple => Success")]
         public void ODataQueryBuilderList_OrderBy_Simple_Success()
         {
@@ -59,6 +83,18 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType?$orderby=IdType asc");
         }
 
+        [Fact(DisplayName = "OrderBy dynamic property => Success")]
+        public void ODataQueryBuilderList_OrderBy_DynamicProperty_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .OrderBy(s => ODataProperty.FromPath<int>("IdType"))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$orderby=IdType asc");
+        }
+        
         [Fact(DisplayName = "Filter orderBy multiple sort => Success")]
         public void ODataQueryBuilderList_Filter_OrderBy_Multiple_Sort_Success()
         {
@@ -323,7 +359,7 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s,f,_) => f.Property<int>(propertyName) >= 3)
+                .Filter((s,f,_) => ODataProperty.FromPath<int>(propertyName) >= 3)
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
@@ -335,7 +371,7 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s,f,_) => f.Property<int>("ODataKind.ODataCode.IdCode") >= 3)
+                .Filter((s,f,_) => ODataProperty.FromPath<int>("ODataKind.ODataCode.IdCode") >= 3)
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
@@ -399,7 +435,7 @@ namespace OData.QueryBuilder.Test
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s, f, o) => o.Any(f.Property<string[]>("Tags"), t => t == "testTag"))
+                .Filter((s, f, o) => o.Any(ODataProperty.FromPath<string[]>("Tags"), t => t == "testTag"))
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");

@@ -10,44 +10,44 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
         }
 
-        protected string VisitExpression(Expression expression) => expression switch
+        protected string VisitExpression(LambdaExpression topExpression, Expression expression) => expression switch
         {
-            BinaryExpression binaryExpression => VisitBinaryExpression(binaryExpression),
-            MemberExpression memberExpression => VisitMemberExpression(memberExpression),
-            ConstantExpression constantExpression => VisitConstantExpression(constantExpression),
-            MethodCallExpression methodCallExpression => VisitMethodCallExpression(methodCallExpression),
-            NewExpression newExpression => VisitNewExpression(newExpression),
-            UnaryExpression unaryExpression => VisitUnaryExpression(unaryExpression),
-            LambdaExpression lambdaExpression => VisitLambdaExpression(lambdaExpression),
-            ParameterExpression parameterExpression => VisitParameterExpression(parameterExpression),
+            BinaryExpression binaryExpression => VisitBinaryExpression(topExpression, binaryExpression),
+            MemberExpression memberExpression => VisitMemberExpression(topExpression, memberExpression),
+            ConstantExpression constantExpression => VisitConstantExpression(topExpression, constantExpression),
+            MethodCallExpression methodCallExpression => VisitMethodCallExpression(topExpression, methodCallExpression),
+            NewExpression newExpression => VisitNewExpression(topExpression, newExpression),
+            UnaryExpression unaryExpression => VisitUnaryExpression(topExpression, unaryExpression),
+            LambdaExpression lambdaExpression => VisitLambdaExpression(topExpression, lambdaExpression),
+            ParameterExpression parameterExpression => VisitParameterExpression(topExpression, parameterExpression),
             _ => default,
         };
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitBinaryExpression(BinaryExpression binaryExpression) => default;
+        protected virtual string VisitBinaryExpression(LambdaExpression topExpression, BinaryExpression binaryExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitConstantExpression(ConstantExpression constantExpression) => default;
+        protected virtual string VisitConstantExpression(LambdaExpression topExpression, ConstantExpression constantExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitMethodCallExpression(MethodCallExpression methodCallExpression) => default;
+        protected virtual string VisitMethodCallExpression(LambdaExpression topExpression, MethodCallExpression methodCallExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitNewExpression(NewExpression newExpression) => default;
+        protected virtual string VisitNewExpression(LambdaExpression topExpression, NewExpression newExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitUnaryExpression(UnaryExpression unaryExpression) => default;
+        protected virtual string VisitUnaryExpression(LambdaExpression topExpression, UnaryExpression unaryExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression) => default;
+        protected virtual string VisitLambdaExpression(LambdaExpression topExpression, LambdaExpression lambdaExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitParameterExpression(ParameterExpression parameterExpression) => default;
+        protected virtual string VisitParameterExpression(LambdaExpression topExpression, ParameterExpression parameterExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitMemberExpression(MemberExpression memberExpression)
+        protected virtual string VisitMemberExpression(LambdaExpression topExpression, MemberExpression memberExpression)
         {
-            var memberName = VisitExpression(memberExpression.Expression);
+            var memberName = VisitExpression(topExpression, memberExpression.Expression);
 
             if (string.IsNullOrEmpty(memberName))
             {
@@ -60,7 +60,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 $"{memberName}/{memberExpression.Member.Name}";
         }
 
-        public virtual string ToQuery(Expression expression) =>
-            VisitExpression(expression);
+        public virtual string ToQuery(LambdaExpression expression) =>
+            VisitExpression(expression, expression.Body);
     }
 }

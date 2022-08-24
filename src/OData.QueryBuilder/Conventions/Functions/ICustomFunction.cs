@@ -32,5 +32,12 @@ namespace OData.QueryBuilder.Conventions.Functions
         /// Replace characters
         /// </summary>
         IEnumerable<string> ReplaceCharacters(IEnumerable<string> values, IDictionary<string, string> keyValuePairs);
+
+        /// <summary>
+        /// Dynamic property
+        /// </summary>
+        /// <param name="propertyPath">The path to the property or field.</param>
+        /// <typeparam name="T">The type of the property.</typeparam>
+        T Property<T>(string propertyPath);
     }
 }

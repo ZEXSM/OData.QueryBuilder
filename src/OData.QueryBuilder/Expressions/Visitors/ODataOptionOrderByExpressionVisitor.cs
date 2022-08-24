@@ -12,21 +12,21 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
         }
 
-        protected override string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
+        protected override string VisitMethodCallExpression(LambdaExpression topExpression, MethodCallExpression methodCallExpression)
         {
             switch (methodCallExpression.Method.Name)
             {
                 case nameof(ISortFunction.Ascending):
-                    var ascending0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var ascending0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
-                    var ascendingQuery = VisitExpression(methodCallExpression.Object as MethodCallExpression);
+                    var ascendingQuery = VisitExpression(topExpression, methodCallExpression.Object as MethodCallExpression);
                     var ascendingQueryComma = ascendingQuery == default ? string.Empty : QuerySeparators.StringComma;
 
                     return $"{ascendingQuery}{ascendingQueryComma}{ascending0} {QuerySorts.Asc}";
                 case nameof(ISortFunction.Descending):
-                    var descending0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var descending0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
-                    var descendingQuery = VisitExpression(methodCallExpression.Object as MethodCallExpression);
+                    var descendingQuery = VisitExpression(topExpression, methodCallExpression.Object as MethodCallExpression);
                     var descendingQueryComma = descendingQuery == default ? string.Empty : QuerySeparators.StringComma;
 
                     return $"{descendingQuery}{descendingQueryComma}{descending0} {QuerySorts.Desc}";

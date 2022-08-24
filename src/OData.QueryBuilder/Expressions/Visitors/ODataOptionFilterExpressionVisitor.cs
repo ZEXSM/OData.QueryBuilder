@@ -5,6 +5,7 @@ using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Expressions.Visitors
@@ -24,12 +25,12 @@ namespace OData.QueryBuilder.Expressions.Visitors
             _valueExpression = new ValueExpression();
         }
 
-        protected override string VisitBinaryExpression(BinaryExpression binaryExpression)
+        protected override string VisitBinaryExpression(LambdaExpression topExpression, BinaryExpression binaryExpression)
         {
             var hasParenthesis = _useParenthesis && HasParenthesis(binaryExpression.NodeType);
 
-            var left = VisitExpression(binaryExpression.Left);
-            var right = VisitExpression(binaryExpression.Right);
+            var left = VisitExpression(topExpression, binaryExpression.Left);
+            var right = VisitExpression(topExpression, binaryExpression.Right);
 
             if (string.IsNullOrEmpty(left))
             {
@@ -47,18 +48,18 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 $"{left} {binaryExpression.NodeType.ToODataOperator()} {right}";
         }
 
-        protected override string VisitMemberExpression(MemberExpression memberExpression) =>
-            IsMemberExpressionBelongsResource(memberExpression) ? base.VisitMemberExpression(memberExpression) : _valueExpression.GetValue(memberExpression).ToQuery();
+        protected override string VisitMemberExpression(LambdaExpression topExpression, MemberExpression memberExpression) =>
+            IsMemberExpressionBelongsResource(memberExpression) ? base.VisitMemberExpression(topExpression, memberExpression) : _valueExpression.GetValue(memberExpression).ToQuery();
 
-        protected override string VisitConstantExpression(ConstantExpression constantExpression) =>
+        protected override string VisitConstantExpression(LambdaExpression topExpression, ConstantExpression constantExpression) =>
             constantExpression.Value.ToQuery();
 
-        protected override string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
+        protected override string VisitMethodCallExpression(LambdaExpression topExpression, MethodCallExpression methodCallExpression)
         {
             switch (methodCallExpression.Method.Name)
             {
                 case nameof(IODataOperator.In):
-                    var in0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var in0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                     var in1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ToQuery();
 
                     if (in1.IsNullOrQuotes())
@@ -73,17 +74,17 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                     return $"{in0} {nameof(IODataOperator.In).ToLowerInvariant()} ({in1})";
                 case nameof(IODataOperator.All):
-                    var all0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var all1 = VisitExpression(methodCallExpression.Arguments[1]);
+                    var all0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
+                    var all1 = VisitExpression(topExpression, methodCallExpression.Arguments[1]);
 
                     return $"{all0}/{nameof(IODataOperator.All).ToLowerInvariant()}({all1})";
                 case nameof(IODataOperator.Any):
-                    var any0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var any0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                     var any1 = default(string);
 
                     if (methodCallExpression.Arguments.Count > 1)
                     {
-                        any1 = VisitExpression(methodCallExpression.Arguments[1]);
+                        any1 = VisitExpression(topExpression, methodCallExpression.Arguments[1]);
 
                         if (any1.IsNullOrQuotes())
                         {
@@ -98,12 +99,12 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                     return $"{any0}/{nameof(IODataOperator.Any).ToLowerInvariant()}({any1})";
                 case nameof(IODataFunction.Date):
-                    var date0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var date0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
                     return $"{nameof(IODataFunction.Date).ToLowerInvariant()}({date0})";
                 case nameof(IODataFunction.SubstringOf):
                     var substringOf0 = _valueExpression.GetValue(methodCallExpression.Arguments[0]).ToQuery();
-                    var substringOf1 = VisitExpression(methodCallExpression.Arguments[1]);
+                    var substringOf1 = VisitExpression(topExpression, methodCallExpression.Arguments[1]);
 
                     if (substringOf0.IsNullOrQuotes())
                     {
@@ -117,7 +118,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                     return $"{nameof(IODataFunction.SubstringOf).ToLowerInvariant()}({substringOf0},{substringOf1})";
                 case nameof(IODataFunction.Contains):
-                    var contains0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var contains0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                     var contains1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ToQuery();
 
                     if (contains1.IsNullOrQuotes())
@@ -132,7 +133,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                     return $"{nameof(IODataFunction.Contains).ToLowerInvariant()}({contains0},{contains1})";
                 case nameof(IODataFunction.StartsWith):
-                    var startsWith0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var startsWith0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                     var startsWith1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]).ToQuery();
 
                     if (startsWith1.IsNullOrQuotes())
@@ -147,8 +148,8 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                     return $"{nameof(IODataFunction.StartsWith).ToLowerInvariant()}({startsWith0},{startsWith1})";
                 case nameof(IODataFunction.Concat):
-                    var concat0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var concat1 = VisitExpression(methodCallExpression.Arguments[1]);
+                    var concat0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
+                    var concat1 = VisitExpression(topExpression, methodCallExpression.Arguments[1]);
 
                     if (concat0.IsNullOrQuotes() || concat1.IsNullOrQuotes())
                     {
@@ -162,20 +163,20 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                     return $"{nameof(IODataFunction.Concat).ToLowerInvariant()}({concat0},{concat1})";
                 case nameof(IODataStringAndCollectionFunction.ToUpper):
-                    var toUpper0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var toUpper0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
                     return $"{nameof(IODataFunction.ToUpper).ToLowerInvariant()}({toUpper0})";
                 case nameof(IODataStringAndCollectionFunction.ToLower):
-                    var toLower0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var toLower0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
                     return $"{nameof(IODataFunction.ToLower).ToLowerInvariant()}({toLower0})";
                 case nameof(IODataStringAndCollectionFunction.IndexOf):
-                    var indexOf0 = VisitExpression(methodCallExpression.Arguments[0]);
-                    var indexOf1 = VisitExpression(methodCallExpression.Arguments[1]);
+                    var indexOf0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
+                    var indexOf1 = VisitExpression(topExpression, methodCallExpression.Arguments[1]);
 
                     return $"{nameof(IODataFunction.IndexOf).ToLowerInvariant()}({indexOf0},{indexOf1})";
                 case nameof(IODataStringAndCollectionFunction.Length):
-                    var length0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var length0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
                     return $"{nameof(IODataStringAndCollectionFunction.Length).ToLowerInvariant()}({length0})";
                 case nameof(ICustomFunction.ConvertEnumToString):
@@ -198,8 +199,21 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     }
 
                     return @symbol0.ReplaceWithStringBuilder(@symbol1 as IDictionary<string, string>);
+                case nameof(ICustomFunction.Property):
+                    string propertyPath = (string) _valueExpression.GetValue(methodCallExpression.Arguments[0]);
+                    var propertyNames = propertyPath.Split('.');
+
+                    MemberExpression memberExpression = Expression.PropertyOrField(
+                        Expression.Parameter(topExpression.Parameters[0].Type, "m"),
+                        propertyNames[0]);
+                
+                    for (var index = 1; index < propertyNames.Length; index++)
+                    {
+                        memberExpression = Expression.PropertyOrField(memberExpression, propertyNames[index]);
+                    }
+                    return VisitMemberExpression(topExpression, memberExpression);
                 case nameof(ITypeFunction.Cast):
-                    var cast0 = VisitExpression(methodCallExpression.Arguments[0]);
+                    var cast0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                     var cast1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]) as string;
 
                     if (string.IsNullOrEmpty(cast1))
@@ -220,7 +234,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
             }
         }
 
-        protected override string VisitNewExpression(NewExpression newExpression)
+        protected override string VisitNewExpression(LambdaExpression topExpression, NewExpression newExpression)
         {
             if (newExpression.Members == default)
             {
@@ -234,13 +248,13 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 return (arguments.Length == 0 ? Activator.CreateInstance(newExpression.Type) : newExpression.Constructor.Invoke(arguments)).ToQuery();
             }
 
-            return base.VisitNewExpression(newExpression);
+            return base.VisitNewExpression(topExpression, newExpression);
         }
 
-        protected override string VisitLambdaExpression(LambdaExpression lambdaExpression)
+        protected override string VisitLambdaExpression(LambdaExpression topExpression, LambdaExpression lambdaExpression)
         {
             var parameterName = lambdaExpression.Parameters[0].Name;
-            var filter = new ODataOptionFilterLambdaExpressionVisitor(_odataQueryBuilderOptions).ToQuery(lambdaExpression.Body, _useParenthesis);
+            var filter = new ODataOptionFilterLambdaExpressionVisitor(_odataQueryBuilderOptions).ToQuery(lambdaExpression, _useParenthesis);
 
             return $"{parameterName}:{filter}";
         }
@@ -268,7 +282,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
             return hasParenthesis;
         }
 
-        public virtual string ToQuery(Expression expression, bool useParenthesis = false)
+        public virtual string ToQuery(LambdaExpression expression, bool useParenthesis = false)
         {
             _useParenthesis = useParenthesis;
 

@@ -35,7 +35,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand
 
         public IODataQueryExpand<TNestedEntity> For<TNestedEntity>(Expression<Func<TEntity, object>> nestedExpand)
         {
-            var query = new ODataResourceExpressionVisitor().ToQuery(nestedExpand.Body);
+            var query = new ODataResourceExpressionVisitor().ToQuery(nestedExpand);
 
             if (_odataQueryExpand?.Query?.Length > 0)
             {

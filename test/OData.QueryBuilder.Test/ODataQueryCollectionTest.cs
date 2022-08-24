@@ -315,6 +315,32 @@ namespace OData.QueryBuilder.Test
                 .Should().Throw<ArgumentException>().WithMessage("KeyValuePairs is null");
         }
 
+        [Fact(DisplayName = "Filter variable dynamic property int=> Success")]
+        public void ODataQueryBuilderList_Filter_Simple_Variable_DynamicProperty_Success()
+        {
+            string propertyName = "ODataKind.ODataCode.IdCode";
+            
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s,f,_) => f.Property<int>(propertyName) >= 3)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
+        }
+
+        [Fact(DisplayName = "Filter const dynamic property int=> Success")]
+        public void ODataQueryBuilderList_Filter_Simple_Const_DynamicProperty_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s,f,_) => f.Property<int>("ODataKind.ODataCode.IdCode") >= 3)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
+        }
+        
         [Fact(DisplayName = "Filter simple const int=> Success")]
         public void ODataQueryBuilderList_Filter_Simple_Const_Int_Success()
         {
@@ -362,6 +388,18 @@ namespace OData.QueryBuilder.Test
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter((s, f, o) => o.Any(s.Tags, t => t == "testTag"))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
+        }
+
+        [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any Dynamic property => Success")]
+        public void ODataQueryBuilderList_Filter_Any_DynamicProperty_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.Any(f.Property<string[]>("Tags"), t => t == "testTag"))
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");

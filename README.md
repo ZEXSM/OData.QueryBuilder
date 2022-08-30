@@ -27,7 +27,8 @@ Library for creating complex OData queries (OData version 4.01) based on data mo
     * type
         * [`cast`](#cast)
   * sorting by several fields with indication of direction
-
+  * dynamic properties
+    
 ## Installation
 To install `OData.QueryBuilder` from `Visual Studio`, find `OData.QueryBuilder` in the `NuGet` package manager user interface or enter the following command in the package manager console:
 ```
@@ -382,6 +383,20 @@ var strings = new string[] {
     new Dictionary<string, string>() { { @"\", "%5C" } })))
 ```
 > $filter=ODataKind/ODataCode/Code in ('test%5C%5CYUYYUT','test1%5C%5CYUYY123')
+
+## Using dynamic properties
+
+For use-cases where a property which is used for queries needs to be dynamically resolved (eg. the user chooses the property name to filter on)
+a special method `ODataProperty.FromPath<TProperty>()` can be invoked in the query expressions:
+
+```csharp
+...
+.Filter(s => ODataProperty.FromPath<int>("IdRule") == 3))
+```
+
+Note that the generic type argument `TProperty` needs to match the type of the dynamically
+resolved property in the OData model.
+
 
 ## Suppress exceptions
 

@@ -49,6 +49,11 @@ namespace OData.QueryBuilder.Expressions.Visitors
                             memberExpression = Expression.PropertyOrField(memberExpression, propertyNames[index]);
                         }
 
+                        var genericMethodType = methodCallExpression.Method.GetGenericArguments()[0];
+                        if (genericMethodType != memberExpression.Type)
+                            throw new ArgumentException(
+                                $"The type '{genericMethodType.FullName}' specified when calling 'ODataProperty.FromPath<T>(\"{propertyPath}\")' does not match the expected type '{memberExpression.Type.FullName}' defined by the model.");
+                        
                         return VisitMemberExpression(topExpression, memberExpression);
                 }
             }

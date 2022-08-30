@@ -365,6 +365,19 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
         }
 
+        [Fact(DisplayName = "Filter variable dynamic property wrong type => ArgumentException")]
+        public void ODataQueryBuilderList_Filter_Simple_Variable_DynamicProperty_WrongType_ArgumentException()
+        {
+            string propertyName = "ODataKind.ODataCode.IdCode";
+
+            var uri = _odataQueryBuilderDefault
+                .Invoking(b => b
+                    .For<ODataTypeEntity>(s => s.ODataType)
+                    .ByList()
+                    .Filter((s, f, _) => ODataProperty.FromPath<string>(propertyName) == "test")
+                    .ToUri()).Should().Throw<ArgumentException>();
+        }
+        
         [Fact(DisplayName = "Filter const dynamic property int=> Success")]
         public void ODataQueryBuilderList_Filter_Simple_Const_DynamicProperty_Success()
         {

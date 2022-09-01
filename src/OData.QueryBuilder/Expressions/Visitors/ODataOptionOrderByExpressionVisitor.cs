@@ -12,27 +12,35 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
         }
 
-        protected override string VisitMethodCallExpression(MethodCallExpression methodCallExpression)
+        protected override string VisitMethodCallExpression(LambdaExpression topExpression, MethodCallExpression methodCallExpression)
         {
-            switch (methodCallExpression.Method.Name)
+            var method = methodCallExpression.Method;
+            if (method.DeclaringType!.IsAssignableFrom(typeof(ISortFunction)))
             {
-                case nameof(ISortFunction.Ascending):
-                    var ascending0 = VisitExpression(methodCallExpression.Arguments[0]);
+                switch (method.Name)
+                {
+                    case nameof(ISortFunction.Ascending):
+                        var ascending0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
-                    var ascendingQuery = VisitExpression(methodCallExpression.Object as MethodCallExpression);
-                    var ascendingQueryComma = ascendingQuery == default ? string.Empty : QuerySeparators.StringComma;
+                        var ascendingQuery = VisitExpression(topExpression,
+                            methodCallExpression.Object as MethodCallExpression);
+                        var ascendingQueryComma =
+                            ascendingQuery == default ? string.Empty : QuerySeparators.StringComma;
 
-                    return $"{ascendingQuery}{ascendingQueryComma}{ascending0} {QuerySorts.Asc}";
-                case nameof(ISortFunction.Descending):
-                    var descending0 = VisitExpression(methodCallExpression.Arguments[0]);
+                        return $"{ascendingQuery}{ascendingQueryComma}{ascending0} {QuerySorts.Asc}";
+                    case nameof(ISortFunction.Descending):
+                        var descending0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
 
-                    var descendingQuery = VisitExpression(methodCallExpression.Object as MethodCallExpression);
-                    var descendingQueryComma = descendingQuery == default ? string.Empty : QuerySeparators.StringComma;
+                        var descendingQuery = VisitExpression(topExpression,
+                            methodCallExpression.Object as MethodCallExpression);
+                        var descendingQueryComma =
+                            descendingQuery == default ? string.Empty : QuerySeparators.StringComma;
 
-                    return $"{descendingQuery}{descendingQueryComma}{descending0} {QuerySorts.Desc}";
-                default:
-                    throw new NotSupportedException($"Method {methodCallExpression.Method.Name} not supported");
+                        return $"{descendingQuery}{descendingQueryComma}{descending0} {QuerySorts.Desc}";
+                }
             }
+
+            return base.VisitMethodCallExpression(topExpression, methodCallExpression);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
         public IODataQueryKey<TEntity> Expand(Expression<Func<TEntity, object>> expand)
         {
-            var query = new ODataOptionExpandExpressionVisitor().ToQuery(expand.Body);
+            var query = new ODataOptionExpandExpressionVisitor().ToQuery(expand);
 
             return Expand(query);
         }
@@ -45,7 +45,7 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
         public IODataQueryKey<TEntity> Select(Expression<Func<TEntity, object>> select)
         {
-            var query = new ODataOptionSelectExpressionVisitor().ToQuery(select.Body);
+            var query = new ODataOptionSelectExpressionVisitor().ToQuery(select);
 
             _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 

@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Options;
+﻿using System;
+using OData.QueryBuilder.Options;
 using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Expressions.Visitors
@@ -10,7 +11,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
         }
 
-        protected override string VisitParameterExpression(ParameterExpression parameterExpression) =>
+        protected override string VisitParameterExpression(LambdaExpression topExpression, ParameterExpression parameterExpression) =>
             parameterExpression.Name;
     }
 }

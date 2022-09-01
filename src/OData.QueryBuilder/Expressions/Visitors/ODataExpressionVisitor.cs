@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Extensions;
+﻿using System;
+using OData.QueryBuilder.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
@@ -10,44 +11,72 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
         }
 
-        protected string VisitExpression(Expression expression) => expression switch
+        protected string VisitExpression(LambdaExpression topExpression, Expression expression) => expression switch
         {
-            BinaryExpression binaryExpression => VisitBinaryExpression(binaryExpression),
-            MemberExpression memberExpression => VisitMemberExpression(memberExpression),
-            ConstantExpression constantExpression => VisitConstantExpression(constantExpression),
-            MethodCallExpression methodCallExpression => VisitMethodCallExpression(methodCallExpression),
-            NewExpression newExpression => VisitNewExpression(newExpression),
-            UnaryExpression unaryExpression => VisitUnaryExpression(unaryExpression),
-            LambdaExpression lambdaExpression => VisitLambdaExpression(lambdaExpression),
-            ParameterExpression parameterExpression => VisitParameterExpression(parameterExpression),
+            BinaryExpression binaryExpression => VisitBinaryExpression(topExpression, binaryExpression),
+            MemberExpression memberExpression => VisitMemberExpression(topExpression, memberExpression),
+            ConstantExpression constantExpression => VisitConstantExpression(topExpression, constantExpression),
+            MethodCallExpression methodCallExpression => VisitMethodCallExpression(topExpression, methodCallExpression),
+            NewExpression newExpression => VisitNewExpression(topExpression, newExpression),
+            UnaryExpression unaryExpression => VisitUnaryExpression(topExpression, unaryExpression),
+            LambdaExpression lambdaExpression => VisitLambdaExpression(topExpression, lambdaExpression),
+            ParameterExpression parameterExpression => VisitParameterExpression(topExpression, parameterExpression),
             _ => default,
         };
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitBinaryExpression(BinaryExpression binaryExpression) => default;
+        protected virtual string VisitBinaryExpression(LambdaExpression topExpression, BinaryExpression binaryExpression) => default;
 
         [ExcludeFromCodeCoverage]
-        protected virtual string VisitConstantExpression(ConstantExpression constantExpression) => default;
+        protected virtual string VisitConstantExpression(LambdaExpression topExpression, ConstantExpression constantExpression) => default;
 
-        [ExcludeFromCodeCoverage]
-        protected virtual string VisitMethodCallExpression(MethodCallExpression methodCallExpression) => default;
-
-        [ExcludeFromCodeCoverage]
-        protected virtual string VisitNewExpression(NewExpression newExpression) => default;
-
-        [ExcludeFromCodeCoverage]
-        protected virtual string VisitUnaryExpression(UnaryExpression unaryExpression) => default;
-
-        [ExcludeFromCodeCoverage]
-        protected virtual string VisitLambdaExpression(LambdaExpression lambdaExpression) => default;
-
-        [ExcludeFromCodeCoverage]
-        protected virtual string VisitParameterExpression(ParameterExpression parameterExpression) => default;
-
-        [ExcludeFromCodeCoverage]
-        protected virtual string VisitMemberExpression(MemberExpression memberExpression)
+        protected virtual string VisitMethodCallExpression(LambdaExpression topExpression, MethodCallExpression methodCallExpression)
         {
-            var memberName = VisitExpression(memberExpression.Expression);
+            if (methodCallExpression.Method.DeclaringType == typeof(ODataProperty))
+            {
+                switch (methodCallExpression.Method.Name)
+                {
+                    case nameof(ODataProperty.FromPath):
+                        string propertyPath = (string)new ValueExpression().GetValue(methodCallExpression.Arguments[0]);
+                        var propertyNames = propertyPath.Split('.');
+
+                        MemberExpression memberExpression = Expression.PropertyOrField(
+                            Expression.Parameter(topExpression.Parameters[0].Type, "m"),
+                            propertyNames[0]);
+
+                        for (var index = 1; index < propertyNames.Length; index++)
+                        {
+                            memberExpression = Expression.PropertyOrField(memberExpression, propertyNames[index]);
+                        }
+
+                        var genericMethodType = methodCallExpression.Method.GetGenericArguments()[0];
+                        if (genericMethodType != memberExpression.Type)
+                            throw new ArgumentException(
+                                $"The type '{genericMethodType.FullName}' specified when calling 'ODataProperty.FromPath<T>(\"{propertyPath}\")' does not match the expected type '{memberExpression.Type.FullName}' defined by the model.");
+                        
+                        return VisitMemberExpression(topExpression, memberExpression);
+                }
+            }
+
+            throw new NotSupportedException($"Method {methodCallExpression.Method.Name} not supported");
+        }
+
+        [ExcludeFromCodeCoverage]
+        protected virtual string VisitNewExpression(LambdaExpression topExpression, NewExpression newExpression) => default;
+
+        [ExcludeFromCodeCoverage]
+        protected virtual string VisitUnaryExpression(LambdaExpression topExpression, UnaryExpression unaryExpression) => default;
+
+        [ExcludeFromCodeCoverage]
+        protected virtual string VisitLambdaExpression(LambdaExpression topExpression, LambdaExpression lambdaExpression) => default;
+
+        [ExcludeFromCodeCoverage]
+        protected virtual string VisitParameterExpression(LambdaExpression topExpression, ParameterExpression parameterExpression) => default;
+
+        [ExcludeFromCodeCoverage]
+        protected virtual string VisitMemberExpression(LambdaExpression topExpression, MemberExpression memberExpression)
+        {
+            var memberName = VisitExpression(topExpression, memberExpression.Expression);
 
             if (string.IsNullOrEmpty(memberName))
             {
@@ -60,7 +89,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 $"{memberName}/{memberExpression.Member.Name}";
         }
 
-        public virtual string ToQuery(Expression expression) =>
-            VisitExpression(expression);
+        public virtual string ToQuery(LambdaExpression expression) =>
+            VisitExpression(expression, expression.Body);
     }
 }

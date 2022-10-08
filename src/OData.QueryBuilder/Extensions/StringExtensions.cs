@@ -50,6 +50,7 @@ namespace OData.QueryBuilder.Extensions
             ICollection collection => collection.CollectionToQuery(),
             IEnumerable enumerable => enumerable.EnumerableToQuery(),
             Guid @guid => $"{@guid}",
+            decimal @decimal => Convert.ToString(@decimal, CultureInfo.InvariantCulture),
             _ => @object.GetType().IsPrimitive ? Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'",
         };
 

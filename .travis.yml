@@ -17,6 +17,7 @@ after_success:
     - dotnet minicover uninstrument
     - dotnet minicover report
     - dotnet minicover coverallsreport --output "coveralls.json" --service-name "travis-ci" --service-job-id $TRAVIS_JOB_ID
+    - echo $TRAVIS_JOB_ID
 before_deploy:
     - git checkout origin/main && git fetch && git remote set-url origin https://${GITHUB_OAUTH_TOKEN}@github.com/ZEXSM/OData.QueryBuilder.git
     - PR_TITLE=$(git log -1 --pretty='%f')

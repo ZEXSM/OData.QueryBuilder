@@ -1503,6 +1503,21 @@ namespace OData.QueryBuilder.Test
             uri.Should().Be("ODataType?$filter=length(TypeCode) gt 0");
         }
 
+        [Fact(DisplayName = "Try convert decimal => Success")]
+        public void ODataQueryBuilderList_Decimal_Success()
+        {
+            decimal decimalValue = 10.3M;
+            double doubleValue = 20;
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter(s => s.Sum == decimalValue && s.Money == doubleValue)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=Sum eq 10.3 and Money eq 20");
+        }
+
         [Fact(DisplayName = "Function Cast => Success")]
         public void ODataQueryBuilder_Function_Cast_Success()
         {

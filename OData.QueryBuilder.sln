@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FA1582AB-A13D-44A4-A46D-2DAE1111A2BB}"
 EndProject
@@ -13,6 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder.Test", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{179F88B9-A06D-4505-9266-A5D66004601C}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		README.md = README.md
 	EndProjectSection
@@ -24,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{B8F3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder.Benchmark", "test\OData.QueryBuilder.Benchmark\OData.QueryBuilder.Benchmark.csproj", "{3C66CF4E-8FA0-4E81-90DB-B22234A2670C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OData.QueryBuilder.Fakes", "test\OData.QueryBuilder.Fakes\OData.QueryBuilder.Fakes.csproj", "{421FF96A-2F4E-4589-AF2A-604FDC8BE2AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder.Fakes", "test\OData.QueryBuilder.Fakes\OData.QueryBuilder.Fakes.csproj", "{421FF96A-2F4E-4589-AF2A-604FDC8BE2AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

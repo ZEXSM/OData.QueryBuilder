@@ -21,7 +21,7 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Build
-        run: dotnet build --c ${{ vars.CONFIGURATION }} --no-restore
+        run: dotnet build -c ${{ vars.CONFIGURATION }} --no-restore
       - name: Test
         run: dotnet test -c $CONFIGURATION
       - name: Coveralls

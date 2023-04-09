@@ -18,9 +18,17 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: Install dependencies
+      - name: Restore
         run: dotnet restore
       - name: Build
-        run: dotnet build --configuration ${{ vars.CONFIGURATION }} --no-restore
+        run: dotnet build --c ${{ vars.CONFIGURATION }} --no-restore
       - name: Test
-        run: dotnet test --no-restore
+        run: dotnet test -c $CONFIGURATION
+      - name: Coveralls
+        run: |
+            dotnet minicover instrument
+            dotnet minicover reset
+            dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+            dotnet minicover uninstrument
+            dotnet minicover report
+            dotnet minicover coverallsreport --service-name "github-actions" --service-job-id $GITHUB_ACTION

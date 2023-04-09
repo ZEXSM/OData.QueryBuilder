@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GRT }}
+          token: ${{ env.GRT }}
       - name: Setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
         with:
@@ -21,6 +21,6 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore
       - name: Test
         run: dotnet test --no-restore

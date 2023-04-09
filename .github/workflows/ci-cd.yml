@@ -4,6 +4,7 @@ on: [push]
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
+  environment: ci-cd
   ci-cd:
     name: build-and-test-${{matrix.os}}
     runs-on: ${{ matrix.os }}

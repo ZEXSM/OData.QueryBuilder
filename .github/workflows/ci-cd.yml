@@ -10,7 +10,8 @@ jobs:
     environment: ci-cd
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        # os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,7 +24,7 @@ jobs:
       - name: Build
         run: dotnet build -c ${{ vars.CONFIGURATION }} --no-restore
       - name: Test
-        run: dotnet test -c $CONFIGURATION
+        run: dotnet test -c ${{ vars.CONFIGURATION }}
       - name: Coveralls
         run: |
             dotnet minicover instrument

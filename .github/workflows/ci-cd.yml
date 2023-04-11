@@ -52,6 +52,8 @@ jobs:
             #dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=$PACKAGE_VERSION
       - name: Deploy
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}

@@ -1,6 +1,5 @@
 name: OData.QueryBuilder
-on: [push]
-
+on: push
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
@@ -10,30 +9,31 @@ jobs:
     environment: ci-cd
     strategy:
       matrix:
-        # os: [ubuntu-latest, windows-latest, macOS-latest]
+        #os: [ubuntu-latest, windows-latest, macOS-latest]
         os: [ubuntu-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      #- name: Setup .NET SDK ${{ matrix.dotnet-version }}
-      #  uses: actions/setup-dotnet@v3
-      #  with:
-      #    dotnet-version: ${{ env.DOTNET_VERSION }}
-      #- name: Restore
-      #  run: dotnet restore
-      #- name: Build
-      #  run: dotnet build -c ${{ vars.CONFIGURATION }} --no-restore
-      #- name: Test
-      #  run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
-      #- name: Coveralls
-      #  run: |
-      #      dotnet minicover instrument
-      #      dotnet minicover reset
-      #      dotnet test -c ${{ vars.CONFIGURATION }} --no-build
-      #      dotnet minicover uninstrument
-      #      dotnet minicover report
+      - name: Setup .NET SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build -c ${{ vars.CONFIGURATION }} --no-restore
+      - name: Test
+        run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+      - name: Coveralls
+        run: |
+            dotnet minicover instrument
+            dotnet minicover reset
+            dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+            dotnet minicover uninstrument
+            dotnet minicover report
             # dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ vars.GITHUB_ACTION }}
-      - name: Before deploy
+      - name: Create tag
+        id: create_tag
         run: |
             git fetch --tags --force
             PR_TITLE=$(git log -1 --pretty='%f')
@@ -47,16 +47,11 @@ jobs:
             PATCH=$(([ "$RC" == "rc" ] && echo $CURRENT_PATCH) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
             NEW_TAG=$(echo $MAJOR.$MINOR.$PATCH)
             PACKAGE_VERSION=${NEW_TAG:-${{ vars.DEFAULT_PACKAGE_VERSION }}}
-            echo $PACKAGE_VERSION
-            #git tag v$PACKAGE_VERSION && git push origin v$PACKAGE_VERSION
-            #dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=$PACKAGE_VERSION
-      - name: Deploy
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: $PR_TITLE
-          draft: true
-          prerelease: false
+            echo "release_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Pack
+        run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_version }}
+      #- name: Release
+      #  run: |
+      #      git tag v${{ steps.create_tag.outputs.release_version }}
+      #      git push origin v${{ steps.create_tag.outputs.release_version }}
+      #      dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}

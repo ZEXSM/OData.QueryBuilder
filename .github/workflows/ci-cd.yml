@@ -35,7 +35,7 @@ jobs:
       - name: Create tag
         id: create_tag
         run: |
-            git fetch --tags --force
+            git fetch --tags --force &> /dev/null
             PR_TITLE=$(git log -1 --pretty='%f')
             LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
             CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
@@ -47,11 +47,11 @@ jobs:
             PATCH=$(([ "$RC" == "rc" ] && echo $CURRENT_PATCH) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
             NEW_TAG=$(echo $MAJOR.$MINOR.$PATCH)
             PACKAGE_VERSION=${NEW_TAG:-${{ vars.DEFAULT_PACKAGE_VERSION }}}
-            echo "release_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+            echo "release_package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
       - name: Pack
-        run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_version }}
+        run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
       #- name: Release
       #  run: |
-      #      git tag v${{ steps.create_tag.outputs.release_version }}
-      #      git push origin v${{ steps.create_tag.outputs.release_version }}
-      #      dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
+      #      git tag v${{ steps.create_tag.outputs.release_package_version }}
+      #      git push origin v${{ steps.create_tag.outputs.release_package_version }}
+      #      dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}

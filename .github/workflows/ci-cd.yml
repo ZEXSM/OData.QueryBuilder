@@ -3,8 +3,8 @@ on: push
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
-  ci-cd:
-    name: build-and-test-${{matrix.os}}
+  ci:
+    name: build&test-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     environment: ci-cd
     strategy:
@@ -32,6 +32,12 @@ jobs:
             dotnet minicover uninstrument
             dotnet minicover report
             # dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ vars.GITHUB_ACTION }}
+  cd:
+    if: github.ref == 'refs/heads/main'
+    name: release
+    runs-on: ubuntu-latest
+    environment: ci-cd
+    steps:
       - name: Create tag
         id: create_tag
         run: |
@@ -53,6 +59,6 @@ jobs:
         run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
       #- name: Release
       #  run: |
+      #      dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
       #      git tag v${{ steps.create_tag.outputs.release_package_version }}
       #      git push origin v${{ steps.create_tag.outputs.release_package_version }}
-      #      dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}

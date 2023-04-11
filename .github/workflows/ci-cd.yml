@@ -39,6 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: ci-cd
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Create tag
         id: create_tag
         run: |

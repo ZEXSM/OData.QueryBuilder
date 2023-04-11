@@ -33,7 +33,7 @@ jobs:
             dotnet minicover report
             # dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ vars.GITHUB_ACTION }}
   cd:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/feature/migrate-to-github-actions'
     name: release
     runs-on: ubuntu-latest
     environment: ci-cd

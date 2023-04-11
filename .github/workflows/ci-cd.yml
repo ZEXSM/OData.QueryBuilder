@@ -48,6 +48,7 @@ jobs:
             NEW_TAG=$(echo $MAJOR.$MINOR.$PATCH)
             PACKAGE_VERSION=${NEW_TAG:-${{ vars.DEFAULT_PACKAGE_VERSION }}}
             echo "release_package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+            echo $PACKAGE_VERSION
       - name: Pack
         run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
       #- name: Release

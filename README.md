@@ -422,3 +422,10 @@ var uri = builder
     .ToUri()
 ```
 > http://mock/odata/ODataType?$filter=IdType in (123,512)
+
+## ODataQueryBuilderOptions
+
+### UseCorrectDateTimeFormat
+> You should always manually set this option to `true` (__default__: `false`)
+* `true` DateTime format `$"{dateTime:yyyy-MM-ddTHH:mm:sszzz}"` (with UTC offset)
+* `false` DateTime format `$"{dateTime:s}Z"` (without UTC offset)

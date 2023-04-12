@@ -46,7 +46,7 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKind");
         }
-        
+
         [Fact(DisplayName = "Select simple => Success")]
         public void ODataQueryBuilderList_Select_Simple_Success()
         {
@@ -70,7 +70,7 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$select=IdType");
         }
-        
+
         [Fact(DisplayName = "OrderBy simple => Success")]
         public void ODataQueryBuilderList_OrderBy_Simple_Success()
         {
@@ -94,7 +94,7 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$orderby=IdType asc");
         }
-        
+
         [Fact(DisplayName = "Filter orderBy multiple sort => Success")]
         public void ODataQueryBuilderList_Filter_OrderBy_Multiple_Sort_Success()
         {
@@ -355,11 +355,11 @@ namespace OData.QueryBuilder.Test
         public void ODataQueryBuilderList_Filter_Simple_Variable_DynamicProperty_Success()
         {
             string propertyName = "ODataKind.ODataCode.IdCode";
-            
+
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s,f,_) => ODataProperty.FromPath<int>(propertyName) >= 3)
+                .Filter((s, f, _) => ODataProperty.FromPath<int>(propertyName) >= 3)
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
@@ -377,19 +377,19 @@ namespace OData.QueryBuilder.Test
                     .Filter((s, f, _) => ODataProperty.FromPath<string>(propertyName) == "test")
                     .ToUri()).Should().Throw<ArgumentException>();
         }
-        
+
         [Fact(DisplayName = "Filter const dynamic property int=> Success")]
         public void ODataQueryBuilderList_Filter_Simple_Const_DynamicProperty_Success()
         {
             var uri = _odataQueryBuilderDefault
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
-                .Filter((s,f,_) => ODataProperty.FromPath<int>("ODataKind.ODataCode.IdCode") >= 3)
+                .Filter((s, f, _) => ODataProperty.FromPath<int>("ODataKind.ODataCode.IdCode") >= 3)
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCode/IdCode ge 3");
         }
-        
+
         [Fact(DisplayName = "Filter simple const int=> Success")]
         public void ODataQueryBuilderList_Filter_Simple_Const_Int_Success()
         {
@@ -1560,6 +1560,35 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=contains(,'55')");
+        }
+
+        [Fact(DisplayName = "UseCorrectDateTimeFormat Convert => Success")]
+        public void ODataQueryBuilderList_UseCorrectDatetimeFormat_Convert_Success()
+        {
+            var builder = new ODataQueryBuilder<ODataInfoContainer>(
+                 _commonFixture.BaseUri,
+                 new ODataQueryBuilderOptions { UseCorrectDateTimeFormat = true });
+
+            var dateTimeLocal = new DateTime(
+                year: 2023, month: 04, day: 07, hour: 12, minute: 30, second: 20, kind: DateTimeKind.Local);
+            var dateTimeUtc = new DateTime(
+                year: 2023, month: 04, day: 07, hour: 12, minute: 30, second: 20, kind: DateTimeKind.Utc);
+            var dateTimeOffset = new DateTimeOffset(
+                year: 2023, month: 04, day: 07, hour: 12, minute: 30, second: 20, offset: TimeSpan.FromHours(+7));
+
+            var uri = builder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((o) =>
+                    o.DateTime == dateTimeLocal
+                    && o.DateTime == dateTimeUtc
+                    && o.DateTime == dateTimeOffset)
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=" +
+                $"DateTime eq 2023-04-07T12:30:20{DateTimeOffset.Now:zzz} and " +
+                $"DateTime eq 2023-04-07T12:30:20+00:00 and " +
+                $"DateTime eq 2023-04-07T12:30:20+07:00");
         }
     }
 }

@@ -1575,6 +1575,9 @@ namespace OData.QueryBuilder.Test
                 year: 2023, month: 04, day: 07, hour: 12, minute: 30, second: 20, kind: DateTimeKind.Utc);
             var dateTimeOffset = new DateTimeOffset(
                 year: 2023, month: 04, day: 07, hour: 12, minute: 30, second: 20, offset: TimeSpan.FromHours(+7));
+            var dateTimeOffset2 = new DateTimeOffset(
+                year: 2023, month: 04, day: 07, hour: 12, minute: 30, second: 20, offset: TimeSpan.FromHours(-7));
+            var nowOffset = $"{DateTimeOffset.Now:zzz}".Replace("+", "%2B");
 
             var uri = builder
                 .For<ODataTypeEntity>(s => s.ODataType)
@@ -1582,13 +1585,15 @@ namespace OData.QueryBuilder.Test
                 .Filter((o) =>
                     o.DateTime == dateTimeLocal
                     && o.DateTime == dateTimeUtc
-                    && o.DateTime == dateTimeOffset)
+                    && o.DateTime == dateTimeOffset
+                    && o.DateTime == dateTimeOffset2)
                 .ToUri();
 
             uri.Should().Be($"http://mock/odata/ODataType?$filter=" +
-                $"DateTime eq 2023-04-07T12:30:20{DateTimeOffset.Now:zzz} and " +
-                $"DateTime eq 2023-04-07T12:30:20+00:00 and " +
-                $"DateTime eq 2023-04-07T12:30:20+07:00");
+                $"DateTime eq 2023-04-07T12:30:20{nowOffset} and " +
+                $"DateTime eq 2023-04-07T12:30:20%2B00:00 and " +
+                $"DateTime eq 2023-04-07T12:30:20%2B07:00 and " +
+                $"DateTime eq 2023-04-07T12:30:20-07:00");
         }
     }
 }

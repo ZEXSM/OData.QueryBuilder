@@ -47,12 +47,14 @@ namespace OData.QueryBuilder.Extensions
             bool @bool => @bool ? "true" : "false",
             DateTime dateTime => options switch
             {
-                { UseCorrectDateTimeFormat: true } => $"{dateTime:yyyy-MM-ddTHH:mm:sszzz}",
+                { UseCorrectDateTimeFormat: true } =>
+                    $"{dateTime:yyyy-MM-ddTHH:mm:sszzz}".Replace("+", "%2B"),
                 _ => $"{dateTime:s}Z"
             },
             DateTimeOffset dateTimeOffset => options switch
             {
-                { UseCorrectDateTimeFormat: true } => $"{dateTimeOffset:yyyy-MM-ddTHH:mm:sszzz}",
+                { UseCorrectDateTimeFormat: true } =>
+                    $"{dateTimeOffset:yyyy-MM-ddTHH:mm:sszzz}".Replace("+", "%2B"),
                 _ => $"{dateTimeOffset:s}Z"
             },
             string @string => $"'{@string}'",

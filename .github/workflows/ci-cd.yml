@@ -60,8 +60,8 @@ jobs:
             echo $PACKAGE_VERSION
       - name: Pack
         run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
-      #- name: Release
-      #  run: |
-      #      dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
-      #      git tag v${{ steps.create_tag.outputs.release_package_version }}
-      #      git push origin v${{ steps.create_tag.outputs.release_package_version }}
+      - name: Release
+        run: |
+            dotnet nuget push */bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
+            git tag v${{ steps.create_tag.outputs.release_package_version }}
+            git push origin v${{ steps.create_tag.outputs.release_package_version }}

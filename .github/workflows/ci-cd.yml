@@ -45,6 +45,7 @@ jobs:
             git fetch --tags --force &> /dev/null
             PR_TITLE=$(git log -1 --pretty='%f')
             LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
+            echo $LAST_TAG
             CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
             CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)
             CURRENT_PATCH=$(echo $(echo $LAST_TAG | cut -d. -f 3) | cut -d- -f 1)
@@ -60,13 +61,6 @@ jobs:
         run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
       - name: Release
         run: |
-            ls -a
-            cd src/OData.QueryBuilder
-            ls -a
-            cd bin
-            ls -a
-            cd Release
-            ls -a
             dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
             git tag v${{ steps.create_tag.outputs.release_package_version }}
             git push origin v${{ steps.create_tag.outputs.release_package_version }}

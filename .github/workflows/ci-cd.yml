@@ -1,10 +1,10 @@
-name: OData.QueryBuilder CI\CD
+name: OData.QueryBuilder ci\cd
 on: push
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
   ci:
-    name: build&test-${{matrix.os}}
+    name: build-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     environment: ci
     strategy:
@@ -33,7 +33,7 @@ jobs:
   cd:
     needs: ci
     if: github.ref == 'refs/heads/feature/migrate-to-github-actions'
-    name: Release
+    name: release
     runs-on: ubuntu-latest
     environment: cd
     steps:

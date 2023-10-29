@@ -4,7 +4,7 @@ env:
   DOTNET_VERSION: '3.1.x'
 jobs:
   ci:
-    name: build-${{matrix.os}}
+    name: build&test-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     environment: ci
     strategy:
@@ -12,17 +12,17 @@ jobs:
         #os: [ubuntu-latest, windows-latest, macOS-latest]
         os: [ubuntu-latest]
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - name: Setup .NET SDK ${{ matrix.dotnet-version }}
+      - name: setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: Build
+      - name: build
         run: dotnet build -c ${{ vars.CONFIGURATION }}
-      - name: Test
+      - name: test
         run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
-      - name: Coveralls
+      - name: coveralls
         run: |
             dotnet minicover instrument
             dotnet minicover reset
@@ -32,14 +32,14 @@ jobs:
             # dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ vars.GITHUB_ACTION }}
   cd:
     needs: ci
-    if: github.ref == 'refs/heads/feature/migrate-to-github-actions'
-    name: release
+    if: github.ref == 'refs/heads/main'
+    name: publish&release
     runs-on: ubuntu-latest
     environment: cd
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - name: Create tag
+      - name: create tag
         id: create_tag
         run: |
             git fetch --tags --force &> /dev/null
@@ -56,13 +56,13 @@ jobs:
             PACKAGE_VERSION=${NEW_TAG:-${{ vars.DEFAULT_PACKAGE_VERSION }}}
             echo "release_package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
             echo $PACKAGE_VERSION
-      - name: Pack
+      - name: pack
         run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
-      - name: Release
+      - name: release
         env:
             GH_TOKEN: ${{ secrets.ACCSESS_TOKEN }}
         run: |
-            dotnet nuget push ./src/OData.QueryBuilder/bin/Release/DotNetToolTest.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }} --skip-duplicate
+            dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
             git tag v${{ steps.create_tag.outputs.release_package_version }}
             git push origin v${{ steps.create_tag.outputs.release_package_version }}
             gh release create v${{ steps.create_tag.outputs.release_package_version }} --generate-notes

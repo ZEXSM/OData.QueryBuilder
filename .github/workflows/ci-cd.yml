@@ -4,7 +4,7 @@ env:
   DOTNET_VERSION: '3.1.x'
 jobs:
   ci:
-    name: build&test-${{matrix.os}}
+    name: build&test(${{matrix.os}})
     runs-on: ${{ matrix.os }}
     environment: ci
     strategy:
@@ -29,6 +29,7 @@ jobs:
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
+            echo ${{ vars.GITHUB_ACTION }}
             dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ vars.GITHUB_ACTION }}
   cd:
     needs: ci

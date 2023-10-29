@@ -576,6 +576,7 @@ namespace OData.QueryBuilder.Test
                     && s.ODataKind.OpenDate == currentDateToday
                     && s.ODataKind.OpenDate == DateTime.Today
                     && s.ODataKind.OpenDate == new DateTimeOffset()
+                    && s.ODataKind.CustomNamedProperty == "test"
                     && s.Open == new DateTime()
                     && f.Date(s.Open) == DateTime.Today
                     && f.Date(s.Open) == DateTimeOffset.Now
@@ -592,6 +593,7 @@ namespace OData.QueryBuilder.Test
                 $"and ODataKind/OpenDate eq 2019-02-09T00:00:00Z " +
                 $"and ODataKind/OpenDate eq {DateTime.Today:s}Z " +
                 $"and ODataKind/OpenDate eq {new DateTimeOffset():s}Z " +
+                $"and ODataKind/customName eq 'test' " +
                 $"and Open eq {new DateTime():s}Z " +
                 $"and date(Open) eq {DateTime.Today:s}Z " +
                 $"and date(Open) eq {DateTimeOffset.Now:s}Z " +

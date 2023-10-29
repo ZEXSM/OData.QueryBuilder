@@ -1,5 +1,5 @@
 name: OData.QueryBuilder ci\cd
-on: [pull_request]
+on: pull_request
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
@@ -28,8 +28,6 @@ jobs:
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
-            echo ${{ github.job.job_id }}
-            echo ${{ github.run_id }}
             dotnet minicover coverallsreport --service-name "github" \
                 --service-job-id ${{ github.run_id }} \
                 --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }} \

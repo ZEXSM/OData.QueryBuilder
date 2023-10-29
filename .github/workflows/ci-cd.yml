@@ -65,4 +65,4 @@ jobs:
             dotnet nuget push ./src/OData.QueryBuilder/bin/Release/DotNetToolTest.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }} --skip-duplicate
             git tag v${{ steps.create_tag.outputs.release_package_version }}
             git push origin v${{ steps.create_tag.outputs.release_package_version }}
-            gh release create -t "v${{ steps.create_tag.outputs.release_package_version }}" --generate-notes
+            gh release create v${{ steps.create_tag.outputs.release_package_version }} --generate-notes

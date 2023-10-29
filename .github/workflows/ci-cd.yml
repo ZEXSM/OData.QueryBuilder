@@ -28,8 +28,11 @@ jobs:
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
-            echo ${{ secrets.COVERALLS_REPO_TOKEN }}
-            dotnet minicover coverallsreport --service-name "github" --service-job-id ${{ github.run_number }} --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }}
+            dotnet minicover coverallsreport --service-name "github" \
+                --service-job-id ${{ github.run_number }} \
+                --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }} \
+                --branch ${{ github.ref_name }}
+                --commit ${{ github.sha }}
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

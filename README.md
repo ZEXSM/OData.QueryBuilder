@@ -2,7 +2,7 @@
 Library for creating complex OData queries (OData version 4.01) based on data models with linq syntax.
 
 [![Build Status](https://travis-ci.com/ZEXSM/OData.QueryBuilder.svg?branch=main)](https://travis-ci.com/ZEXSM/OData.QueryBuilder)
-[![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ZEXSM/OData.QueryBuilder/badge.svg?branch=master)](https://coveralls.io/github/ZEXSM/OData.QueryBuilder?branch=main)
 [![Nuget Status](https://img.shields.io/nuget/dt/OData.QueryBuilder.svg)](https://www.nuget.org/packages/OData.QueryBuilder)
 
 ## Benefits

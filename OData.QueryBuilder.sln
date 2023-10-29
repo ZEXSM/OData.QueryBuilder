@@ -14,7 +14,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{179F88B9-A06D-4505-9266-A5D66004601C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		.travis.yml = .travis.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -26,6 +25,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder.Benchmark", "test\OData.QueryBuilder.Benchmark\OData.QueryBuilder.Benchmark.csproj", "{3C66CF4E-8FA0-4E81-90DB-B22234A2670C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OData.QueryBuilder.Fakes", "test\OData.QueryBuilder.Fakes\OData.QueryBuilder.Fakes.csproj", "{421FF96A-2F4E-4589-AF2A-604FDC8BE2AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{C1D8FFE9-07E2-4EA7-AF59-C5A68F7DB89C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D95B88FB-7257-421E-8AA3-BD85C63ECBE6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci-cd.yml = .github\workflows\ci-cd.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +65,8 @@ Global
 		{B8F31CF9-EDE2-4813-A9AC-EBF3514FFE82} = {179F88B9-A06D-4505-9266-A5D66004601C}
 		{3C66CF4E-8FA0-4E81-90DB-B22234A2670C} = {26982440-340F-48A2-9D73-44DB6C52EBF1}
 		{421FF96A-2F4E-4589-AF2A-604FDC8BE2AC} = {26982440-340F-48A2-9D73-44DB6C52EBF1}
+		{C1D8FFE9-07E2-4EA7-AF59-C5A68F7DB89C} = {179F88B9-A06D-4505-9266-A5D66004601C}
+		{D95B88FB-7257-421E-8AA3-BD85C63ECBE6} = {C1D8FFE9-07E2-4EA7-AF59-C5A68F7DB89C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D51B9A3-94B0-48DF-BFF5-110B13303535}

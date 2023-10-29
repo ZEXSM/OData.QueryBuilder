@@ -31,7 +31,7 @@ jobs:
             dotnet minicover coverallsreport --service-name "github" \
                 --service-job-id ${{ github.run_number }} \
                 --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }} \
-                --branch ${{ github.ref_name }}
+                --branch ${{ github.ref_name }} \
                 --commit ${{ github.sha }}
   cd:
     needs: ci

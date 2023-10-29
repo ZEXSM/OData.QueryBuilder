@@ -29,7 +29,7 @@ jobs:
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
-            dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ github.run_number }}
+            dotnet minicover coverallsreport --service-name "OData.QueryBuilder" --service-job-id ${{ github.run_number }}
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

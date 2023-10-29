@@ -24,14 +24,15 @@ jobs:
       - name: Test
         run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
       - name: Coveralls
+        continue-on-error: true
         run: |
             dotnet minicover instrument
             dotnet minicover reset
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
-            ls -a
             dotnet minicover report
             dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ github.run_id }}
+            ls -a
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

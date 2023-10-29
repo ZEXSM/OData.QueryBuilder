@@ -28,7 +28,7 @@ jobs:
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
-            dotnet minicover coverallsreport --service-name "github" --service-job-id ${{ github.run_id }}
+            dotnet minicover coverallsreport --service-name "github" --repo_token ${{ secrets.ACCSESS_TOKEN }}
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

@@ -32,6 +32,8 @@ jobs:
             dotnet minicover uninstrument
             dotnet minicover report
             dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ github.run_id }}
+      - name: Coveralls1
+        run: |
             ls -a
   cd:
     needs: ci

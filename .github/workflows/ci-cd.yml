@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: setup .NET SDK ${{ matrix.dotnet-version }}
+      - name: Setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
@@ -28,6 +28,9 @@ jobs:
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
+            echo ${{ github.job }}
+            echo ${{ github.run_id }}
+            echo ${{ github.ref_name }}
             dotnet minicover coverallsreport --service-name "github" \
                 --service-job-id ${{ github.run_number }} \
                 --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }} \

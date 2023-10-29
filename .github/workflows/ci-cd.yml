@@ -29,7 +29,7 @@ jobs:
             dotnet minicover uninstrument
             dotnet minicover report
             echo ${{ secrets.COVERALLS_REPO_TOKEN }}
-            dotnet minicover coverallsreport --service-name "github" --repo_token ${{ secrets.COVERALLS_REPO_TOKEN }}
+            dotnet minicover coverallsreport --service-name "github" --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }}
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

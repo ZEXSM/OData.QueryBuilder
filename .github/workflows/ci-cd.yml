@@ -12,24 +12,26 @@ jobs:
         #os: [ubuntu-latest, windows-latest, macOS-latest]
         os: [ubuntu-latest]
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
       - name: setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: build
+      - name: Build
         run: dotnet build -c ${{ vars.CONFIGURATION }}
-      - name: test
+      - name: Test
         run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
-      - name: coveralls
+      - name: Coveralls
         run: |
             dotnet minicover instrument
             dotnet minicover reset
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
-            echo ${GITHUB_RUN_ID}
+            echo ${{ github.run_id }}
+            echo ${{ github.run_number }}
+            echo ${{ github.run_attempt }}
             dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ vars.GITHUB_ACTION }}
   cd:
     needs: ci
@@ -38,9 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: cd
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: create tag
+      - name: Create tag
         id: create_tag
         run: |
             git fetch --tags --force &> /dev/null
@@ -57,9 +59,9 @@ jobs:
             PACKAGE_VERSION=${NEW_TAG:-${{ vars.DEFAULT_PACKAGE_VERSION }}}
             echo "release_package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
             echo $PACKAGE_VERSION
-      - name: pack
+      - name: Pack
         run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
-      - name: release
+      - name: Release
         env:
             GH_TOKEN: ${{ secrets.ACCSESS_TOKEN }}
         run: |

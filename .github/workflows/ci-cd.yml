@@ -1,7 +1,5 @@
 name: OData.QueryBuilder ci\cd
-on: 
-    - push
-    - pull_request
+on: [pull_request]
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
@@ -24,17 +22,13 @@ jobs:
       - name: Test
         run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
       - name: Coveralls
-        continue-on-error: true
         run: |
             dotnet minicover instrument
             dotnet minicover reset
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
-            dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ github.run_id }}
-      - name: Coveralls1
-        run: |
-            ls -a
+            dotnet minicover coverallsreport --service-name "github" --service-job-id ${{ github.run_id }}
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

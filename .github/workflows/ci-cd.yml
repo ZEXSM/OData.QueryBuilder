@@ -1,5 +1,9 @@
 name: OData.QueryBuilder ci\cd
-on: pull_request
+on:
+  push:
+    branches:
+    - main
+  pull_request:
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:

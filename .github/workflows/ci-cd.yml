@@ -4,7 +4,7 @@ env:
   DOTNET_VERSION: '3.1.x'
 jobs:
   ci:
-    name: build&test(${{matrix.os}})
+    name: build&test&coverage(${{matrix.os}})
     runs-on: ${{ matrix.os }}
     environment: ci
     strategy:

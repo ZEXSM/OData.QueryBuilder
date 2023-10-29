@@ -1,5 +1,7 @@
 name: OData.QueryBuilder ci\cd
-on: push
+on: 
+    - push
+    - pull_request
 env:
   DOTNET_VERSION: '3.1.x'
 jobs:
@@ -9,7 +11,6 @@ jobs:
     environment: ci
     strategy:
       matrix:
-        #os: [ubuntu-latest, windows-latest, macOS-latest]
         os: [ubuntu-latest]
     steps:
       - name: Checkout
@@ -28,8 +29,9 @@ jobs:
             dotnet minicover reset
             dotnet test -c ${{ vars.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
+            ls -a
             dotnet minicover report
-            dotnet minicover coverallsreport --service-name "OData.QueryBuilder" --service-job-id ${{ github.run_number }}
+            dotnet minicover coverallsreport --service-name "github-actions" --service-job-id ${{ github.run_id }}
   cd:
     needs: ci
     if: github.ref == 'refs/heads/main'

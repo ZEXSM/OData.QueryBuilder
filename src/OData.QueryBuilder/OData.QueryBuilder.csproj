@@ -5,7 +5,7 @@
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<PackageId>DotNetToolTest</PackageId>
+		<PackageId>OData.QueryBuilder</PackageId>
 		<PackageVersion>$(PackageVersion)</PackageVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -17,6 +17,8 @@
 		<Description>The library primarily targets OData Version 4.01 and provides linq syntax for creating OData queries based on a data model.</Description>
 		<LangVersion>8.0</LangVersion>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>../../OData.QueryBuilder.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<Target Name="RestoreTools" BeforeTargets="Build">

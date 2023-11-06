@@ -1,4 +1,4 @@
-name: OData.QueryBuilder ci\cd
+name: OData.QueryBuilder ci-cd
 on:
   push:
     branches:

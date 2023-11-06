@@ -14,8 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{179F88B9-A06D-4505-9266-A5D66004601C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		OData.QueryBuilder.snk = OData.QueryBuilder.snk
 		README.md = README.md
-		sgkey.snk = sgkey.snk
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{B8F31CF9-EDE2-4813-A9AC-EBF3514FFE82}"

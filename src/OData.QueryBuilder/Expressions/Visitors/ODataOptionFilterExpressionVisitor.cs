@@ -293,10 +293,11 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
         private bool HasParenthesis(ExpressionType expressionType)
         {
-            var hasParenthesis = _expressionType.HasValue && expressionType switch
+
+            var hasParenthesis = expressionType switch
             {
-                ExpressionType.And => true,
-                ExpressionType.AndAlso => true,
+                ExpressionType.And => true && _expressionType.HasValue,
+                ExpressionType.AndAlso => true && _expressionType.HasValue,
                 ExpressionType.Or => true,
                 ExpressionType.OrElse => true,
                 _ => false,

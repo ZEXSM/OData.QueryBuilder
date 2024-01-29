@@ -7,17 +7,21 @@ using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
 using System.Text;
+using OData.QueryBuilder.Conventions.Functions;
+using OData.QueryBuilder.Conventions.Operators;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQueryKey<TEntity> : ODataQuery, IODataQueryKey<TEntity>
     {
         private bool _hasMultyExpands;
+        private bool _hasMultyFilters;
 
         public ODataQueryKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
             : base(stringBuilder, odataQueryBuilderOptions)
         {
             _hasMultyExpands = false;
+            _hasMultyFilters = false;
         }
 
         public IAddressingEntries<TResource> For<TResource>(Expression<Func<TEntity, object>> resource)
@@ -51,6 +55,27 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
             return this;
         }
+        
+        public IODataQueryKey<TEntity> Filter(Expression<Func<TEntity, bool>> filter, bool useParenthesis = false)
+        {
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter, useParenthesis);
+
+            return Filter(query);
+        }
+
+        public IODataQueryKey<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> filter, bool useParenthesis = false)
+        {
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter, useParenthesis);
+
+            return Filter(query);
+        }
+
+        public IODataQueryKey<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> filter, bool useParenthesis = false)
+        {
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filter, useParenthesis);
+
+            return Filter(query);
+        }
 
         private IODataQueryKey<TEntity> Expand<T>(T query) where T : class
         {
@@ -64,6 +89,22 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
             }
 
             _hasMultyExpands = true;
+
+            return this;
+        }
+        
+        private IODataQueryKey<TEntity> Filter(string query)
+        {
+            if (_hasMultyFilters)
+            {
+                _stringBuilder.Merge(ODataOptionNames.Filter, QuerySeparators.Main, $" {ODataLogicalOperations.And} {query}");
+            }
+            else
+            {
+                _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+            }
+
+            _hasMultyFilters = true;
 
             return this;
         }

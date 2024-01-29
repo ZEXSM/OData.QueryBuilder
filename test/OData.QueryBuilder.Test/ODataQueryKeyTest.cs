@@ -167,6 +167,41 @@ namespace OData.QueryBuilder.Test
                 "&" +
                 "$select=IdRule");
         }
+        
+        [Fact(DisplayName = "Filter not bool => Success")]
+        public void ODataQueryBuilderKey_Filter_Not__Bool_Success()
+        {
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(123)
+                .Filter(s => s.IsActive && !(bool)s.IsOpen)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType(123)?$filter=IsActive and not IsOpen");
+        }
+        
+        [Fact(DisplayName = "Filter string with ReplaceCharacters => Success")]
+        public void ODataQueryBuilderKey_Filter_string_with_ReplaceCharacters_Success()
+        {
+            var dictionary = new Dictionary<string, string>()
+            {
+                { "%", "%25" },
+                { "/", "%2f" },
+                { "?", "%3f" },
+                { "#", "%23" },
+                { "&", "%26" }
+            };
+
+            var constValue = "3 & 4 / 7 ? 8 % 9 # 1";
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(123)
+                .Filter((s, f) => s.ODataKind.ODataCode.Code == f.ReplaceCharacters(constValue, dictionary))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType(123)?$filter=ODataKind/ODataCode/Code eq '3 %26 4 %2f 7 %3f 8 %25 9 %23 1'");
+        }
 
         [Fact(DisplayName = "ToDicionary => Success")]
         public void ToDicionaryTest()

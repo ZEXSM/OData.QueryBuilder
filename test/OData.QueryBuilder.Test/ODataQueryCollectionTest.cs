@@ -5,6 +5,8 @@ using OData.QueryBuilder.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using OData.QueryBuilder.Conventions.Functions;
 using Xunit;
 
 namespace OData.QueryBuilder.Test
@@ -441,6 +443,35 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
         }
+        
+        [Fact(DisplayName = "(ODataQueryBuilderList) FilterExpressionReuseInExpand => Success")]
+        public void ODataQueryBuilderList_Filter_AnyReuse_Success()
+        {
+            Expression<Func<string, bool>> isTestTag = t => t == "testTag";
+            
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(x => x.For<string>(t => t.Tags).Filter(isTestTag))
+                .Filter((s, f, o) => o.Any(s.Tags, isTestTag))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$expand=Tags($filter='testTag')&$filter=Tags/any(t:t eq 'testTag')");
+        }
+        
+        [Fact(DisplayName = "(ODataQueryBuilderList) ExpandAnyExpressionVariable => Success")]
+        public void ExpandAnyExpressionVariable()
+        {
+            Expression<Func<string, bool>> isTestTagFunc = t => t == "testTag";
+            
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => o.Any(s.Tags, isTestTagFunc))
+                .ToUri();
+        
+            uri.Should().Be("http://mock/odata/ODataType?$filter=Tags/any(t:t eq 'testTag')");
+        }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any Dynamic property => Success")]
         public void ODataQueryBuilderList_Filter_Any_DynamicProperty_Success()
@@ -477,6 +508,21 @@ namespace OData.QueryBuilder.Test
 
             uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:date(v/Created) eq 2019-02-09T00:00:00Z)");
         }
+        
+        [Fact(DisplayName = "Filter  operators predefined expression Any with func => Success")]
+        public void ODataQueryBuilderList_Filter_Predefined_Expression_Any_With_Func_Success()
+        {
+            IODataFunction f = default;
+            Expression<Func<ODataCodeEntity, bool>> expression = v => f.Date(v.Created) == new DateTime(2019, 2, 9);
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, _, o) => o.Any(s.ODataKind.ODataCodes, expression))
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$filter=ODataKind/ODataCodes/any(v:date(v/Created) eq 2019-02-09T00:00:00Z)");
+        }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any without func => Success")]
         public void ODataQueryBuilderList_Filter_Any_Without_Func()
@@ -496,23 +542,23 @@ namespace OData.QueryBuilder.Test
             var odataQueryBuilderOptions = new ODataQueryBuilderOptions { SuppressExceptionOfNullOrEmptyOperatorArgs = true };
             var odataQueryBuilder = new ODataQueryBuilder<ODataInfoContainer>(
                 _commonFixture.BaseUri, odataQueryBuilderOptions);
-
-            var func = default(Func<string, bool>);
-
+        
+            var func = default(Expression<Func<string, bool>>);
+        
             var uri = odataQueryBuilder
                 .For<ODataTypeEntity>(s => s.ODataType)
                 .ByList()
                 .Filter((s, _, o) => o.Any(s.Labels, func))
                 .ToUri();
-
+        
             uri.Should().Be("http://mock/odata/ODataType?$filter=");
         }
 
         [Fact(DisplayName = "(ODataQueryBuilderList) Filter Any with func null => ArgumentException")]
         public void ODataQueryBuilderList_Filter_Any_With_Func_null()
         {
-            var func = default(Func<string, bool>);
-
+            var func = default(Expression<Func<string, bool>>);
+        
             _odataQueryBuilderDefault.Invoking(
                 (r) => r
                     .For<ODataTypeEntity>(s => s.ODataType)

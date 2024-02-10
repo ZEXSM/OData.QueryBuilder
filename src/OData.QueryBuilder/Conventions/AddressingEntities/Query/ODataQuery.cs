@@ -1,29 +1,28 @@
-﻿using OData.QueryBuilder.Conventions.Constants;
-using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Options;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQuery : IODataQuery
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        protected readonly StringBuilder _stringBuilder;
+        protected readonly QBuilder _queryBuilder;
 
         private static readonly char[] SeparatorUri = new char[2] { QuerySeparators.Begin, QuerySeparators.Main };
         private static readonly char[] SeparatorOperator = new char[1] { QuerySeparators.EqualSign };
 
-        public ODataQuery(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataQuery(QBuilder queryBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
-            _stringBuilder = stringBuilder;
+            _queryBuilder = queryBuilder;
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
         public IDictionary<string, string> ToDictionary()
         {
-            var odataOperators = _stringBuilder
+            var odataOperators = _queryBuilder
                 .ToString()
                 .Split(SeparatorUri, StringSplitOptions.RemoveEmptyEntries);
 
@@ -45,10 +44,10 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
         public Uri ToUri(UriKind uriKind = UriKind.RelativeOrAbsolute)
         {
-            _stringBuilder.LastRemove(QuerySeparators.Begin);
-            _stringBuilder.LastRemove(QuerySeparators.Main);
+            _queryBuilder.LastRemove(QuerySeparators.Begin);
+            _queryBuilder.LastRemove(QuerySeparators.Main);
 
-            return new Uri(_stringBuilder.ToString(), uriKind);
+            return new Uri(_queryBuilder.ToString(), uriKind);
         }
     }
 }

@@ -5,22 +5,10 @@ namespace OData.QueryBuilder.Builders
     internal class QBuilder
     {
         private readonly StringBuilder _builder;
-        private readonly StringBuilder _templateBuilder;
 
-        private readonly bool _includeTemplate;
-
-        public QBuilder(string baseUrl, bool includeTemplate = false)
+        public QBuilder(string baseUrl)
         {
             _builder = new StringBuilder(baseUrl);
-            _templateBuilder = new StringBuilder(baseUrl);
-            _includeTemplate = includeTemplate;
-        }
-
-        public QBuilder(bool includeTemplate = false)
-        {
-            _builder = new StringBuilder();
-            _templateBuilder = new StringBuilder();
-            _includeTemplate = includeTemplate;
         }
 
         public bool IsEmpty() => _builder.Length == 0;
@@ -29,22 +17,12 @@ namespace OData.QueryBuilder.Builders
         {
             _builder.Append(value);
 
-            if (_includeTemplate)
-            {
-                _templateBuilder.Append(value);
-            }
-
             return this;
         }
 
         public QBuilder Append(char value)
         {
             _builder.Append(value);
-
-            if (_includeTemplate)
-            {
-                _templateBuilder.Append(value);
-            }
 
             return this;
         }

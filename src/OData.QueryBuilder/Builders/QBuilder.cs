@@ -11,6 +11,11 @@ namespace OData.QueryBuilder.Builders
             _builder = new StringBuilder(baseUrl);
         }
 
+        public QBuilder()
+        {
+            _builder = new StringBuilder();
+        }
+
         public bool IsEmpty() => _builder.Length == 0;
 
         public QBuilder Append(string value)

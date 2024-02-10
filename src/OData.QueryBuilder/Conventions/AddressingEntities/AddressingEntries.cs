@@ -1,48 +1,48 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Query;
+﻿using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Conventions.AddressingEntities.Query;
 using OData.QueryBuilder.Conventions.Constants;
+using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
-using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities
 {
-    internal class AddressingEntries<TEntity> : IAddressingEntries<TEntity>
+    internal class AddressingEntries<TEntity> : ODataQueryCollection<TEntity>, IAddressingEntries<TEntity>
     {
-        private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        private readonly StringBuilder _stringBuilder;
-
-        public AddressingEntries(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public AddressingEntries(QBuilder queryBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+            : base(queryBuilder, odataQueryBuilderOptions)
         {
-            _stringBuilder = stringBuilder;
-            _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
         public IODataQueryKey<TEntity> ByKey(params int[] keys)
         {
-            _stringBuilder.Append($"{QuerySeparators.LeftBracket}{string.Join(QuerySeparators.StringComma, keys)}{QuerySeparators.RigthBracket}{QuerySeparators.Begin}");
+            var key = keys.ToValue(_odataQueryBuilderOptions);
+            _queryBuilder.Append($"{QuerySeparators.LeftBracket}{key}{QuerySeparators.RigthBracket}{QuerySeparators.Begin}");
 
-            return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+            return this;
         }
 
         public IODataQueryKey<TEntity> ByKey(params string[] keys)
         {
-            _stringBuilder.Append($"{QuerySeparators.LeftBracket}'{string.Join($"'{QuerySeparators.Comma}'", keys)}'{QuerySeparators.RigthBracket}{QuerySeparators.Begin}");
+            var key = keys.ToValue(_odataQueryBuilderOptions);
+            _queryBuilder.Append($"{QuerySeparators.LeftBracket}{key}{QuerySeparators.RigthBracket}{QuerySeparators.Begin}");
 
-            return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+            return this;
         }
 
         public IODataQueryKey<TEntity> ByKey(params Guid[] keys)
         {
-            _stringBuilder.Append($"{QuerySeparators.LeftBracket}{string.Join(QuerySeparators.StringComma, keys)}{QuerySeparators.RigthBracket}{QuerySeparators.Begin}");
+            var key = keys.ToValue(_odataQueryBuilderOptions);
+            _queryBuilder.Append($"{QuerySeparators.LeftBracket}{key}{QuerySeparators.RigthBracket}{QuerySeparators.Begin}");
 
-            return new ODataQueryKey<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+            return this;
         }
 
         public IODataQueryCollection<TEntity> ByList()
         {
-            _stringBuilder.Append(QuerySeparators.Begin);
+            _queryBuilder.Append(QuerySeparators.Begin);
 
-            return new ODataQueryCollection<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+            return this;
         }
     }
 }

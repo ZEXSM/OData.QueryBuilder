@@ -1,20 +1,22 @@
-﻿using OData.QueryBuilder.Expressions.Visitors;
+﻿using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Expressions.Visitors;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
 {
     internal class ODataResource<TResource> : IODataResource<TResource>
     {
         private readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        private readonly StringBuilder _stringBuilder;
+        private readonly QBuilder _queryBuilder;
 
-        public ODataResource(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public ODataResource(
+            QBuilder queryBuilder,
+            ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
-            _stringBuilder = stringBuilder;
+            _queryBuilder = queryBuilder;
         }
 
         public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource)
@@ -24,11 +26,11 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Resources
                 throw new ArgumentNullException(nameof(resource), "Resource name is null");
             }
 
-            var query = new ODataResourceExpressionVisitor().ToQuery(resource);
+            var query = new ODataResourceExpressionVisitor().ToString(resource);
 
-            _stringBuilder.Append(query);
+            _queryBuilder.Append(query);
 
-            return new AddressingEntries<TEntity>(_stringBuilder, _odataQueryBuilderOptions);
+            return new AddressingEntries<TEntity>(_queryBuilder, _odataQueryBuilderOptions);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
+﻿using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Conventions.Functions;
 using OData.QueryBuilder.Conventions.Operators;
@@ -7,23 +8,24 @@ using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
     internal class ODataQueryExpand<TEntity> : AbstractODataQueryExpand, IODataQueryExpand<TEntity>
     {
-        private bool _hasMultyFilters;
+        private bool _hasManyFilters;
+
         public ODataQueryExpand(ODataQueryBuilderOptions odataQueryBuilderOptions)
-            : base(new StringBuilder(), odataQueryBuilderOptions)
+            : base(new QBuilder(), odataQueryBuilderOptions)
         {
-            _hasMultyFilters = false;
+            _hasManyFilters = false;
         }
+
         public IODataQueryExpand<TEntity> Expand(Expression<Func<TEntity, object>> expandNested)
         {
-            var query = new ODataOptionExpandExpressionVisitor().ToQuery(expandNested);
+            var query = new ODataOptionExpandExpressionVisitor().ToString(expandNested);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
+            _queryBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
@@ -34,101 +36,104 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 
             expandNested(builder);
 
-            _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{builder.Query}{QuerySeparators.Nested}");
+            _queryBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{builder.QueryBuilder}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> Filter(Expression<Func<TEntity, bool>> filterNested, bool useParenthesis = false)
         {
-            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filterNested, useParenthesis);
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToString(filterNested, useParenthesis);
 
             return Filter(query);
         }
 
         public IODataQueryExpand<TEntity> Filter(Expression<Func<TEntity, IODataFunction, bool>> filterNested, bool useParenthesis = false)
         {
-            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filterNested, useParenthesis);
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToString(filterNested, useParenthesis);
 
             return Filter(query);
         }
 
         public IODataQueryExpand<TEntity> Filter(Expression<Func<TEntity, IODataFunction, IODataOperator, bool>> filterNested, bool useParenthesis = false)
         {
-            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToQuery(filterNested, useParenthesis);
+            var query = new ODataOptionFilterExpressionVisitor(_odataQueryBuilderOptions).ToString(filterNested, useParenthesis);
 
             return Filter(query);
         }
 
         public IODataQueryExpand<TEntity> OrderBy(Expression<Func<TEntity, object>> orderByNested)
         {
-            var query = new ODataOptionOrderByExpressionVisitor().ToQuery(orderByNested);
+            var query = new ODataOptionOrderByExpressionVisitor().ToString(orderByNested);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Asc}{QuerySeparators.Nested}");
+            _queryBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Asc}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> OrderBy(Expression<Func<TEntity, ISortFunction, object>> orderByNested)
         {
-            var query = new ODataOptionOrderByExpressionVisitor().ToQuery(orderByNested);
+            var query = new ODataOptionOrderByExpressionVisitor().ToString(orderByNested);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
+            _queryBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> OrderByDescending(Expression<Func<TEntity, object>> orderByDescendingNested)
         {
-            var query = new ODataOptionOrderByExpressionVisitor().ToQuery(orderByDescendingNested);
+            var query = new ODataOptionOrderByExpressionVisitor().ToString(orderByDescendingNested);
 
-            _stringBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Desc}{QuerySeparators.Nested}");
+            _queryBuilder.Append($"{ODataOptionNames.OrderBy}{QuerySeparators.EqualSign}{query} {QuerySorts.Desc}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> Select(Expression<Func<TEntity, object>> selectNested)
         {
-            var query = new ODataOptionSelectExpressionVisitor().ToQuery(selectNested);
+            var query = new ODataOptionSelectExpressionVisitor().ToString(selectNested);
 
-            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
+            _queryBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> Skip(int value)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Skip}{QuerySeparators.EqualSign}{value}{QuerySeparators.Nested}");
+            var query = value.ToValue(_odataQueryBuilderOptions);
+            _queryBuilder.Append($"{ODataOptionNames.Skip}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> Top(int value)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSign}{value}{QuerySeparators.Nested}");
+            var query = value.ToValue(_odataQueryBuilderOptions);
+            _queryBuilder.Append($"{ODataOptionNames.Top}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
 
         public IODataQueryExpand<TEntity> Count(bool value = true)
         {
-            _stringBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSign}{value.ToString().ToLowerInvariant()}{QuerySeparators.Nested}");
+            var query = value.ToValue(_odataQueryBuilderOptions);
+            _queryBuilder.Append($"{ODataOptionNames.Count}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
 
             return this;
         }
 
         private IODataQueryExpand<TEntity> Filter(string query)
         {
-            if (_hasMultyFilters)
+            if (_hasManyFilters)
             {
-                _stringBuilder.Merge(ODataOptionNames.Filter, QuerySeparators.Nested, $" {ODataLogicalOperations.And} {query}");
+                _queryBuilder.Merge(ODataOptionNames.Filter, QuerySeparators.Nested, $" {ODataLogicalOperations.And} {query}");
             }
             else
             {
-                _stringBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
+                _queryBuilder.Append($"{ODataOptionNames.Filter}{QuerySeparators.EqualSign}{query}{QuerySeparators.Nested}");
             }
 
-            _hasMultyFilters = true;
+            _hasManyFilters = true;
 
             return this;
         }

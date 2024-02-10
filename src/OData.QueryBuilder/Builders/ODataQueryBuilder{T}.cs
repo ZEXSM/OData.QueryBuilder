@@ -3,7 +3,6 @@ using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace OData.QueryBuilder.Builders
 {
@@ -25,7 +24,7 @@ namespace OData.QueryBuilder.Builders
         }
 
         public IAddressingEntries<TEntity> For<TEntity>(Expression<Func<TResource, object>> resource) =>
-           new ODataResource<TResource>(new StringBuilder(_baseUrl), _odataQueryBuilderOptions)
+           new ODataResource<TResource>(new QBuilder(_baseUrl), _odataQueryBuilderOptions)
                 .For<TEntity>(resource);
     }
 }

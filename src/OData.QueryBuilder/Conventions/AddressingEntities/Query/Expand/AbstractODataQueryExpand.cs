@@ -1,21 +1,22 @@
-﻿using OData.QueryBuilder.Conventions.Constants;
-using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Options;
-using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query.Expand
 {
     internal abstract class AbstractODataQueryExpand
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        protected readonly StringBuilder _stringBuilder;
+        protected readonly QBuilder _queryBuilder;
 
-        public AbstractODataQueryExpand(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
+        public AbstractODataQueryExpand(
+            QBuilder queryBuilder,
+            ODataQueryBuilderOptions odataQueryBuilderOptions)
         {
-            _stringBuilder = stringBuilder;
+            _queryBuilder = queryBuilder;
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
         }
 
-        public StringBuilder Query => _stringBuilder.LastRemove(QuerySeparators.Nested);
+        public QBuilder QueryBuilder => _queryBuilder.LastRemove(QuerySeparators.Nested);
     }
 }

@@ -41,36 +41,61 @@ namespace OData.QueryBuilder.Extensions
             return replaceValues;
         }
 
-        public static string ToQuery(this object @object, ODataQueryBuilderOptions options) => @object switch
+        public static string ToValue(this object @object, ODataQueryBuilderOptions options)
         {
-            null => Null,
-            bool @bool => @bool ? "true" : "false",
-            DateTime dateTime => options switch
+            switch (options.Mode)
             {
-                { UseCorrectDateTimeFormat: true } =>
-                    $"{dateTime:yyyy-MM-ddTHH:mm:sszzz}".Replace("+", "%2B"),
-                _ => $"{dateTime:s}Z"
-            },
-            DateTimeOffset dateTimeOffset => options switch
-            {
-                { UseCorrectDateTimeFormat: true } =>
-                    $"{dateTimeOffset:yyyy-MM-ddTHH:mm:sszzz}".Replace("+", "%2B"),
-                _ => $"{dateTimeOffset:s}Z"
-            },
-            string @string => $"'{@string}'",
-            ICollection collection => collection.CollectionToQuery(options),
-            IEnumerable enumerable => enumerable.EnumerableToQuery(options, initCount: 0),
-            Guid @guid => $"{@guid}",
-            decimal @decimal => Convert.ToString(@decimal, CultureInfo.InvariantCulture),
-            _ => @object.GetType().IsPrimitive ? Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'",
-        };
+                case ODataQueryBuilderMode.TemplateUri:
+                    return @object switch
+                    {
+                        null => options.TemplateKeyValue,
+                        bool _ => options.TemplateKeyValue,
+                        DateTime _ => options.TemplateKeyValue,
+                        DateTimeOffset _ => options.TemplateKeyValue,
+                        string _ => $"'{options.TemplateKeyValue}'",
+                        ICollection _ => options.TemplateKeyValue,
+                        IEnumerable _ => options.TemplateKeyValue,
+                        Guid _ => options.TemplateKeyValue,
+                        decimal _ => options.TemplateKeyValue,
+                        _ => @object.GetType().IsPrimitive ? options.TemplateKeyValue : $"'{options.TemplateKeyValue}'",
+                    };
+                case ODataQueryBuilderMode.Uri:
+                default:
+                    return @object switch
+                    {
+                        null => Null,
+                        bool @bool => @bool ? "true" : "false",
+                        DateTime dateTime => options switch
+                        {
+                            { UseCorrectDateTimeFormat: true } =>
+                                $"{dateTime:yyyy-MM-ddTHH:mm:sszzz}".Replace("+", "%2B"),
+                            _ => $"{dateTime:s}Z"
+                        },
+                        DateTimeOffset dateTimeOffset => options switch
+                        {
+                            { UseCorrectDateTimeFormat: true } =>
+                                $"{dateTimeOffset:yyyy-MM-ddTHH:mm:sszzz}".Replace("+", "%2B"),
+                            _ => $"{dateTimeOffset:s}Z"
+                        },
+                        string @string => $"'{@string}'",
+                        ICollection collection => collection.CollectionToQuery(options),
+                        IEnumerable enumerable => enumerable.EnumerableToQuery(options, initCount: 0),
+                        Guid @guid => $"{@guid}",
+                        decimal @decimal => Convert.ToString(@decimal, CultureInfo.InvariantCulture),
+                        _ => @object.GetType().IsPrimitive ? Convert.ToString(@object, CultureInfo.InvariantCulture) : $"'{@object}'",
+                    };
+            }
+        }
 
         private static string CollectionToQuery(
-            this ICollection collection, ODataQueryBuilderOptions options) =>
+            this ICollection collection,
+            ODataQueryBuilderOptions options) =>
             collection.EnumerableToQuery(options, initCount: collection.Count);
 
         private static string EnumerableToQuery(
-            this IEnumerable enumerable, ODataQueryBuilderOptions options, int initCount)
+            this IEnumerable enumerable,
+            ODataQueryBuilderOptions options,
+            int initCount)
         {
             var index = 0;
             var count = 0;
@@ -91,7 +116,7 @@ namespace OData.QueryBuilder.Extensions
 
             foreach (var item in enumerable)
             {
-                queries[index] = item.ToQuery(options);
+                queries[index] = item.ToValue(options);
                 index++;
             }
 

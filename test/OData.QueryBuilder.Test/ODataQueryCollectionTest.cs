@@ -1595,5 +1595,39 @@ namespace OData.QueryBuilder.Test
                 $"DateTime eq 2023-04-07T12:30:20%2B07:00 and " +
                 $"DateTime eq 2023-04-07T12:30:20-07:00");
         }
+
+        [Fact]
+        public void ODataQueryBuilderList_TemplateMode()
+        {
+            var builder = new ODataQueryBuilder<ODataInfoContainer>(
+                 _commonFixture.BaseUri,
+                 new ODataQueryBuilderOptions { Mode = ODataQueryBuilderMode.TemplateUri });
+
+            var uri = builder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Expand(s => s
+                    .For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(a =>
+                        {
+                            a.For<ODataCodeEntity>(f => f.ODataCode)
+                                .Filter(v => v.Code == "test")
+                                .Select(v => v.Created)
+                                .Filter(v => v.IdActive);
+                        })
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false))
+                .Filter((e, o, a) => o.Date(e.DateTime) == DateTime.Today
+                    && a.In(e.IdRule, new int?[] { 1, 2 })
+                    && a.In(e.ODataKind.ODataCode.Code, new[] { "11", "22" }))
+                .Skip(100)
+                .Top(100)
+                .Count()
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType?$expand=ODataKind($expand=ODataCode($filter=Code eq '{dynamic}' and IdActive;$select=Created);$filter=EndDate eq {dynamic} and IdKind eq {dynamic};$select=OpenDate;$count={dynamic})&$filter=date(DateTime) eq {dynamic} and IdRule in ({dynamic}) and ODataKind/ODataCode/Code in ({dynamic})&$skip={dynamic}&$top={dynamic}&$count={dynamic}");
+        }
     }
 }

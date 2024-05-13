@@ -1,0 +1,75 @@
+name: OData.QueryBuilder ci-cd
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+env:
+  DOTNET_VERSION: '3.1.x'
+jobs:
+  ci:
+    name: build&test&coverage(${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    environment: ci
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup .NET SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Build
+        run: dotnet build -c ${{ vars.CONFIGURATION }}
+      - name: Test
+        run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+      - name: Coveralls
+        run: |
+            dotnet minicover instrument
+            dotnet minicover reset
+            dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+            dotnet minicover uninstrument
+            dotnet minicover report
+            dotnet minicover coverallsreport --service-name "github" \
+                --service-job-id ${{ github.run_id }} \
+                --repo-token ${{ secrets.COVERALLS_REPO_TOKEN }} \
+                --branch ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} \
+                --commit ${{ github.sha }}
+  cd:
+    needs: ci
+    if: github.ref == 'refs/heads/main'
+    name: publish&release
+    runs-on: ubuntu-latest
+    environment: cd
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create tag
+        id: create_tag
+        run: |
+            git fetch --tags --force &> /dev/null
+            PR_TITLE=$(git log -1 --pretty='%f')
+            LAST_TAG=$(echo $(git describe --tags $(git rev-list --tags --max-count=1)) | cut -d'v' -f 2)
+            CURRENT_MAJOR=$(echo $LAST_TAG | cut -d. -f 1)
+            CURRENT_MINOR=$(echo $LAST_TAG | cut -d. -f 2)
+            CURRENT_PATCH=$(echo $(echo $LAST_TAG | cut -d. -f 3) | cut -d- -f 1)
+            RC=$(echo $(echo $LAST_TAG | cut -d. -f 3) | cut -d- -f 2)
+            MAJOR=$(([ "$RC" == "rc" ] && echo $CURRENT_MAJOR) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo $(($CURRENT_MAJOR+1))) || echo $CURRENT_MAJOR)
+            MINOR=$(([ "$RC" == "rc" ] && echo $CURRENT_MINOR) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo $(($CURRENT_MINOR+1))) || echo $CURRENT_MINOR)
+            PATCH=$(([ "$RC" == "rc" ] && echo $CURRENT_PATCH) || ([ "$(echo $PR_TITLE | grep -oP 'release')" == "release" ] && echo 0) || ([ "$(echo $PR_TITLE | grep -oP 'feature')" == "feature" ] && echo 0) || echo $(($CURRENT_PATCH+1)))
+            NEW_TAG=$(echo $MAJOR.$MINOR.$PATCH)
+            PACKAGE_VERSION=${NEW_TAG:-${{ vars.DEFAULT_PACKAGE_VERSION }}}
+            echo "release_package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+            echo $PACKAGE_VERSION
+      - name: Pack
+        run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
+      - name: Release
+        env:
+            GH_TOKEN: ${{ secrets.ACCSESS_TOKEN }}
+        run: |
+            dotnet nuget push ./src/OData.QueryBuilder/bin/Release/OData.QueryBuilder.${{ steps.create_tag.outputs.release_package_version }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ vars.NUGET_SOURCE }}
+            git tag v${{ steps.create_tag.outputs.release_package_version }}
+            git push origin v${{ steps.create_tag.outputs.release_package_version }}
+            gh release create v${{ steps.create_tag.outputs.release_package_version }} --generate-notes

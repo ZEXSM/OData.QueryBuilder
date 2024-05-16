@@ -6,6 +6,7 @@ on:
   pull_request:
 env:
   DOTNET_VERSION: '3.1.x'
+  CONFIGURATION: 'Release'
 jobs:
   ci:
     name: build&test&coverage(${{matrix.os}})
@@ -22,14 +23,12 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Build
-        run: dotnet build -c ${{ vars.CONFIGURATION }}
-      - name: Test
-        run: dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+        run: dotnet build -c ${{ env.CONFIGURATION }}
       - name: Coveralls
         run: |
             dotnet minicover instrument
             dotnet minicover reset
-            dotnet test -c ${{ vars.CONFIGURATION }} --no-build
+            dotnet test -c ${{ env.CONFIGURATION }} --no-build
             dotnet minicover uninstrument
             dotnet minicover report
             dotnet minicover coverallsreport --service-name "github" \
@@ -64,7 +63,7 @@ jobs:
             echo "release_package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
             echo $PACKAGE_VERSION
       - name: Pack
-        run: dotnet pack -c ${{ vars.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
+        run: dotnet pack -c ${{ env.CONFIGURATION }} -p:PackageVersion=${{ steps.create_tag.outputs.release_package_version }}
       - name: Release
         env:
             GH_TOKEN: ${{ secrets.ACCSESS_TOKEN }}

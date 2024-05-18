@@ -2,6 +2,8 @@
 using OData.QueryBuilder.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Reflection;
+using OData.QueryBuilder.Attributes;
 
 namespace OData.QueryBuilder.Expressions.Visitors
 {
@@ -53,7 +55,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                         if (genericMethodType != memberExpression.Type)
                             throw new ArgumentException(
                                 $"The type '{genericMethodType.FullName}' specified when calling 'ODataProperty.FromPath<T>(\"{propertyPath}\")' does not match the expected type '{memberExpression.Type.FullName}' defined by the model.");
-                        
+
                         return VisitMemberExpression(topExpression, memberExpression);
                 }
             }
@@ -78,15 +80,22 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
             var memberName = VisitExpression(topExpression, memberExpression.Expression);
 
+            var reflectedMemberName = memberExpression.Member.Name;
+            var propertyNameAttribute = memberExpression.Member.GetCustomAttribute<ODataPropertyNameAttribute>();
+            if (propertyNameAttribute != null)
+            {
+                reflectedMemberName = propertyNameAttribute.Name;
+            }
+
             if (string.IsNullOrEmpty(memberName))
             {
-                return memberExpression.Member.Name;
+                return reflectedMemberName;
             }
 
             return memberExpression.Member.DeclaringType.IsNullableType() ?
                 memberName
                 :
-                $"{memberName}/{memberExpression.Member.Name}";
+                $"{memberName}/{reflectedMemberName}";
         }
 
         public virtual string ToQuery(LambdaExpression expression) =>

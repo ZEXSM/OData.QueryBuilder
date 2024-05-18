@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OData.QueryBuilder.Attributes;
 
 namespace OData.QueryBuilder.Fakes
 {
@@ -23,5 +24,8 @@ namespace OData.QueryBuilder.Fakes
         public long[] SequenceLongArray { get; set; }
 
         public ColorEnum Color { get; set; }
+
+        [ODataPropertyName("customName")]
+        public string CustomNamedProperty { get; set; }
     }
 }

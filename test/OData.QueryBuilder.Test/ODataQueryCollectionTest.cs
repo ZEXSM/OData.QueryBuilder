@@ -1172,6 +1172,29 @@ namespace OData.QueryBuilder.Test
                 $" and ODataKind/ODataCode/Code in ('123','512')");
         }
 
+        [Fact(DisplayName = "Multiple filters wrap or in parenthesis => Success")]
+        public void ODataQueryBuilderList_Multiple_filters_wrap_or_in_parenthesis_Success()
+        {
+            var constStrIds = new[] { "123", "512" };
+            var constValue = 3;
+
+            var uri = _odataQueryBuilderDefault
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByList()
+                .Filter((s, f, o) => s.IdRule == constValue)
+                .Filter((s, f, o) => s.IsActive)
+                .Filter((s, f, o) => (f.Date(s.EndDate.Value) == default(DateTimeOffset?) || s.EndDate > DateTime.Today), useParenthesis: true)
+                .Filter((s, f, o) => (f.Date((DateTimeOffset)s.BeginDate) != default(DateTime?) || f.Date((DateTime)s.BeginDate) <= DateTime.Now), useParenthesis: true)
+                .Filter((s, f, o) => (o.In(s.ODataKind.ODataCode.Code, constStrIds)))
+                .ToUri();
+
+            uri.Should().Be($"http://mock/odata/ODataType?$filter=IdRule eq 3" +
+                $" and IsActive" +
+                $" and (date(EndDate) eq null or EndDate gt {DateTime.Today:s}Z)" +
+                $" and (date(BeginDate) ne null or date(BeginDate) le {DateTime.Now:s}Z)" +
+                $" and ODataKind/ODataCode/Code in ('123','512')");
+        }
+
         [Theory(DisplayName = "Count value => Success")]
         [InlineData(true)]
         [InlineData(false)]

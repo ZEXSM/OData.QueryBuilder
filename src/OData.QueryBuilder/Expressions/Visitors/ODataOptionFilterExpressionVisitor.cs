@@ -46,11 +46,21 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 :
                 $"{left} {binaryExpression.NodeType.ToODataOperator()} {right}";
         }
-
-        protected override string VisitMemberExpression(LambdaExpression topExpression, MemberExpression memberExpression) =>
-            IsMemberExpressionBelongsResource(memberExpression)
-            ? base.VisitMemberExpression(topExpression, memberExpression)
-            : _valueExpression.GetValue(memberExpression).ToQuery(_odataQueryBuilderOptions);
+        
+        protected override string VisitMemberExpression(LambdaExpression topExpression, MemberExpression memberExpression)
+        {
+            if (IsMemberExpressionBelongsResource(memberExpression))
+            {
+                return base.VisitMemberExpression(topExpression, memberExpression);
+            }
+            
+            var value = _valueExpression.GetValue(memberExpression);
+            if (value is Expression expression)
+            {
+                return VisitExpression(topExpression, expression);
+            }
+            return value.ToQuery(_odataQueryBuilderOptions);
+        }
 
         protected override string VisitConstantExpression(LambdaExpression topExpression, ConstantExpression constantExpression) =>
             constantExpression.Value.ToQuery(_odataQueryBuilderOptions);

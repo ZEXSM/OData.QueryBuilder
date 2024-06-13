@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace OData.QueryBuilder.Conventions.Operators
 {
@@ -7,10 +8,10 @@ namespace OData.QueryBuilder.Conventions.Operators
     {
         bool In<T>(T columnName, IEnumerable<T> values);
 
-        bool All<T>(IEnumerable<T> columnName, Func<T, bool> func);
+        bool All<T>(IEnumerable<T> columnName, Expression<Func<T, bool>> func);
 
         bool Any<T>(IEnumerable<T> columnName);
-
-        bool Any<T>(IEnumerable<T> columnName, Func<T, bool> func);
+        
+        bool Any<T>(IEnumerable<T> columnName, Expression<Func<T, bool>> func);
     }
 }

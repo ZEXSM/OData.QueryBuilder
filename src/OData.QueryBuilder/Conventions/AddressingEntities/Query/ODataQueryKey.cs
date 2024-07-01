@@ -1,35 +1,36 @@
-﻿using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
+﻿using OData.QueryBuilder.Builders;
+using OData.QueryBuilder.Conventions.AddressingEntities.Resources;
 using OData.QueryBuilder.Conventions.AddressingEntities.Resources.Expand;
 using OData.QueryBuilder.Conventions.Constants;
 using OData.QueryBuilder.Expressions.Visitors;
-using OData.QueryBuilder.Extensions;
 using OData.QueryBuilder.Options;
 using System;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 {
     internal class ODataQueryKey<TEntity> : ODataQuery, IODataQueryKey<TEntity>
     {
-        private bool _hasMultyExpands;
+        private bool _hasManyExpands;
 
-        public ODataQueryKey(StringBuilder stringBuilder, ODataQueryBuilderOptions odataQueryBuilderOptions)
-            : base(stringBuilder, odataQueryBuilderOptions)
+        public ODataQueryKey(
+            QBuilder queryBuilder,
+            ODataQueryBuilderOptions odataQueryBuilderOptions)
+            : base(queryBuilder, odataQueryBuilderOptions)
         {
-            _hasMultyExpands = false;
+            _hasManyExpands = false;
         }
 
         public IAddressingEntries<TResource> For<TResource>(Expression<Func<TEntity, object>> resource)
         {
-            _stringBuilder.LastReplace(QuerySeparators.Begin, QuerySeparators.Slash);
+            _queryBuilder.LastReplace(QuerySeparators.Begin, QuerySeparators.Slash);
 
-            return new ODataResource<TEntity>(_stringBuilder, _odataQueryBuilderOptions).For<TResource>(resource);
+            return new ODataResource<TEntity>(_queryBuilder, _odataQueryBuilderOptions).For<TResource>(resource);
         }
 
         public IODataQueryKey<TEntity> Expand(Expression<Func<TEntity, object>> expand)
         {
-            var query = new ODataOptionExpandExpressionVisitor().ToQuery(expand);
+            var query = new ODataOptionExpandExpressionVisitor().ToString(expand);
 
             return Expand(query);
         }
@@ -40,30 +41,30 @@ namespace OData.QueryBuilder.Conventions.AddressingEntities.Query
 
             expandNested(builder);
 
-            return Expand(builder.Query);
+            return Expand(builder.QueryBuilder);
         }
 
         public IODataQueryKey<TEntity> Select(Expression<Func<TEntity, object>> select)
         {
-            var query = new ODataOptionSelectExpressionVisitor().ToQuery(select);
+            var query = new ODataOptionSelectExpressionVisitor().ToString(select);
 
-            _stringBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+            _queryBuilder.Append($"{ODataOptionNames.Select}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
 
             return this;
         }
 
         private IODataQueryKey<TEntity> Expand<T>(T query) where T : class
         {
-            if (_hasMultyExpands)
+            if (_hasManyExpands)
             {
-                _stringBuilder.Merge(ODataOptionNames.Expand, QuerySeparators.Main, $"{QuerySeparators.Comma}{query}");
+                _queryBuilder.Merge(ODataOptionNames.Expand, QuerySeparators.Main, $"{QuerySeparators.Comma}{query}");
             }
             else
             {
-                _stringBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
+                _queryBuilder.Append($"{ODataOptionNames.Expand}{QuerySeparators.EqualSign}{query}{QuerySeparators.Main}");
             }
 
-            _hasMultyExpands = true;
+            _hasManyExpands = true;
 
             return this;
         }

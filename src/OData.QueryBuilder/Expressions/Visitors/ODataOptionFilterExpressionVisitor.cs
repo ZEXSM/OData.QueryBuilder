@@ -12,7 +12,6 @@ namespace OData.QueryBuilder.Expressions.Visitors
     internal class ODataOptionFilterExpressionVisitor : ODataOptionExpressionVisitor
     {
         protected readonly ODataQueryBuilderOptions _odataQueryBuilderOptions;
-        protected readonly ValueExpression _valueExpression;
 
         private bool _useParenthesis;
         private ExpressionType? _expressionType;
@@ -21,7 +20,6 @@ namespace OData.QueryBuilder.Expressions.Visitors
             : base()
         {
             _odataQueryBuilderOptions = odataQueryBuilderOptions;
-            _valueExpression = new ValueExpression();
         }
 
         protected override string VisitBinaryExpression(LambdaExpression topExpression, BinaryExpression binaryExpression)
@@ -50,14 +48,14 @@ namespace OData.QueryBuilder.Expressions.Visitors
         protected override string VisitMemberExpression(LambdaExpression topExpression, MemberExpression memberExpression) =>
             IsMemberExpressionBelongsResource(memberExpression)
             ? base.VisitMemberExpression(topExpression, memberExpression)
-            : _valueExpression.GetValue(memberExpression).ToQuery(_odataQueryBuilderOptions);
+            : _valueExpression.GetValue(memberExpression).ToValue(_odataQueryBuilderOptions);
 
         protected override string VisitConstantExpression(LambdaExpression topExpression, ConstantExpression constantExpression) =>
-            constantExpression.Value.ToQuery(_odataQueryBuilderOptions);
+            constantExpression.Value.ToValue(_odataQueryBuilderOptions);
 
         protected override string VisitMethodCallExpression(LambdaExpression topExpression, MethodCallExpression methodCallExpression)
         {
-            var declaringType = methodCallExpression.Method.DeclaringType!;
+            var declaringType = methodCallExpression.Method.DeclaringType;
 
             if (declaringType.IsAssignableFrom(typeof(IODataOperator)))
             {
@@ -67,7 +65,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                         var in0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                         var in1 = _valueExpression
                             .GetValue(methodCallExpression.Arguments[1])
-                            .ToQuery(_odataQueryBuilderOptions);
+                            .ToValue(_odataQueryBuilderOptions);
 
                         if (in1.IsNullOrQuotes())
                         {
@@ -119,7 +117,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     case nameof(IODataFunction.SubstringOf):
                         var substringOf0 = _valueExpression
                             .GetValue(methodCallExpression.Arguments[0])
-                            .ToQuery(_odataQueryBuilderOptions);
+                            .ToValue(_odataQueryBuilderOptions);
                         var substringOf1 = VisitExpression(topExpression, methodCallExpression.Arguments[1]);
 
                         if (substringOf0.IsNullOrQuotes())
@@ -138,7 +136,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                         var contains0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                         var contains1 = _valueExpression
                             .GetValue(methodCallExpression.Arguments[1])
-                            .ToQuery(_odataQueryBuilderOptions);
+                            .ToValue(_odataQueryBuilderOptions);
 
                         if (contains1.IsNullOrQuotes())
                         {
@@ -155,7 +153,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                         var startsWith0 = VisitExpression(topExpression, methodCallExpression.Arguments[0]);
                         var startsWith1 = _valueExpression
                             .GetValue(methodCallExpression.Arguments[1])
-                            .ToQuery(_odataQueryBuilderOptions);
+                            .ToValue(_odataQueryBuilderOptions);
 
                         if (startsWith1.IsNullOrQuotes())
                         {
@@ -215,7 +213,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                     case nameof(ICustomFunction.ReplaceCharacters):
                         var @symbol0 = _valueExpression
                             .GetValue(methodCallExpression.Arguments[0])
-                            .ToQuery(_odataQueryBuilderOptions);
+                            .ToValue(_odataQueryBuilderOptions);
                         var @symbol1 = _valueExpression.GetValue(methodCallExpression.Arguments[1]);
 
                         if (@symbol1 == default)
@@ -250,7 +248,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                         return _valueExpression
                             .GetValue(methodCallExpression.Object)
                             .ToString()
-                            .ToQuery(_odataQueryBuilderOptions);
+                            .ToValue(_odataQueryBuilderOptions);
                 }
             }
 
@@ -270,7 +268,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
 
                 return (arguments.Length == 0
                     ? Activator.CreateInstance(newExpression.Type)
-                    : newExpression.Constructor.Invoke(arguments)).ToQuery(_odataQueryBuilderOptions);
+                    : newExpression.Constructor.Invoke(arguments)).ToValue(_odataQueryBuilderOptions);
             }
 
             return base.VisitNewExpression(topExpression, newExpression);
@@ -279,7 +277,8 @@ namespace OData.QueryBuilder.Expressions.Visitors
         protected override string VisitLambdaExpression(LambdaExpression topExpression, LambdaExpression lambdaExpression)
         {
             var parameterName = lambdaExpression.Parameters[0].Name;
-            var filter = new ODataOptionFilterLambdaExpressionVisitor(_odataQueryBuilderOptions).ToQuery(lambdaExpression, _useParenthesis);
+            var filter = new ODataOptionFilterLambdaExpressionVisitor(_odataQueryBuilderOptions)
+                .ToString(lambdaExpression, _useParenthesis);
 
             return $"{parameterName}:{filter}";
         }
@@ -307,11 +306,11 @@ namespace OData.QueryBuilder.Expressions.Visitors
             return hasParenthesis;
         }
 
-        public virtual string ToQuery(LambdaExpression expression, bool useParenthesis = false)
+        public virtual string ToString(LambdaExpression expression, bool useParenthesis = false)
         {
             _useParenthesis = useParenthesis;
 
-            return base.ToQuery(expression);
+            return base.ToString(expression);
         }
     }
 }

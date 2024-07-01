@@ -10,11 +10,15 @@ namespace OData.QueryBuilder.Test
 {
     public class ODataQueryKeyTest : IClassFixture<CommonFixture>
     {
+        private readonly CommonFixture _commonFixture;
         private readonly ODataQueryBuilder<ODataInfoContainer> _odataQueryBuilderDefault;
 
-        public ODataQueryKeyTest(CommonFixture commonFixture) =>
+        public ODataQueryKeyTest(CommonFixture commonFixture)
+        {
+            _commonFixture = commonFixture;
             _odataQueryBuilderDefault = new ODataQueryBuilder<ODataInfoContainer>(
                 commonFixture.BaseUrl, new ODataQueryBuilderOptions());
+        }
 
         [Fact(DisplayName = "Expand simple => Success")]
         public void ODataQueryBuilderKey_Expand_Simple_Success()
@@ -210,6 +214,45 @@ namespace OData.QueryBuilder.Test
                 .ToUri();
 
             uri.Should().Be("http://mock/odata/ODataType('223123123')/ODataKind('223123124')?$select=Color");
+        }
+
+        [Fact]
+        public void ODataQueryBuilderKey_TemplateMode()
+        {
+            var builder = new ODataQueryBuilder<ODataInfoContainer>(
+                 _commonFixture.BaseUri,
+                 new ODataQueryBuilderOptions { Mode = ODataQueryBuilderMode.TemplateUri });
+
+            var uri = builder
+                .For<ODataTypeEntity>(s => s.ODataType)
+                .ByKey(333)
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKind)
+                        .Expand(a =>
+                        {
+                            a.For<ODataCodeEntity>(f => f.ODataCode)
+                                .Filter(v => v.Code == "test")
+                                .Select(v => v.Created)
+                                .Filter(v => v.IdActive);
+                        })
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Expand(e =>
+                {
+                    e.For<ODataKindEntity>(s => s.ODataKindNew)
+                        .Filter(s => s.EndDate == DateTime.Today)
+                        .Select(s => s.OpenDate)
+                        .Filter(s => s.IdKind == 1)
+                        .Count(false);
+                })
+                .Select(s => s.IdRule)
+                .ToUri();
+
+            uri.Should().Be("http://mock/odata/ODataType({dynamic})?$expand=ODataKind($expand=ODataCode($filter=Code eq '{dynamic}' and IdActive;$select=Created);$filter=EndDate eq {dynamic} and IdKind eq {dynamic};$select=OpenDate;$count={dynamic}),ODataKindNew($filter=EndDate eq {dynamic} and IdKind eq {dynamic};$select=OpenDate;$count={dynamic})&$select=IdRule");
         }
     }
 }

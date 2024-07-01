@@ -1,5 +1,5 @@
-﻿using System;
-using OData.QueryBuilder.Extensions;
+﻿using OData.QueryBuilder.Extensions;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -9,8 +9,11 @@ namespace OData.QueryBuilder.Expressions.Visitors
 {
     internal class ODataExpressionVisitor
     {
+        protected readonly ValueExpression _valueExpression;
+
         public ODataExpressionVisitor()
         {
+            _valueExpression = new ValueExpression();
         }
 
         protected string VisitExpression(LambdaExpression topExpression, Expression expression) => expression switch
@@ -39,7 +42,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 switch (methodCallExpression.Method.Name)
                 {
                     case nameof(ODataProperty.FromPath):
-                        string propertyPath = (string)new ValueExpression().GetValue(methodCallExpression.Arguments[0]);
+                        string propertyPath = (string)_valueExpression.GetValue(methodCallExpression.Arguments[0]);
                         var propertyNames = propertyPath.Split('.');
 
                         MemberExpression memberExpression = Expression.PropertyOrField(
@@ -52,9 +55,12 @@ namespace OData.QueryBuilder.Expressions.Visitors
                         }
 
                         var genericMethodType = methodCallExpression.Method.GetGenericArguments()[0];
+
                         if (genericMethodType != memberExpression.Type)
+                        {
                             throw new ArgumentException(
                                 $"The type '{genericMethodType.FullName}' specified when calling 'ODataProperty.FromPath<T>(\"{propertyPath}\")' does not match the expected type '{memberExpression.Type.FullName}' defined by the model.");
+                        }
 
                         return VisitMemberExpression(topExpression, memberExpression);
                 }
@@ -98,7 +104,7 @@ namespace OData.QueryBuilder.Expressions.Visitors
                 $"{memberName}/{reflectedMemberName}";
         }
 
-        public virtual string ToQuery(LambdaExpression expression) =>
+        public virtual string ToString(LambdaExpression expression) =>
             VisitExpression(expression, expression.Body);
     }
 }

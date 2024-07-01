@@ -2,6 +2,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Reflection;
+using OData.QueryBuilder.Attributes;
 
 namespace OData.QueryBuilder.Expressions.Visitors
 {
@@ -84,15 +86,22 @@ namespace OData.QueryBuilder.Expressions.Visitors
         {
             var memberName = VisitExpression(topExpression, memberExpression.Expression);
 
+            var reflectedMemberName = memberExpression.Member.Name;
+            var propertyNameAttribute = memberExpression.Member.GetCustomAttribute<ODataPropertyNameAttribute>();
+            if (propertyNameAttribute != null)
+            {
+                reflectedMemberName = propertyNameAttribute.Name;
+            }
+
             if (string.IsNullOrEmpty(memberName))
             {
-                return memberExpression.Member.Name;
+                return reflectedMemberName;
             }
 
             return memberExpression.Member.DeclaringType.IsNullableType() ?
                 memberName
                 :
-                $"{memberName}/{memberExpression.Member.Name}";
+                $"{memberName}/{reflectedMemberName}";
         }
 
         public virtual string ToString(LambdaExpression expression) =>
